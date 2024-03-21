@@ -1,9 +1,15 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+
+import WelcomeIntro from '@/components/displayPage/WelcomeIntro.vue'
+
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+
+  <WelcomeIntro />
+
+
 </template>
+
+
+```
