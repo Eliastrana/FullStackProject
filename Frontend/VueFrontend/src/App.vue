@@ -1,18 +1,25 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <!-- Emoji on the left -->
+        <RouterLink to="/">💻</RouterLink>
+
+        <!-- Centered Links -->
+        <div class="nav-center">
+          <RouterLink to="/Create">Create</RouterLink>
+          <h1> | </h1>
+          <RouterLink to="/Quizzes">Quizzes</RouterLink>
+        </div>
+
+        <!-- Log in on the right -->
+        <div class="nav-right">
+          <RouterLink to="/Login">Log in</RouterLink>
+        </div>
       </nav>
     </div>
   </header>
@@ -20,66 +27,71 @@ import HelloWorld from './components/HelloWorld.vue'
   <RouterView />
 </template>
 
-<style scoped>
+
+
+<style>
+
+/* Include the Roboto font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 header {
-  line-height: 1.5;
-  max-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.wrapper {
+  width: 100%;
+  max-width: 1200px; /* Adjust based on your preference */
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
 }
 
 nav {
   width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  font-size: 30px; /* Larger font size */
+  text-decoration: none;
+  color: #333; /* Adjust color based on your preference */
 }
 
-nav a:first-of-type {
-  border: 0;
+nav a:hover {
+  color: #6ec0b8; /* Adjust hover color based on your preference */
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.nav-center {
+  display: flex;
+  justify-content: center;
+  flex: 1;
 }
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav-center {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* This ensures vertical alignment */
+  flex: 1;
+}
+
+.nav-center h1 {
+  margin: 0 10px; /* Add some horizontal spacing */
+  font-size: 24px; /* Adjust the font size as needed */
+}
+
+
+
 </style>
+
+
