@@ -22,6 +22,11 @@ import { RouterLink, RouterView } from 'vue-router'
         <div class="nav-right">
           <RouterLink to="/Login">Log in</RouterLink>
         </div>
+
+        <div class="nav-right">
+          <RouterLink to="/Account">🧑</RouterLink>
+        </div>
+
       </nav>
     </div>
   </header>
