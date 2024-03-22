@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Data
 public class UserCreationDTO {
     private String username;
     private String password;
@@ -22,7 +23,6 @@ public class UserCreationDTO {
      * @param password The password of the user.
      * @param email The email of the user.
      */
-
     public UserCreationDTO(String username, String password, String email) {
         this.username = username;
         this.password = password;

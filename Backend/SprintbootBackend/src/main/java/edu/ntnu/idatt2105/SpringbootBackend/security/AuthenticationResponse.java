@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * Data transfer object for authentication responses.
  */
+
 @Data
 @Builder
 @AllArgsConstructor

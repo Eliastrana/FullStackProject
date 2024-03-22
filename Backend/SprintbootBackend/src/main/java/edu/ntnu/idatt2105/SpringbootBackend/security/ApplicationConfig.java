@@ -21,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
  * Contains beans for password encoding, user details service and authentication provider.
 
  */
+
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
@@ -32,6 +33,7 @@ public class ApplicationConfig {
      *
      * @return An instance of the UserDetailsService.
      */
+
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
@@ -43,6 +45,7 @@ public class ApplicationConfig {
      *
      * @return An instance of the AuthenticationProvider.
      */
+
 
     @Bean
     public AuthenticationProvider AuthenticationProvider() {
@@ -59,6 +62,7 @@ public class ApplicationConfig {
      * @return An instance of the AuthenticationManager.
      * @throws Exception If an error occurs.
      */
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

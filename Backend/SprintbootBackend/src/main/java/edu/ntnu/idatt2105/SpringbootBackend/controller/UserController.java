@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Handles requests related to user authentication, including registering and logging in users.
  */
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class UserController {
      * @param userDto The user to register.
      * @return The response containing the user's JWT token.
      */
+
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserCreationDTO userDto) {
@@ -48,6 +50,10 @@ public class UserController {
      * @param userDto The DTO containing the user´s login credentials
      * @return a response entity with an authentication response or error message
      */
+
+
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> loginUser(@RequestBody UserDTO userDto) {

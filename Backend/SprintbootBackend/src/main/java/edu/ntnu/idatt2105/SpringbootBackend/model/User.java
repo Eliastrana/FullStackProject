@@ -13,6 +13,7 @@ import java.util.UUID;
  * Implements Spring Security UserDetails to enable authentication and authorization.
 
  */
+
 @AllArgsConstructor
 @Getter
 @Setter
@@ -27,7 +28,6 @@ public class User implements UserDetails {
     /**
      * The unique identifier of the user.
      */
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -50,6 +50,12 @@ public class User implements UserDetails {
      * The email of the user.
      */
 
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
@@ -61,6 +67,7 @@ public class User implements UserDetails {
      *
      * @return The authorities granted to the user.
      */
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -95,6 +102,7 @@ public class User implements UserDetails {
      *
      * @return True if the user's credentials are valid, false otherwise.
      */
+
     @Override
     public boolean isCredentialsNonExpired() {
 
@@ -106,11 +114,13 @@ public class User implements UserDetails {
      *
      * @return True if the user is enabled, false otherwise.
      */
+
     @Override
     public boolean isEnabled() {
 
         return true;
     }
+
 }
 
 

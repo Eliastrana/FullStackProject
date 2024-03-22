@@ -5,6 +5,7 @@ import lombok.*;
 /**
  * Data transfer object for authentication requests.
  */
+
 @Data
 @Builder
 @AllArgsConstructor

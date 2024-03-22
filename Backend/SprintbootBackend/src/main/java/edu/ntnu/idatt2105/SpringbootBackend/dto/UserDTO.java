@@ -5,6 +5,7 @@ import lombok.Data;
 /**
  * Data transfer object for creating a new user.
  */
+
 @Data
 public class UserDTO {
     private String username;
