@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
  * Data transfer object for creating a new user.
  */
 
-@Data
+
 @NoArgsConstructor
 @Data
 public class UserCreationDTO {
