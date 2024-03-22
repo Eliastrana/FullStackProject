@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "title": "History Quiz",
+    "description": "Test your knowledge of historical events.",
+    "category": "History",
+    "image": "/images/quizImages/history-quiz.jpg",
+    "questions": [
+      {
+        "questionText": "Who was the first President of the United States?",
+        "answer": "George Washington"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Science Quiz",
+    "description": "Explore the wonders of science.",
+    "category": "Science",
+    "image": "/images/quizImages/science-quiz.jpg",
+    "questions": [
+      {
+        "questionText": "What is the chemical symbol for water?",
+        "answer": "H2O"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Geography Quiz",
+    "description": "Discover fascinating facts about the world.",
+    "category": "Geography",
+    "image": "/images/quizImages/geography-quiz.jpg",
+    "questions": [
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Math Quiz",
+    "description": "Test your mathematical skills.",
+    "category": "Math",
+    "image": "/images/quizImages/math-quiz.jpg",
+    "questions": [
+      {
+        "questionText": "What is the value of Pi to two decimal places?",
+        "answer": "3.14"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Literature Quiz",
+    "description": "Dive into the world of literature.",
+    "category": "Literature",
+    "image": "/images/quizImages/literature-quiz.jpg",
+    "questions": [
+      {
+        "questionText": "Who wrote 'To Kill a Mockingbird'?",
+        "answer": "Harper Lee"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Music Quiz",
+    "description": "Explore the world of music.",
+    "category": "Music",
+    "image": "/images/quizImages/music-quiz.jpg",
+    "questions": [
+      {
+        "questionText": "Who composed the Four Seasons?",
+        "answer": "Antonio Vivaldi"
+      }
+    ]
+  }
+]

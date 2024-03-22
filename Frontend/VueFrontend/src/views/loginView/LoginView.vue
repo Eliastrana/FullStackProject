@@ -122,8 +122,8 @@ label {
   margin-top: 20px;
   border: none;
   border-radius: 5px;
-  background-color: #b4e892;
-  color: #000000;
+  background-color: #0056b3;
+  color: #ffffff;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.2s, transform 0.2s; /* Sørger for jevne overganger */
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -133,12 +133,15 @@ label {
 #sign-in:hover {
   transform: translateY(-2px); /* Flytter knappen opp for "sveve" effekt */
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  background-color: #007bff; /* Mørkere farge for å vise aktiv tilstand */
+
 }
 
 #sign-in:active {
-  background-color: #87c75c; /* Mørkere farge for å vise aktiv tilstand */
+  background-color: #3232ff; /* Mørkere farge for å vise aktiv tilstand */
   transform: translateY(2px); /* Flytter knappen ned for "presset" effekt */
 }
+
 
 #create-user-link {
   background-color: transparent;
