@@ -24,6 +24,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
+
 const username = ref('');
 const password = ref('');
 const router = useRouter();
@@ -43,8 +44,11 @@ const login = async () => {
 };
 
 const navigateToCreateUser = () => {
-  router.push({name: 'CreateUserView'});
+  console.log("Navigating to CreateUser...");
+  router.push({ name: 'CreateUser' });
 };
+
+
 </script>
 
 
