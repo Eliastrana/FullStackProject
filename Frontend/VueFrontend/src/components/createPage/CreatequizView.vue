@@ -25,10 +25,15 @@
 
 // const router = useRouter();
 
-const navigateToLogin = () => {
-  alert('Move user to login and after login, redirect to the selected quiz type');
 
-  // router.push({ name: 'Login' });
+import router from '@/router/index.js'
+
+
+
+const navigateToLogin = () => {
+  //SET THIS TO GO TO LOGIN WHEN BACKEND IS READY
+  router.push({ name: 'QuizcreatorTool' });
+
 
 };
 </script>
@@ -59,7 +64,7 @@ const navigateToLogin = () => {
   font-size: 1.5rem;
   text-align: center;
   color: #333;
-  background-color: #f5f5f5;
+  background-color: #fffff7;
 }
 
 .square:hover {
