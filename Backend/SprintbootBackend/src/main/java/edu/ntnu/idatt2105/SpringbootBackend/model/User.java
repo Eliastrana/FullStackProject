@@ -50,11 +50,6 @@ public class User implements UserDetails {
      * The email of the user.
      */
 
-    @Column(name = "username", unique = true, nullable = false)
-    private String username;
-
-    @Column(name = "password", nullable = false)
-    private String password;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
