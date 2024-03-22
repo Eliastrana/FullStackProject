@@ -31,7 +31,7 @@ public class SecurityConfig {
 
      @param http HttpSecurity object used for configuration
      @return A SecurityFilterChain object
-     @throws Exception
+     @throws Exception If an error occurs
      */
     @SuppressWarnings("removal")
     @Bean
