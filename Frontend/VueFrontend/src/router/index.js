@@ -28,8 +28,18 @@ const router = createRouter({
       path: '/create-user',
       name: 'CreateUser',
       component: () => import('../views/loginView/CreateUserView.vue') // Adjust the path as necessary
-    }
+    },
+    {
+      path: '/quizcreator',
+      name: 'Quizcreator',
+      component: () => import('../components/createPage/QuizcreatortoolView.vue')
 
+    },
+    {
+      path: '/QuizcreatorTool',
+      name: 'QuizcreatorTool',
+      component: () => import('../components/createPage/QuizcreatortoolView.vue')
+    }
   ]
 })
 
