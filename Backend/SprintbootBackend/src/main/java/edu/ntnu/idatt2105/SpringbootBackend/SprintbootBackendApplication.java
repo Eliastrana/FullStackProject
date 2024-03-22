@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2105.SprintbootBackend;
+package edu.ntnu.idatt2105.SpringbootBackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
