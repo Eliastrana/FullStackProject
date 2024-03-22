@@ -10,6 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+/**
+ * Handles requests related to user authentication, including registering and logging in users.
+ */
 @CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +22,13 @@ public class UserController {
     private final AuthenticationService authService;
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+
+    /**
+     * Registers a new user with the provided user details.
+     *
+     * @param userDto The user to register.
+     * @return The response containing the user's JWT token.
+     */
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserCreationDTO userDto) {
@@ -29,9 +40,14 @@ public class UserController {
             logger.error("Error registering user: " + e.getMessage());
             return ResponseEntity.badRequest().build();
         }
-
-
     }
+
+    /**
+     * Logs in a user with the provided user details.
+     *
+     * @param userDto The DTO containing the user´s login credentials
+     * @return a response entity with an authentication response or error message
+     */
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> loginUser(@RequestBody UserDTO userDto) {
