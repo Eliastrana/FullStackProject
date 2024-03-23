@@ -30,38 +30,36 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { useStore } from 'vuex';
 
 const username = ref('');
 const email = ref('');
 const password = ref('');
 const passwordConfirmation = ref('');
 const router = useRouter();
+const store = useStore();
 
 const registerUser = async () => {
-  // Validate password and confirmation match
   if (password.value !== passwordConfirmation.value) {
     alert("Passwords do not match.");
     return;
   }
 
   try {
-    // Adjust URL and data structure according to your backend API
-    const response = await axios.post('/register', {
+    await store.dispatch('user/register', {
       username: username.value,
       email: email.value,
       password: password.value,
-      // Add any additional required fields
     });
 
-    // Redirect or handle response after successful registration
-    console.log("Registration successful:", response.data);
-    router.push({name: 'loginView'}); // Adjust route name as needed
+    console.log("Registration successful");
+    router.push({ name: 'login' });
   } catch (error) {
     console.error("Registration failed:", error);
   }
 };
 </script>
+
 
 
 <style scoped>
