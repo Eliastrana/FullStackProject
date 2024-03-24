@@ -1,23 +1,30 @@
 <script setup>
-import { ref } from 'vue';
+  import { ref, watch, defineEmits } from 'vue';
+  import { debounce } from 'lodash-es'; // Anta at lodash er installert, ellers kan du implementere din egen debounce-funksjon
 
-const question = ref({
-  title: '',
-  answers: Array.from({ length: 4 }, () => ({ text: '' })), // Creates 4 separate answer objects
-  correctAnswer: null // Index of the correct answer
-});
-
-// Define a function directly in the script setup scope
-function getData() {
-  // Assuming you want to return a deep copy of `question` instead of `this.questions`
-  // since `this` is not used in <script setup> and `questions` is not defined.
-  return JSON.parse(JSON.stringify(question.value));
-}
+  const title = ref('');
+  const answers = ref([{ text: '' }, { text: '' }, { text: '' }, { text: '' }]);
+  const correctAnswer = ref(null);
+  const emits = defineEmits(['submitData']);
 
 
+  // Debounce-funksjonen sørger for at emitCurrentData kun blir kalt
+  // hvis det ikke har vært noen endringer i de overvåkede dataene på 500 millisekunder
 
+
+  const debouncedEmitData = debounce(() => {
+  emits('submitData', {
+    type: 'multipleChoice',
+    question: title.value,
+    options: answers.value.map(a => a.text),
+    correctOption: correctAnswer.value,
+  });
+}, 5000); // Juster tidsforsinkelsen etter behov
+
+  // Overvåker endringer i title, answers, og correctAnswer,
+  // og bruker den debounced versjonen av emit funksjonen ved endringer.
+  watch([title, answers, correctAnswer], debouncedEmitData, { deep: true });
 </script>
-
 
 
 
@@ -25,20 +32,16 @@ function getData() {
   <div class="question-container">
     <h3>Multiple Choice</h3>
     <div class="question-box">
-      <input v-model="question.title" type="text" placeholder="Enter your question here" class="question-title"/>
-
+      <input v-model="title" type="text" placeholder="Enter your question here" class="question-title"/>
       <div class="answers-container">
-        <div class="answer-row" v-for="n in 2" :key="n">
-          <div class="answer-group" v-for="index in 2" :key="index + (n-1)*2 - 1">
-            <input v-model="question.answers[index + (n-1)*2 - 1].text" type="text" :placeholder="'Answer ' + (index + (n-1)*2)" class="answer-text"/>
-            <input type="radio" :value="index + (n-1)*2 - 1" v-model="question.correctAnswer" class="correct-answer-checkbox"/>
-          </div>
+        <div class="answer-row" v-for="(answer, index) in answers" :key="index">
+          <input v-model="answer.text" type="text" :placeholder="'Answer ' + (index + 1)" class="answer-text"/>
+          <input type="radio" :value="index" v-model="correctAnswer" class="correct-answer-checkbox"/>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 
 
 

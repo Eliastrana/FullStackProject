@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, } from 'vue';
 import CreateMultiplechoice from '@/components/createPage/createQuizComponents/CreateMultiplechoice.vue';
 import CreateFillintheblank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
 import CreateStudy from '@/components/createPage/createQuizComponents/CreateStudy.vue';
@@ -37,26 +37,26 @@ function getQuizTypeColor(quizTypeId) {
 }
 
 
-async function compileQuizToJson() {
-  alert('Compiling quiz to JSON')
-  // This will hold the full quiz data including details from each component
-  const fullQuizData = await Promise.all(selectedQuizTypes.value.map(async (quizTypeId, index) => {
-    // Assuming you have a method to get the component instance by its type or index
-    const componentInstance = getComponentInstanceByIndex(index);
-    if (!componentInstance) {
-      return { type: quizTypeId, data: null };
-    }
+const quizData = ref([]);
 
-    // Call a method on the component to get its data
-    const componentData = await componentInstance.getData();
-    return { type: quizTypeId, data: componentData };
-  }));
-
-  const quizJson = JSON.stringify(fullQuizData, null, 2); // Pretty-print the JSON
-  console.log(quizJson);
-
-  // Optionally, save the JSON to a file if you're in an environment where you can do so (e.g., Node.js, Electron, or using a server-side solution)
+function handleQuizData(data) {
+  const existingIndex = quizData.value.findIndex(item => item.question === data.question);
+  if (existingIndex !== -1) {
+    // Overskriv eksisterende oppføring for å unngå duplikater
+    quizData.value[existingIndex] = data;
+  } else {
+    // Legg til ny data
+    quizData.value.push(data);
+  }
 }
+
+async function compileQuizToJson() {
+  // Anta at quizData.value allerede inneholder all data korrekt samlet fra barnekomponentene
+  const quizJson = JSON.stringify(quizData.value, null, 2);
+  console.log(quizJson);
+  downloadQuizJson(quizJson); // Utløser nedlasting av JSON-filen
+}
+
 
 function downloadQuizJson(quizJson) {
   const blob = new Blob([quizJson], { type: 'application/json' });
@@ -67,9 +67,6 @@ function downloadQuizJson(quizJson) {
   link.click();
   document.body.removeChild(link);
 }
-
-
-
 </script>
 
 <template>
@@ -78,13 +75,13 @@ function downloadQuizJson(quizJson) {
       <h2>Choose a quiz type:</h2>
       <div class="quiz-type-buttons">
         <button
-          v-for="quizType in quizTypes"
-          :key="quizType.id"
-          @click="addQuizType(quizType.id)"
-          :style="{ backgroundColor: quizType.color }"
-          class="quiz-type-button"
+            v-for="quizType in quizTypes"
+            :key="quizType.id"
+            @click="addQuizType(quizType.id)"
+            :style="{ backgroundColor: quizType.color }"
+            class="quiz-type-button"
         >
-         + {{ quizType.name }}
+          + {{ quizType.name }}
         </button>
       </div>
     </div>
@@ -93,17 +90,22 @@ function downloadQuizJson(quizJson) {
 
     <!-- Container for quiz components with dynamic border color -->
     <div
-      v-for="(quizTypeId, index) in selectedQuizTypes"
-      :key="`quiz-${index}`"
-      class="quiz-component-container"
-      :style="{ borderColor: getQuizTypeColor(quizTypeId) }"
+        v-for="(quizTypeId, index) in selectedQuizTypes"
+        :key="`quiz-${index}`"
+        class="quiz-component-container"
+        :style="{ borderColor: getQuizTypeColor(quizTypeId) }"
     >
-      <component :is="getComponentName(quizTypeId)" />
+      <component
+          :is="getComponentName(quizTypeId)"
+          @submitData="handleQuizData"
+      />
     </div>
 
     <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>
   </div>
 </template>
+
+
 
 
 <style scoped>

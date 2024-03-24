@@ -1,13 +1,37 @@
 <script setup>
-import { ref } from 'vue';
+import { watch, ref, defineEmits } from 'vue';
+
+const emits = defineEmits(['submitData']);
 
 const studyCard = ref({
   question: '',
   answer: ''
 });
 
+// Enkel debounce-funksjon
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
+}
 
+// Debounced funksjon som emitter studiekortdata
+const emitDataDebounced = debounce(() => {
+  emits('submitData', {
+    type: 'study',
+    question: studyCard.value.question,
+    answer: studyCard.value.answer
+  });
+}, 5000); // 500ms ventetid for å forhindre for mange oppdateringer
+
+// Bruker watch for å reagere på endringer i studyCard og kaller den debounced funksjonen
+watch(studyCard, emitDataDebounced, { deep: true });
 </script>
+
 
 
 <template>
