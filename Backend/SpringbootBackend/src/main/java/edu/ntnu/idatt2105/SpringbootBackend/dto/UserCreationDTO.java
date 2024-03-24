@@ -7,11 +7,15 @@ import lombok.NoArgsConstructor;
 
 
 /**
- * Data Transfer Object (DTO) for user registration.
- * Contains the necessary information to create a new user, including username, password, and email.
- * Used in the registration process handled by {@link UserController}.
+ * A Data Transfer Object for user registration.
+ * It encapsulates the user details
+ * required for registering a new user, including username, password, and email.
+ * This DTO is used as the request body in the registration endpoint of {@link UserController}.
  *
  * @author Vegard Johnsen, Sander R. Skofsrud
+ * @see UserController#registerUser(UserCreationDTO)
+ * @since 0.1
+ * @version 0.1
  */
 @Schema(description = "User Creation DTO")
 @NoArgsConstructor
@@ -27,11 +31,11 @@ public class UserCreationDTO {
     private String email;
 
     /**
-     * Constructs a new UserCreationDTO with the specified username, password, and email.
+     * Creates a new instance of UserCreationDTO with the specified details.
      *
-     * @param username the username of the new user.
-     * @param password the password of the new user.
-     * @param email the email address of the new user.
+     * @param username the username for the new user.
+     * @param password the password for the new user.
+     * @param email    the email address for the new user.
      */
     public UserCreationDTO(String username, String password, String email) {
         this.username = username;
