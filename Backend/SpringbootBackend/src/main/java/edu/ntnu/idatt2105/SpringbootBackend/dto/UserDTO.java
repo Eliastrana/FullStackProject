@@ -5,11 +5,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * Data Transfer Object (DTO) for user login.
- * Contains the necessary information for user authentication, including username and password.
- * Used in the login process handled by {@link UserController}.
+ * A Data Transfer Object for user login.
+ * It encapsulates the login credentials
+ * of a user, including the username and password.
+ * This DTO is used as the request
+ * body in the login endpoint of {@link UserController}.
  *
  * @author Vegard Johnsen, Sander R. Skofsrud
+ * @see UserController#loginUser(UserDTO)
+ * @since 0.1
+ * @version 0.1
  */
 @Schema(description = "User DTO for login")
 @Data
@@ -23,8 +28,8 @@ public class UserDTO {
     /**
      * Constructs a new UserDTO with the specified username and password for login purposes.
      *
-     * @param username the username of the user.
-     * @param password the password of the user.
+     * @param username the username of the user attempting to log in.
+     * @param password the password of the user attempting to log in.
      */
     public UserDTO(String username, String password) {
         this.username = username;

@@ -17,11 +17,15 @@ import lombok.RequiredArgsConstructor;
 
 
 /**
- * Handles user authentication-related HTTP requests, including user registration and login.
- * Utilizes {@link AuthenticationService} for the authentication process
- * and provides JWT tokens upon successful authentication.
+ * Controller for handling user authentication requests such as login and registration.
+ * Utilizes {@link AuthenticationService} to process the authentication logic
+ * and generate JWT tokens upon successful authentication.
+ * This class serves as an entry point for the client-side to access user authentication-related functionalities.
  *
  * @author Vegard Johnsen, Sander R. Skofsrud
+ * @see AuthenticationService
+ * @since 0.1
+ * @version 0.1
  */
 @Tag(name = "User Authentication")
 @CrossOrigin(origins = "*")
@@ -34,13 +38,17 @@ public class UserController {
 
 
     /**
-     * Registers a new user with the provided user details.
-     * Upon successful registration, returns a JWT token for authentication.
-     * Log the registration attempt and outcome.
+     * Registers a new user in the system.
+     * This method takes user registration details,
+     * processes them through the {@link AuthenticationService},
+     * and upon successful registration, returns a JWT token for future authentication.
      *
-     * @param userDto the user details for registration, encapsulated in {@link UserCreationDTO}.
-     * @return {@link ResponseEntity<AuthenticationResponse>} containing the JWT token on success,
-     * or an error message on failure.
+     * @param userDto The User Creation DTO containing the new user's registration details such as username, password, and email.
+     * @return A ResponseEntity containing the {@link AuthenticationResponse} with a JWT token
+     * if registration is successful;
+     * otherwise, a bad request status.
+     * @see UserCreationDTO
+     * @see AuthenticationResponse
      */
     @Operation(summary = "Register a new user", description = "Registers a user and returns a JWT token for authentication")
     @ApiResponse(responseCode = "200", description = "Successfully registered user")
@@ -58,13 +66,15 @@ public class UserController {
     }
 
     /**
-     * Authenticates a user with the provided login credentials.
-     * Upon successful authentication, returns a JWT token.
-     * Logs the login attempt and outcome.
+     * Authenticates a user based on the provided login credentials.
+     * Upon successful authentication,
+     * this method returns a JWT token that the client can use for later authenticated requests.
      *
-     * @param userDto the login credentials of the user, encapsulated in {@link UserDTO}.
-     * @return {@link ResponseEntity<AuthenticationResponse>} containing the JWT token on success,
-     * or an error message on failure.
+     * @param userDto The User DTO containing the login credentials such as username and password.
+     * @return A ResponseEntity containing the {@link AuthenticationResponse} with a JWT token if authentication is successful;
+     * otherwise, an internal server error status.
+     * @see UserDTO
+     * @see AuthenticationResponse
      */
     @Operation(summary = "Log in a user", description = "Logs in a user and returns a JWT token for authentication")
     @ApiResponse(responseCode = "200", description = "User logged in successfully")

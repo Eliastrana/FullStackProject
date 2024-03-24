@@ -14,26 +14,35 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationProvider;
 
-
-
 /**
- * Configuration class for the application.
- * Contains beans for password encoding, user details service and authentication provider.
-
+ * Defines the application's security configuration.
+ * This configuration class
+ * specifies the beans for the authentication process, including the user details service,
+ * password encoder, and authentication provider.
+ * <p>
+ * It integrates with Spring Security to facilitate the authentication and authorization
+ * mechanisms used throughout the application.
+ * </p>
+ *
+ * @author Vegard Johnsen, Sander R. Skofsrud
+ * @see UserDetailsService
+ * @see PasswordEncoder
+ * @see AuthenticationManager
+ * @since 0.1
+ * @version 0.1
  */
-
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    final private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     /**
-     * Creates a new UserDetailsService bean.
+     * Defines the bean for user details service, used by Spring Security to load
+     * user-specific data for authentication and authorization purposes.
      *
-     * @return An instance of the UserDetailsService.
+     * @return The {@link UserDetailsService} bean.
      */
-
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
@@ -41,14 +50,14 @@ public class ApplicationConfig {
     }
 
     /**
-     * Creates a new AuthenticationProvider bean.
+     * Defines the bean for the authentication provider.
+     * It is configured with the
+     * custom user details service and password encoder to support authentication.
      *
-     * @return An instance of the AuthenticationProvider.
+     * @return The {@link DaoAuthenticationProvider} bean.
      */
-
-
     @Bean
-    public AuthenticationProvider AuthenticationProvider() {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService());
         provider.setPasswordEncoder(passwordEncoder());
@@ -56,28 +65,27 @@ public class ApplicationConfig {
     }
 
     /**
-     * Creates a new AuthenticationManager bean.
+     * Defines the bean for the authentication manager, required by Spring Security
+     * to handle authentication processes.
      *
-     * @param config The AuthenticationConfiguration.
-     * @return An instance of the AuthenticationManager.
-     * @throws Exception If an error occurs.
+     * @param config The {@link AuthenticationConfiguration} provided by Spring Security.
+     * @return The {@link AuthenticationManager} bean.
+     * @throws Exception If there is an issue configuring the authentication manager.
      */
-
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     /**
-     * Creates a new PasswordEncoder bean.
+     * Defines the bean for the password encoder.
+     * This application uses BCrypt hashing
+     * for storing and verifying user passwords securely.
      *
-     * @return An instance of the PasswordEncoder.
+     * @return The {@link PasswordEncoder} bean.
      */
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

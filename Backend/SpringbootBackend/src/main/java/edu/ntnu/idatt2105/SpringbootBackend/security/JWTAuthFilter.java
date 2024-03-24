@@ -19,7 +19,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Filter for authenticating users using JWT.
+ * A filter that executes once per request to authenticate users based on JWT tokens.
+ * This filter intercepts the request to check for the presence of a JWT token in the Authorization header,
+ * validates the token, and sets the authentication in the security context if the token is valid.
+ * <p>
+ * It integrates with Spring Security's filtering mechanism to provide stateless authentication
+ * using JWT tokens, allowing for secure access to protected resources.
+ * </p>
+ *
+ * @author Vegard Johnsen, Sander R. Skofsrud
+ * @see OncePerRequestFilter
+ * @see JWTService
+ * @see UserService
+ * @since 0.1
+ * @version 0.1
  */
 @Component
 @RequiredArgsConstructor
@@ -30,18 +43,25 @@ public class JWTAuthFilter extends OncePerRequestFilter{
     private final Logger logger = LoggerFactory.getLogger(JWTAuthFilter.class);
 
     /**
-     * Filters the request and authenticates the user using JWT.
+     * Processes each HTTP request to extract and validate the JWT token from the Authorization header.
+     * If the token is valid, the user's authentication is set in the SecurityContextHolder,
+     * indicating that the user is authenticated for the duration of the request.
+     * <p>
+     * Extracts the JWT token using the 'Bearer ' prefix and validates its integrity and expiration.
+     * If validation passes, it retrieves the user details associated with the token's subject (username)
+     * and sets up the security context with the user's authorities for authorization during the request.
+     * </p>
      *
-     * @param request The request to filter.
-     * @param response The response to filter.
-     * @param filterChain The filter chain.
-     * @throws ServletException If an error occurs.
-     * @throws IOException If an error occurs.
+     * @param request The request object containing the headers.
+     * @param response The response object.
+     * @param filterChain The filter chain to which the request is passed for further processing.
+     * @throws ServletException If an error occurs during the filtering process.
+     * @throws IOException If an I/O error is encountered while processing the request or response.
      */
-
+// TODO: Make this into three separate methods: doFilterInternal, extractJwtFromRequest, and authenticateUser
     @Override
     protected void doFilterInternal(@SuppressWarnings("null") @NonNull HttpServletRequest request, @SuppressWarnings("null") @NonNull HttpServletResponse response, @SuppressWarnings("null") @NonNull FilterChain filterChain)
-            throws ServletException, IOException, java.io.IOException {
+            throws ServletException, IOException {
         final String jwt, username;
         final String authHeader = request.getHeader("Authorization");
 
