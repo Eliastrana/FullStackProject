@@ -1,8 +1,10 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import FooterView from '@/components/footer/FooterView.vue'
 </script>
 
 <template>
+  <div id="app">
   <header>
     <div class="wrapper">
       <nav>
@@ -11,9 +13,10 @@ import { RouterLink, RouterView } from 'vue-router'
 
         <!-- Centered Links -->
         <div class="nav-center">
-          <RouterLink to="/Create">Create</RouterLink>
-          <h1> | </h1>
           <RouterLink to="/Quizzes">Quizzes</RouterLink>
+          <h1> | </h1>
+          <RouterLink to="/Create">Create</RouterLink>
+
         </div>
 
         <!-- Log in on the right -->
@@ -25,7 +28,15 @@ import { RouterLink, RouterView } from 'vue-router'
   </header>
 
   <RouterView />
+
+  <FooterView />
+
+  </div>
+
 </template>
+
+
+
 
 
 
@@ -40,7 +51,16 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
+
+
 }
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 
 .wrapper {
   width: 100%;
@@ -48,6 +68,8 @@ header {
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
+  flex: 1;
+
 }
 
 nav {
@@ -55,6 +77,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
 }
 
 nav a {
@@ -64,7 +87,7 @@ nav a {
 }
 
 nav a:hover {
-  color: #6ec0b8; /* Adjust hover color based on your preference */
+  color: #3232ff; /* Adjust hover color based on your preference */
 }
 
 .nav-center {

@@ -4,11 +4,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'Backend/**'
+      - 'Backend/SpringbootBackend/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'Backend/**'
+      - 'Backend/SpringbootBackend/**'
 
 jobs:
   build-and-test:
@@ -24,7 +24,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Build with Maven
-        run: mvn -B package --file backend/pom.xml
+        run: mvn -B package --file Backend/SpringbootBackend/pom.xml
 
       - name: Run Tests
-        run: mvn test --file backend/pom.xml
+        run: mvn test --file Backend/SpringbootBackend/pom.xml
