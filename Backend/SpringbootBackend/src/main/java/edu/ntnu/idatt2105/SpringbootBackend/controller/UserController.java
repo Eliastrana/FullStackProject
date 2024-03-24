@@ -15,6 +15,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+
+/**
+ * Handles user authentication-related HTTP requests, including user registration and login.
+ * Utilizes {@link AuthenticationService} for the authentication process
+ * and provides JWT tokens upon successful authentication.
+ *
+ * @author Vegard Johnsen, Sander R. Skofsrud
+ */
 @Tag(name = "User Authentication")
 @CrossOrigin(origins = "*")
 @RestController
@@ -24,6 +32,16 @@ public class UserController {
     private final AuthenticationService authService;
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+
+    /**
+     * Registers a new user with the provided user details.
+     * Upon successful registration, returns a JWT token for authentication.
+     * Log the registration attempt and outcome.
+     *
+     * @param userDto the user details for registration, encapsulated in {@link UserCreationDTO}.
+     * @return {@link ResponseEntity<AuthenticationResponse>} containing the JWT token on success,
+     * or an error message on failure.
+     */
     @Operation(summary = "Register a new user", description = "Registers a user and returns a JWT token for authentication")
     @ApiResponse(responseCode = "200", description = "Successfully registered user")
     @ApiResponse(responseCode = "400", description = "Error registering user")
@@ -39,6 +57,15 @@ public class UserController {
         }
     }
 
+    /**
+     * Authenticates a user with the provided login credentials.
+     * Upon successful authentication, returns a JWT token.
+     * Logs the login attempt and outcome.
+     *
+     * @param userDto the login credentials of the user, encapsulated in {@link UserDTO}.
+     * @return {@link ResponseEntity<AuthenticationResponse>} containing the JWT token on success,
+     * or an error message on failure.
+     */
     @Operation(summary = "Log in a user", description = "Logs in a user and returns a JWT token for authentication")
     @ApiResponse(responseCode = "200", description = "User logged in successfully")
     @ApiResponse(responseCode = "500", description = "Internal server error")
