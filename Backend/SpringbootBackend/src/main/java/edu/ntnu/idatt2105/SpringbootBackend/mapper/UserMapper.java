@@ -5,11 +5,29 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import org.springframework.stereotype.Component;
 
 /**
- * Mapper class for mapping User objects to UserDTO objects.
+ * Provides functionality to map between {@link User} entities and {@link UserDTO} objects.
+ * This mapper facilitates the conversion of data between the domain model layer and the data transfer object
+ * (DTO) layer,
+ * enabling the encapsulation of data that is transferred between client and server.
+ *
+ * @author Vegard Johnsen
+ * @see User
+ * @see UserDTO
+ * @since 0.1
+ * @version 0.1
  */
 @Component
 public class UserMapper {
 
+    /**
+     * Converts a {@link User} entity to a {@link UserDTO} object.
+     * This method maps the username and email from the User entity to the UserDTO,
+     * which can be used for data transfer,
+     * especially in scenarios where user details need to be sent to the client.
+     *
+     * @param user The User entity to convert.
+     * @return A new UserDTO object containing the username and email from the provided User entity.
+     */
     public UserDTO toUserDTO(User user) {
         return new UserDTO(user.getUsername(), user.getEmail());
     }
