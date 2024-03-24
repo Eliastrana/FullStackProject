@@ -1,11 +1,36 @@
 <script setup>
-import { ref } from 'vue';
+import { watch, ref, defineEmits } from 'vue';
 
+// Definerer emits
+const emits = defineEmits(['submitData']);
+
+// Definerer reactive data for spørsmålet
 const question = ref({
   title: '',
-  answer: '' // Only one answer for fill in the blank
+  answer: ''
 });
 
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
+}
+
+// Debounced funksjon som emitter spørsmålsdata
+const emitDataDebounced = debounce(() => {
+  emits('submitData', {
+    type: 'fillInTheBlank',
+    question: question.value.title,
+    word: question.value.answer
+  });
+}, 5000);
+
+// Bruker watch for å reagere på endringer i question og kaller den debounced funksjonen
+watch(question, emitDataDebounced, { deep: true });
 </script>
 
 
