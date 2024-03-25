@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "Type": "Multiple Choice",
+    "title": "Sample Quiz faen"
+  },
+  {
+    "id": 1,
+    "Type": "Fill in the Blank",
+    "questionText": "The capital of France is _______.",
+    "answer": "Paris"
+  },
+  {
+    "id": 2,
+    "Type": "Fill in the Blank",
+    "questionText": "The largest ocean on Earth is the _______.",
+    "answer": "Pacific"
+  }
+]
