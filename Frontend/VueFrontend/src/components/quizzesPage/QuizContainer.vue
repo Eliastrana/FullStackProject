@@ -1,3 +1,4 @@
+// QuizContainer.vue
 <template>
   <div class="quiz-container">
     <div v-for="quiz in quizzes" :key="quiz.id" class="quiz-box" @click="handleQuizClick(quiz)">
