@@ -3,8 +3,12 @@ package edu.ntnu.idatt2105.SpringbootBackend.service;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.UserNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
+import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.QuizRepository;
+import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,17 +21,22 @@ import java.util.stream.Collectors;
 public class QuizService {
 
     @Autowired
+    private UserRepository userRepository;
+
+
+    @Autowired
     private QuizRepository quizRepository;
 
     @Transactional
     public QuizDTO createQuiz(QuizCreateDTO quizCreateDTO) {
-        // Convert QuizCreateDTO to Quiz entity
-        Quiz quiz = new Quiz(); // Assuming you have a constructor or setters to set these fields
+        User creator = userRepository.findById(quizCreateDTO.getCreatorId())
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + quizCreateDTO.getCreatorId()));
+        Quiz quiz = new Quiz(); 
         quiz.setTitle(quizCreateDTO.getTitle());
         quiz.setDescription(quizCreateDTO.getDescription());
-        // Set other necessary fields from quizCreateDTO to quiz
+        quiz.setCreator(creator);
+
         
-        // Save the quiz entity
         quiz = quizRepository.save(quiz);
         
         // Convert saved Quiz entity to QuizDTO and return
