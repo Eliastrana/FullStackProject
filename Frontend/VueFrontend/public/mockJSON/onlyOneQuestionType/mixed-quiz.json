@@ -96,6 +96,12 @@
       "type": "Study Card",
       "front": "The Great Barrier Reef",
       "back": "The world's largest coral reef system, located in the Coral Sea off the coast of Queensland, Australia."
+    },
+    {
+      "id": "13",
+        "type": "Fill in the Blank",
+        "questionText": "The Great Wall of China was built to protect against invasions from the:",
+        "answer": "Mongols"
     }
   ]
 }
