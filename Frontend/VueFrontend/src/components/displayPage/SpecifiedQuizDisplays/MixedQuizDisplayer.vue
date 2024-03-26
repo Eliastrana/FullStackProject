@@ -112,7 +112,7 @@ onMounted(async () => {
   padding: 10px 20px;
   font-family: 'DM Sans', sans-serif;
   font-size: 1.5rem;
-  background-color: #d2d2d2;
+  background-color: #6ec0b8;
   color: white;
   border: none;
   border-radius: 20px;
