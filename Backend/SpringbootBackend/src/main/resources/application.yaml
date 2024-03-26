@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:test}
+  datasource:
+    url: jdbc:mysql://localhost:3307/quiz_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: root
+    password: eOAcZwBHCgYcwoTj1n9U55HoAkBH9jaB
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+logging:
+  level:
+    org.springframework.security: DEBUG

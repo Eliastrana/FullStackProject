@@ -22,34 +22,34 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
-
+import { useStore } from 'vuex';
 
 const username = ref('');
 const password = ref('');
 const router = useRouter();
+const store = useStore();
 
 const login = async () => {
   try {
-    const response = await axios.post('', {
-      withCredentials: false,
+    // Dispatching a Vuex action instead of directly calling the API
+    await store.dispatch('user/login', {
       username: username.value,
       password: password.value
     });
 
-    router.push({name: 'homeView'});
+    // Navigate to the home view upon successful login
+    router.push({name: 'home'}); // Make sure the route name matches your routes configuration
   } catch (error) {
-    console.error("Innlogging feilet:", error);
+    console.error("Login failed:", error);
+    // Handle login failure, such as displaying an error message to the user
   }
 };
 
 const navigateToCreateUser = () => {
-  console.log("Navigating to CreateUser...");
-  router.push({ name: 'CreateUser' });
+  router.push({ name: 'CreateUser' }); // Adjust this to match your route configuration
 };
-
-
 </script>
+
 
 
 <style scoped>
