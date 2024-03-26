@@ -1,6 +1,5 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import FooterView from '@/components/footer/FooterView.vue'
 </script>
 
 <template>
@@ -23,13 +22,20 @@ import FooterView from '@/components/footer/FooterView.vue'
         <div class="nav-right">
           <RouterLink to="/Login">Log in</RouterLink>
         </div>
+
+        <div class="nav-right">
+          <RouterLink to="/Account">🧑</RouterLink>
+        </div>
+
       </nav>
     </div>
   </header>
 
-  <RouterView />
+    <div class="content">
+      <RouterView />
+    </div>
 
-  <FooterView />
+<!--  <FooterView />-->
 
   </div>
 
@@ -59,6 +65,16 @@ header {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1; /* This will make the content grow */
 }
 
 

@@ -1,36 +1,72 @@
 [
   {
     "id": 1,
+    "Type": "Study Card",
     "title": "History Quiz",
     "description": "Test your knowledge of historical events.",
     "category": "History",
+    "quizpath": "/mockJSON/onlyOneQuestionType/mixed-quiz.json",
     "image": "/images/quizImages/history-quiz.jpg",
     "questions": [
       {
         "questionText": "Who was the first President of the United States?",
         "answer": "George Washington"
+      },
+      {
+        "questionText": "Who was the first President of the United States?",
+        "answer": "George Nei"
+      },
+      {
+        "questionText": "Who was the first President of the United States?",
+        "answer": "George Ja"
+      },
+      {
+        "questionText": "Who was the first President of the United States?",
+        "answer": "George Test"
       }
     ]
   },
   {
     "id": 2,
+    "Type": "Multiple Choice",
     "title": "Science Quiz",
     "description": "Explore the wonders of science.",
     "category": "Science",
     "image": "/images/quizImages/science-quiz.jpg",
+    "quizpath": "/quizzes/mixed-quiz.json",
     "questions": [
       {
         "questionText": "What is the chemical symbol for water?",
         "answer": "H2O"
       }
+    ],
+    "options": [
+      {
+        "optionText": "H2O",
+        "isCorrect": true
+      },
+      {
+        "optionText": "CO2",
+        "isCorrect": false
+      },
+      {
+        "optionText": "O2",
+        "isCorrect": false
+      },
+      {
+        "optionText": "NaCl",
+        "isCorrect": false
+      }
     ]
   },
   {
     "id": 3,
+    "Type": "Multiple Choice",
     "title": "Geography Quiz",
     "description": "Discover fascinating facts about the world.",
     "category": "Geography",
     "image": "/images/quizImages/geography-quiz.jpg",
+    "quizpath": "/quizzes/mixed-quiz.json",
     "questions": [
       {
         "questionText": "What is the largest continent on Earth?",
@@ -43,70 +79,22 @@
       {
         "questionText": "What is the largest continent on Earth?",
         "answer": "Asia"
-      },
-      {
-        "questionText": "What is the largest continent on Earth?",
-        "answer": "Asia"
-      },
-      {
-        "questionText": "What is the largest continent on Earth?",
-        "answer": "Asia"
-      },
-      {
-        "questionText": "What is the largest continent on Earth?",
-        "answer": "Asia"
-      },
-      {
-        "questionText": "What is the largest continent on Earth?",
-        "answer": "Asia"
-      },
-      {
-        "questionText": "What is the largest continent on Earth?",
-        "answer": "Asia"
-      },
-      {
-        "questionText": "What is the largest continent on Earth?",
-        "answer": "Asia"
       }
-    ]
-  },
+      ]
+    },
   {
     "id": 4,
+    "Type": "Fill in the Blank",
     "title": "Math Quiz",
     "description": "Test your mathematical skills.",
     "category": "Math",
     "image": "/images/quizImages/math-quiz.jpg",
+    "quizpath": "/quizzes/mixed-quiz.json",
     "questions": [
       {
         "questionText": "What is the value of Pi to two decimal places?",
         "answer": "3.14"
       }
     ]
-  },
-  {
-    "id": 5,
-    "title": "Literature Quiz",
-    "description": "Dive into the world of literature.",
-    "category": "Literature",
-    "image": "/images/quizImages/literature-quiz.jpg",
-    "questions": [
-      {
-        "questionText": "Who wrote 'To Kill a Mockingbird'?",
-        "answer": "Harper Lee"
-      }
+    }
     ]
-  },
-  {
-    "id": 6,
-    "title": "Music Quiz",
-    "description": "Explore the world of music.",
-    "category": "Music",
-    "image": "/images/quizImages/music-quiz.jpg",
-    "questions": [
-      {
-        "questionText": "Who composed the Four Seasons?",
-        "answer": "Antonio Vivaldi"
-      }
-    ]
-  }
-]

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import MixedQuizDisplayer from '@/components/displayPage/SpecifiedQuizDisplays/MixedQuizDisplayer.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +29,27 @@ const router = createRouter({
       path: '/create-user',
       name: 'CreateUser',
       component: () => import('../views/loginView/CreateUserView.vue') // Adjust the path as necessary
+    },
+    {
+      path: '/quizcreator',
+      name: 'Quizcreator',
+      component: () => import('../components/createPage/QuizcreatortoolView.vue')
+
+    },
+    {
+      path: '/QuizcreatorTool',
+      name: 'QuizcreatorTool',
+      component: () => import('../components/createPage/QuizcreatortoolView.vue')
+    },
+    {
+      path: '/Account',
+      name: 'Account',
+      component: () => import('../views/accountView/AccountView.vue')
+    },
+    {
+      path: '/QuizDisplayer',
+      name: 'QuizDisplayer',
+      component: () => import('../components/displayPage/QuizDisplayer.vue')
     }
 
   ]

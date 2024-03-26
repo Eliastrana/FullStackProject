@@ -1,22 +1,27 @@
 <template>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <div class="squares-container">
-    <div class="square" @click="navigateToLogin">
-      <i class="fas fa-book"></i>
-      <p>Study</p>
-    </div>
-    <div class="square" @click="navigateToLogin">
+
+    <div class="squareMultiple" @click="navigateToLogin">
       <i class="fas fa-question-circle"></i>
       <p>Multiple Choice</p>
     </div>
-    <div class="square" @click="navigateToLogin">
+
+    <div class="squareFill" @click="navigateToLogin">
       <i class="fas fa-pencil-alt"></i>
       <p>Fill in the Blank</p>
     </div>
-    <div class="square" @click="navigateToLogin">
+
+    <div class="squareStudy" @click="navigateToLogin">
+      <i class="fas fa-book"></i>
+      <p>Study Cards</p>
+    </div>
+
+    <div class="squareMixed" @click="navigateToLogin">
       <i class="fas fa-brush"></i>
       <p>Mixed</p>
     </div>
+
   </div>
 </template>
 
@@ -25,10 +30,15 @@
 
 // const router = useRouter();
 
-const navigateToLogin = () => {
-  alert('Move user to login and after login, redirect to the selected quiz type');
 
-  // router.push({ name: 'Login' });
+import router from '@/router/index.js'
+
+
+
+const navigateToLogin = () => {
+  //SET THIS TO GO TO LOGIN WHEN BACKEND IS READY
+  router.push({ name: 'QuizcreatorTool' });
+
 
 };
 </script>
@@ -42,7 +52,7 @@ const navigateToLogin = () => {
   flex-wrap: wrap;
 }
 
-.square {
+.squareFill {
   min-width: calc(25% - 20px);
   min-height: 300px;
   display: flex;
@@ -59,7 +69,67 @@ const navigateToLogin = () => {
   font-size: 1.5rem;
   text-align: center;
   color: #333;
-  background-color: #f5f5f5;
+  background-color: #62B6CB;
+}
+
+.squareStudy {
+  min-width: calc(25% - 20px);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px; /* Adjust based on your needs */
+  height: 150px; /* Adjust based on your needs */
+  margin: 10px;
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Initial shadow */
+  transition: box-shadow 0.3s; /* Smooth transition for the shadow */
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #333;
+  background-color: #BEE9E8;
+}
+
+.squareMultiple {
+  min-width: calc(25% - 20px);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px; /* Adjust based on your needs */
+  height: 150px; /* Adjust based on your needs */
+  margin: 10px;
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Initial shadow */
+  transition: box-shadow 0.3s; /* Smooth transition for the shadow */
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #333;
+  background-color: #CAE9FF;
+}
+
+.squareMixed {
+  min-width: calc(25% - 20px);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px; /* Adjust based on your needs */
+  height: 150px; /* Adjust based on your needs */
+  margin: 10px;
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Initial shadow */
+  transition: box-shadow 0.3s; /* Smooth transition for the shadow */
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #333;
+  background-color: #ffb02e;
 }
 
 .square:hover {

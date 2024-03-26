@@ -1,3 +1,4 @@
+// PublicquizzesView.vue
 <template>
   <div>
     <QuizContainer @select-quiz="handleQuizSelect" />
