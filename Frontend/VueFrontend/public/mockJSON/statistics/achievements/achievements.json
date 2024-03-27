@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Complete 10 History Quizzes",
+    "description": "Study hard fo the quizzes",
+    "progress": 70
+  },
+  {
+    "title": "Memorize 20 studycards",
+    "description": "It's important to study!",
+    "progress": 50
+  },
+  {
+    "title": "Finish 16 Fill in the blanks",
+    "description": "What is the correct word?",
+    "progress": 90
+  },
+  {
+    "title": "Create your own quiz",
+    "description": "Learning by doing!",
+    "progress": 100
+  }
+]

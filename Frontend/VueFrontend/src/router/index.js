@@ -51,11 +51,11 @@ const router = createRouter({
       name: 'QuizDisplayer',
       component: () => import('../components/displayPage/QuizDisplayer.vue')
     },
+
     {
       path: '/MyAccount',
-      name: 'MyAccount'
-      component: () => import('../views/accountView/MyAccountView.vue')
-
+      name: 'MyAccount',
+      component: () => import('../views/userPage/MyAccount.vue')
     }
 
   ]

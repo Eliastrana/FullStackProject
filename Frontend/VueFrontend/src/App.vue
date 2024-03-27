@@ -4,38 +4,38 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <div id="app">
-    <header>
-      <div class="wrapper">
-        <nav>
-          <!-- Emoji on the left -->
-          <RouterLink to="/" active-class="active-link">💻</RouterLink>
+  <header>
+    <div class="wrapper">
+      <nav>
+        <!-- Emoji on the left -->
+        <RouterLink to="/" active-class="active-link">💻</RouterLink>
 
-          <!-- Centered Links -->
-          <div class="nav-center">
-            <RouterLink to="/Quizzes" active-class="active-link">Quizzes</RouterLink>
-            <h1> | </h1>
-            <RouterLink to="/Create" active-class="active-link">Create</RouterLink>
+        <!-- Centered Links -->
+        <div class="nav-center">
+          <RouterLink to="/Quizzes" active-class="active-link">Quizzes</RouterLink>
+          <h1> | </h1>
+          <RouterLink to="/Create" active-class="active-link">Create</RouterLink>
 
-          </div>
+        </div>
 
-          <!-- Log in on the right -->
-          <div class="nav-right">
-            <RouterLink to="/Login" active-class="active-link">Log in</RouterLink>
-          </div>
+        <!-- Log in on the right -->
+        <div class="nav-right">
+          <RouterLink to="/Login" active-class="active-link">Log in</RouterLink>
+        </div>
 
-          <div class="nav-right">
-            <RouterLink to="/MyAccount" active-class="active-link">🧑</RouterLink>
-          </div>
+        <div class="nav-right">
+          <RouterLink to="/MyAccount" active-class="active-link">🧑</RouterLink>
+        </div>
 
-        </nav>
-      </div>
-    </header>
+      </nav>
+    </div>
+  </header>
 
     <div class="content">
       <RouterView />
     </div>
 
-    <!--  <FooterView />-->
+<!--  <FooterView />-->
 
   </div>
 
