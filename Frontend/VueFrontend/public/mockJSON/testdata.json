@@ -4,6 +4,7 @@
     "Type": "Study Card",
     "title": "History Quiz",
     "description": "Test your knowledge of historical events.",
+    "difficulty": "Easy",
     "category": "History",
     "quizpath": "/mockJSON/onlyOneQuestionType/mixed-quiz.json",
     "image": "/images/quizImages/history-quiz.jpg",
@@ -31,6 +32,7 @@
     "Type": "Multiple Choice",
     "title": "Science Quiz",
     "description": "Explore the wonders of science.",
+    "difficulty": "Medium",
     "category": "Science",
     "image": "/images/quizImages/science-quiz.jpg",
     "quizpath": "/quizzes/mixed-quiz.json",
@@ -65,6 +67,7 @@
     "title": "Geography Quiz",
     "description": "Discover fascinating facts about the world.",
     "category": "Geography",
+    "difficulty": "Easy",
     "image": "/images/quizImages/geography-quiz.jpg",
     "quizpath": "/quizzes/mixed-quiz.json",
     "questions": [
@@ -88,6 +91,7 @@
     "title": "Math Quiz",
     "description": "Test your mathematical skills.",
     "category": "Math",
+    "difficulty": "Easy",
     "image": "/images/quizImages/math-quiz.jpg",
     "quizpath": "/quizzes/mixed-quiz.json",
     "questions": [
@@ -96,5 +100,37 @@
         "answer": "3.14"
       }
     ]
-    }
+    },
+  {
+    "id": 4,
+    "Type": "Fill in the Blank",
+    "title": "Math Quiz",
+    "description": "Test your mathematical skills.",
+    "category": "Math",
+    "difficulty": "Hard",
+    "image": "/images/quizImages/math-quiz.jpg",
+    "quizpath": "/quizzes/mixed-quiz.json",
+    "questions": [
+      {
+        "questionText": "What is the value of Pi to two decimal places?",
+        "answer": "3.14"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "Type": "Fill in the Blank",
+    "title": "Math Quiz",
+    "description": "Test your mathematical skills.",
+    "category": "Math",
+    "difficulty": "Medium",
+    "image": "/images/quizImages/math-quiz.jpg",
+    "quizpath": "/quizzes/mixed-quiz.json",
+    "questions": [
+      {
+        "questionText": "What is the value of Pi to two decimal places?",
+        "answer": "3.14"
+      }
+    ]
+  }
     ]
