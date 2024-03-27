@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/quiz_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useLegacyDatetimeCode=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: eOAcZwBHCgYcwoTj1n9U55HoAkBH9jaB
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0.32
+    environment:
+      MYSQL_DATABASE: quiz_db
+      MYSQL_ROOT_PASSWORD: eOAcZwBHCgYcwoTj1n9U55HoAkBH9jaB
+    ports:
+      - "3307:3306"
