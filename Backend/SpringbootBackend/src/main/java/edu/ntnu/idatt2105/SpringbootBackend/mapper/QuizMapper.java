@@ -1,7 +1,9 @@
 package edu.ntnu.idatt2105.SpringbootBackend.mapper;
 
+import edu.ntnu.idatt2105.SpringbootBackend.dto.CategoryDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Category;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import org.springframework.stereotype.Component;
@@ -10,25 +12,39 @@ import org.springframework.stereotype.Component;
 public class QuizMapper {
 
     public QuizDTO toQuizDTO(Quiz quiz) {
-        return new QuizDTO(
-                quiz.getId(),
-                quiz.getTitle(),
-                quiz.getDescription(),
-                quiz.getCreator() != null ? quiz.getCreator().getId() : null
-        );
+        CategoryDTO categoryDTO = null;
+        if (quiz.getCategory() != null) {
+            categoryDTO = CategoryDTO.builder()
+                    .id(quiz.getCategory().getId())
+                    .categoryName(quiz.getCategory().getCategoryName())
+                    .description(quiz.getCategory().getDescription())
+                    .build();
+        }
+
+        return QuizDTO.builder()
+                .id(quiz.getId())
+                .title(quiz.getTitle())
+                .description(quiz.getDescription())
+                .creatorId(quiz.getCreator().getId())
+                .categoryId(categoryDTO != null ? categoryDTO.getId() : null) // Check if categoryDTO is null
+                .build();
     }
 
+
     public Quiz toQuiz(QuizCreateDTO quizCreateDTO, User creator) {
-        Quiz quiz = new Quiz();
-        quiz.setTitle(quizCreateDTO.getTitle());
-        quiz.setDescription(quizCreateDTO.getDescription());
-        quiz.setCreator(creator); 
-        return quiz;
+        return Quiz.builder()
+                .title(quizCreateDTO.getTitle())
+                .description(quizCreateDTO.getDescription())
+                .creator(creator)
+                // Assume that category is set elsewhere since it's not in QuizCreateDTO
+                .build();
     }
 
     public Quiz updateQuizFromDTO(QuizDTO quizDTO, Quiz existingQuiz) {
+        // assuming that the category cannot be changed via the QuizDTO
         existingQuiz.setTitle(quizDTO.getTitle());
         existingQuiz.setDescription(quizDTO.getDescription());
+        existingQuiz.setCategory(Category.builder().id(quizDTO.getCategoryId()).build());
         return existingQuiz;
     }
 }
