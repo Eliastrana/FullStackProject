@@ -24,7 +24,7 @@ import { RouterLink, RouterView } from 'vue-router'
         </div>
 
         <div class="nav-right">
-          <RouterLink to="/Account">🧑</RouterLink>
+          <RouterLink to="/MyAccount">🧑</RouterLink>
         </div>
 
       </nav>
