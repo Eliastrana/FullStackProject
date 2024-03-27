@@ -3,10 +3,13 @@ package edu.ntnu.idatt2105.SpringbootBackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.security.JWTAuthFilter;
 import edu.ntnu.idatt2105.SpringbootBackend.security.SecurityConfig;
 import edu.ntnu.idatt2105.SpringbootBackend.service.QuizService;
+import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,25 +42,44 @@ class QuizControllerTest {
   @MockBean
   private QuizService quizService;
 
+  @MockBean
+  private UserService userService;
+
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
-  @WithMockUser // Mock a user for bypassing Spring Security authentication
+  @WithMockUser
+    // Mock a user for bypassing Spring Security authentication
   void createQuiz_Success() throws Exception {
-    QuizCreateDTO quizCreateDTO = new QuizCreateDTO("Test Title", "Test Description", UUID.randomUUID());
-    QuizDTO quizDTO = new QuizDTO(UUID.randomUUID(), "Test Title", "Test Description", UUID.randomUUID());
+    UUID creatorId = UUID.randomUUID();
+    QuizCreateDTO quizCreateDTO = QuizCreateDTO.builder()
+            .title("Test Title")
+            .description("Test Description")
+            .creatorId(creatorId)
+            .build();
 
-    given(quizService.createQuiz(quizCreateDTO)).willReturn(quizDTO);
+    QuizDTO quizDTO = QuizDTO.builder()
+            .id(UUID.randomUUID())
+            .title("Test Title")
+            .description("Test Description")
+            .creatorId(creatorId)
+            .build();
+
+    // Mock User object to return
+    User mockUser = new User();
+    mockUser.setId(creatorId); // Set the ID or any required fields
+
+    // When userService.loadUserByUsername(anyString()) is called, return mockUser
+    given(userService.loadUserByUsername(anyString())).willReturn(mockUser);
+
+    // Mock quizService.createQuiz to return quizDTO
+    given(quizService.createQuiz(any(QuizCreateDTO.class))).willReturn(quizDTO);
 
     mockMvc.perform(post("/api/quiz/create")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(quizCreateDTO))
-                    .with(csrf())) // Include CSRF token for POST request
+                    .with(csrf()))
             .andExpect(status().isOk())
             .andExpect(content().json(objectMapper.writeValueAsString(quizDTO)));
   }
-
-  // Additional test methods, such as testing other CRUD operations,
-  // can follow a similar pattern: mocking service layer responses and
-  // making requests with MockMvc while ensuring appropriate security context.
 }
