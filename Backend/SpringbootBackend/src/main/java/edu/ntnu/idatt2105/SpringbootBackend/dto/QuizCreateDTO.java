@@ -5,8 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
-import java.util.UUID;
 
+import java.util.List;
+import java.util.UUID;
 
 @Schema(description = "Quiz Create DTO for creating new quizzes")
 @Data
@@ -28,4 +29,7 @@ public class QuizCreateDTO {
 
     @Schema(description = "CategoryId of the quiz")
     private UUID categoryId;
+
+    @Schema(description = "List of questions for the new quiz")
+    private List<QuestionCreateDTO> questions;
 }

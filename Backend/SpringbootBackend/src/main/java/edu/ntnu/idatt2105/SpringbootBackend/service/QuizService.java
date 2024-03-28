@@ -1,13 +1,17 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
+import edu.ntnu.idatt2105.SpringbootBackend.dto.QuestionCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
+import edu.ntnu.idatt2105.SpringbootBackend.mapper.QuestionMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.QuizMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Category;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Question;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.CategoryRepository;
+import edu.ntnu.idatt2105.SpringbootBackend.repository.QuestionRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.QuizRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +25,23 @@ import java.util.stream.Collectors;
 @Service
 public class QuizService {
 
+    private final QuestionRepository questionRepository;
+    private final QuestionMapper questionMapper;
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final QuizMapper quizMapper;
 
     @Autowired
-    public QuizService(QuizRepository quizRepository, UserRepository userRepository,
-                       CategoryRepository categoryRepository, QuizMapper quizMapper) {
+    public QuizService(
+    QuestionRepository questionRepository, 
+    QuestionMapper questionMapper, 
+    QuizRepository quizRepository, 
+    UserRepository userRepository,
+    CategoryRepository categoryRepository, 
+    QuizMapper quizMapper) {
+        this.questionRepository = questionRepository;
+        this.questionMapper = questionMapper;
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -47,6 +60,13 @@ public class QuizService {
 
         Quiz quiz = quizMapper.toQuiz(quizCreateDTO, creator);
         quiz.setCategory(category); // This will be null if the category isn't set
+
+        if (quizCreateDTO.getQuestions() != null) {
+            for (QuestionCreateDTO questionCreateDTO : quizCreateDTO.getQuestions()) {
+                Question question = questionMapper.toQuestion(questionCreateDTO, quiz);
+                quiz.getQuestions().add(question);
+            }
+        }
 
         quiz = quizRepository.save(quiz);
 
