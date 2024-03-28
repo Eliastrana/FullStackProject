@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
-//import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -44,6 +42,6 @@ public class Quiz {
     private User creator;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Question> questions = new ArrayList<>();
+    private List<Question> questions;
 
 }
