@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,4 +22,7 @@ public class QuestionCreateDTO {
 
     @Schema(description = "Optional multimedia link associated with the question")
     private String multimediaLink;
+
+    @Schema(description = "Tags associated with the question")
+    private Set<UUID> tags;
 }
