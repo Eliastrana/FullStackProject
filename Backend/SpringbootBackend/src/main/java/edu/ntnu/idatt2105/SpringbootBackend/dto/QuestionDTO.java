@@ -1,12 +1,14 @@
 package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.QuestionType;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -31,4 +33,7 @@ public class QuestionDTO {
 
     @Schema(description = "Creation date of the question", required = true)
     private LocalDateTime creationDate;
+
+    @Schema(description = "Tags associated with the question")
+    private Set<UUID> tags;
 }
