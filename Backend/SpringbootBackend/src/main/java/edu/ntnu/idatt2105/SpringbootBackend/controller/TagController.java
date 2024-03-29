@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
+import edu.ntnu.idatt2105.SpringbootBackend.dto.TagDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Tag;
 import edu.ntnu.idatt2105.SpringbootBackend.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,8 +36,8 @@ public class TagController {
   @Operation(summary = "Get all tags", description = "Retrieves a list of all tags")
   @ApiResponse(responseCode = "200", description = "Fetched all tags successfully")
   @GetMapping("/all")
-  public ResponseEntity<List<Tag>> getAllTags() {
-    List<Tag> tags = tagService.getAllTags();
+  public ResponseEntity<List<TagDTO>> getAllTags() {
+    List<TagDTO> tags = tagService.getAllTags();
     return ResponseEntity.ok(tags);
   }
 

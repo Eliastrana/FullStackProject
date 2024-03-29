@@ -1,7 +1,9 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
+import edu.ntnu.idatt2105.SpringbootBackend.dto.TagDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.TagNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.TagAlreadyExistsException;
+import edu.ntnu.idatt2105.SpringbootBackend.mapper.TagMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Tag;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +12,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TagService {
 
   private final TagRepository tagRepository;
+  private final TagMapper tagMapper;
 
   @Autowired
-  public TagService(TagRepository tagRepository) {
+  public TagService(TagRepository tagRepository, TagMapper tagMapper) {
     this.tagRepository = tagRepository;
+    this.tagMapper = tagMapper;
   }
 
   public Tag createTag(Tag tag) {
@@ -29,8 +34,10 @@ public class TagService {
     return tagRepository.save(tag);
   }
 
-  public List<Tag> getAllTags() {
-    return tagRepository.findAll();
+  public List<TagDTO> getAllTags() {
+    return tagRepository.findAll().stream()
+            .map(tagMapper::toTagDTO)
+            .collect(Collectors.toList());
   }
 
   public Tag getTagById(UUID id) {
