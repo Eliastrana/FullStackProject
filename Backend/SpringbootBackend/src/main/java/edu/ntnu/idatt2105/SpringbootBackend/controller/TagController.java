@@ -27,7 +27,7 @@ public class TagController {
   @ApiResponse(responseCode = "201", description = "Tag created successfully")
   @ApiResponse(responseCode = "400", description = "Invalid request")
   @PreAuthorize("isAuthenticated()")
-  @PostMapping("/create")
+  @PostMapping("/")
   public ResponseEntity<Tag> createTag(@RequestBody Tag tag) {
     Tag createdTag = tagService.createTag(tag);
     return new ResponseEntity<>(createdTag, HttpStatus.CREATED);
@@ -35,7 +35,7 @@ public class TagController {
 
   @Operation(summary = "Get all tags", description = "Retrieves a list of all tags")
   @ApiResponse(responseCode = "200", description = "Fetched all tags successfully")
-  @GetMapping("/all")
+  @GetMapping("/")
   public ResponseEntity<List<TagDTO>> getAllTags() {
     List<TagDTO> tags = tagService.getAllTags();
     return ResponseEntity.ok(tags);
