@@ -9,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-//import java.util.List;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -34,12 +33,15 @@ public class Quiz {
     @Column(length = 1000)
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
 
-    //@OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
-    //private List<Question> questions;
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions;
 
-    // Other fields and methods
 }

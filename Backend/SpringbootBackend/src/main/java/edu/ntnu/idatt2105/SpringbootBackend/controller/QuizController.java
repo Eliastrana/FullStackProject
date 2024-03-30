@@ -2,12 +2,17 @@ package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.service.QuizService;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
+import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,16 +29,24 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/api/quiz")
 public class QuizController {
+    private final UserService userService;
     private final QuizService quizService;
     private final Logger logger = LoggerFactory.getLogger(QuizController.class);
 
     @Operation(summary = "Create a new quiz", description = "Creates a new quiz with the provided details")
     @ApiResponse(responseCode = "200", description = "Successfully created the quiz")
     @ApiResponse(responseCode = "400", description = "Error creating the quiz")
-    @PostMapping("/create")
+    @PostMapping("/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<QuizDTO> createQuiz(@RequestBody QuizCreateDTO quizCreateDTO) {
         logger.info("Creating new quiz with title: " + quizCreateDTO.getTitle());
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+
+            User user = userService.loadUserByUsername(username);
+            quizCreateDTO.setCreatorId(user.getId());
+
             QuizDTO createdQuiz = quizService.createQuiz(quizCreateDTO);
             return ResponseEntity.ok(createdQuiz);
         } catch (Exception e) {
@@ -45,7 +58,7 @@ public class QuizController {
 
     @Operation(summary = "Fetch all quizzes", description = "Retrieves all available quizzes")
     @ApiResponse(responseCode = "200", description = "Successfully fetched quizzes")
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<List<QuizDTO>> getAllQuizzes() {
         try {
             List<QuizDTO> quizzes = quizService.getAllQuizzes();

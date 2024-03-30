@@ -1,0 +1,108 @@
+{
+  "title": "Comprehensive Mixed Quiz",
+  "description": "A quiz that includes a variety of question types, including fill in the blank, multiple choice, and study cards.",
+  "image": "/images/quizImages/history-quiz.jpg",
+  "category": "History",
+
+
+  "questions": [
+    {
+      "id": "1",
+      "type": "Fill in the Blank",
+      "questionText": "The capital of France is:",
+      "answer": "Paris"
+    },
+    {
+      "id": "2",
+      "type": "Multiple Choice",
+      "questionText": "What is the largest planet in our solar system?",
+      "options": [
+        "Earth",
+        "Jupiter",
+        "Mars",
+        "Saturn"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "id": "3",
+      "type": "Study Card",
+      "front": "Photosynthesis Equation",
+      "back": "6CO2 + 6H2O + light energy → C6H12O6 + 6O2"
+    },
+    {
+      "id": "4",
+      "type": "Fill in the Blank",
+      "questionText": "Known as the 'Land of the Rising Sun is: ",
+      "answer": "Japan"
+    },
+    {
+      "id": "5",
+      "type": "Multiple Choice",
+      "questionText": "Which element has the chemical symbol 'O'?",
+      "options": [
+        "Gold",
+        "Oxygen",
+        "Silver",
+        "Helium"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "id": "6",
+      "type": "Study Card",
+      "front": "E = mc^2",
+      "back": "Einstein's equation representing the relationship between mass and energy."
+    },
+    {
+      "id": "7",
+      "type": "Fill in the Blank",
+      "questionText": "The longest river in the world is the:",
+      "answer": "Nile"
+    },
+    {
+      "id": "8",
+      "type": "Multiple Choice",
+      "questionText": "Who wrote 'To Kill a Mockingbird'?",
+      "options": [
+        "Harper Lee",
+        "J.D. Salinger",
+        "Ernest Hemingway",
+        "F. Scott Fitzgerald"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "id": "9",
+      "type": "Study Card",
+      "front": "Theory of Relativity",
+      "back": "A fundamental theory in physics developed by Albert Einstein, which established the relationship between space, time, and gravity."
+    },
+
+    {
+      "id": "11",
+      "type": "Multiple Choice",
+      "questionText": "What is the capital city of Australia?",
+      "options": [
+        "Sydney",
+        "Melbourne",
+        "Canberra",
+        "Perth"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "id": "12",
+      "type": "Study Card",
+      "front": "The Great Barrier Reef",
+      "back": "The world's largest coral reef system, located in the Coral Sea off the coast of Queensland, Australia."
+    },
+    {
+      "id": "13",
+        "type": "Fill in the Blank",
+        "questionText": "The Great Wall of China was built to protect against invasions from the:",
+        "answer": "Mongols"
+    }
+  ]
+}
+

@@ -34,13 +34,17 @@
 
 
 <script>
+import router from '@/router/index.js'
+
 export default {
   props: {
     quiz: Object,
   },
   methods: {
     startQuiz() {
-      alert('Quiz started!');
+
+      router.push({ name: 'QuizDisplayer' });
+
       // Frontend logic stops here
     },
     closeQuiz() {

@@ -9,7 +9,6 @@ import FunctinalityDisplayer from '@/components/displayPage/FunctinalityDisplaye
 
   <WelcomeIntro />
 
-
   <FunctinalityDisplayer />
 
 

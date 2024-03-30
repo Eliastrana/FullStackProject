@@ -1,6 +1,5 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import FooterView from '@/components/footer/FooterView.vue'
 </script>
 
 <template>
@@ -9,27 +8,34 @@ import FooterView from '@/components/footer/FooterView.vue'
     <div class="wrapper">
       <nav>
         <!-- Emoji on the left -->
-        <RouterLink to="/">💻</RouterLink>
+        <RouterLink to="/" active-class="active-link">💻</RouterLink>
 
         <!-- Centered Links -->
         <div class="nav-center">
-          <RouterLink to="/Quizzes">Quizzes</RouterLink>
+          <RouterLink to="/Quizzes" active-class="active-link">Quizzes</RouterLink>
           <h1> | </h1>
-          <RouterLink to="/Create">Create</RouterLink>
+          <RouterLink to="/Create" active-class="active-link">Create</RouterLink>
 
         </div>
 
         <!-- Log in on the right -->
         <div class="nav-right">
-          <RouterLink to="/Login">Log in</RouterLink>
+          <RouterLink to="/Login" active-class="active-link">Log in</RouterLink>
         </div>
+
+        <div class="nav-right">
+          <RouterLink to="/MyAccount" active-class="active-link">🧑</RouterLink>
+        </div>
+
       </nav>
     </div>
   </header>
 
-  <RouterView />
+    <div class="content">
+      <RouterView />
+    </div>
 
-  <FooterView />
+<!--  <FooterView />-->
 
   </div>
 
@@ -59,6 +65,16 @@ header {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1; /* This will make the content grow */
 }
 
 
@@ -113,6 +129,11 @@ nav a:hover {
   font-size: 24px; /* Adjust the font size as needed */
 }
 
+
+.active-link {
+  font-weight: bold;
+  color: #3232ff; /* Feel free to adjust the color to fit your design */
+}
 
 
 </style>
