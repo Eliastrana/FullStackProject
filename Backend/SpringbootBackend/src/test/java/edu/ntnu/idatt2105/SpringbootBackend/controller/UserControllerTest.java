@@ -1,73 +1,91 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
-import edu.ntnu.idatt2105.SpringbootBackend.security.JWTAuthFilter;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AuthenticationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-// Static imports
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+public class UserControllerTest {
 
-@WebMvcTest(controllers = UserController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-                classes = {JWTAuthFilter.class}))
-@ActiveProfiles("test")
-class UserControllerTest {
+    @Mock
+    private AuthenticationService authService;
 
-  @Autowired
-  private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-  @Autowired
-  private WebApplicationContext context;
+    private ObjectMapper objectMapper;
 
-  @MockBean
-  private AuthenticationService authService;
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        UserController userController = new UserController(authService);
+        mockMvc = standaloneSetup(userController).build();
+        objectMapper = new ObjectMapper();
+    }
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+    @Test
+    void testRegisterUser() throws Exception {
+        UserCreationDTO userCreationDTO = new UserCreationDTO("testUser", "testPassword", "test@test.com");
+        AuthenticationResponse authResponse = new AuthenticationResponse("dummy-jwt-token");
 
-  @BeforeEach
-  public void setup() {
-    // Initialize MockMvc with CSRF and Spring Security configuration
-    mockMvc = MockMvcBuilders
-            .webAppContextSetup(context)
-            .apply(springSecurity()) // Apply Spring Security configuration
-            .build();
-  }
+        given(authService.register(userCreationDTO)).willReturn(authResponse);
 
-  @Test
-  @WithMockUser // Mock a user to bypass Spring Security authentication
-  void registerUser_Success() throws Exception {
-    UserCreationDTO userCreationDTO = new UserCreationDTO("testuser", "testpassword", "test@example.com");
-    AuthenticationResponse response = new AuthenticationResponse("dummyToken");
+        mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userCreationDTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(authResponse)));
+    }
 
-    given(authService.register(userCreationDTO)).willReturn(response);
+    @Test
+    void testLoginUser() throws Exception {
+        UserDTO userDTO = new UserDTO("testUser", "testPassword");
+        AuthenticationResponse authResponse = new AuthenticationResponse("dummy-jwt-token");
 
-    mockMvc.perform(post("/api/user/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(userCreationDTO))
-                    .with(csrf())) // Apply CSRF token
-            .andExpect(status().isOk())
-            .andExpect(content().json(objectMapper.writeValueAsString(response)));
-  }
+        given(authService.authenticate(new AuthenticationRequest(userDTO.getUsername(), userDTO.getPassword()))).willReturn(authResponse);
 
-  // Additional test methods...
+        mockMvc.perform(post("/api/user/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(authResponse)));
+    }
+
+    @Test
+    void testRegisterUser_Failure() throws Exception {
+        UserCreationDTO userCreationDTO = new UserCreationDTO("", "", ""); // Assuming empty fields are invalid
+        // Simulating service throwing an exception due to invalid input
+        given(authService.register(any(UserCreationDTO.class))).willThrow(new RuntimeException("Invalid input data"));
+
+        mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userCreationDTO)))
+                .andExpect(status().isBadRequest()); // Expecting a Bad Request response
+    }
+
+    @Test
+    void testLoginUser_Failure() throws Exception {
+        UserDTO userDTO = new UserDTO("nonexistentUser", "wrongPassword"); // Assuming these credentials are invalid
+        // Simulating service throwing an exception due to authentication failure
+        given(authService.authenticate(any())).willThrow(new RuntimeException("Authentication failed"));
+
+        mockMvc.perform(post("/api/user/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDTO)))
+                .andExpect(status().isInternalServerError()); // Expecting an Internal Server Error response
+    }
 }
