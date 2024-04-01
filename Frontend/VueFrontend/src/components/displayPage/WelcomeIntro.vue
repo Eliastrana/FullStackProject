@@ -13,24 +13,14 @@ const navigateToCreateQuiz = () => {
 
 <template>
 
-
-
-
   <div class="container">
     <h1>Take learning to new heights</h1>
-
     <img src="/images/displayPage/corpcorewoman.png" alt="illustration">
-
-
   </div>
 
   <div class="container">
     <button @click="navigateToCreateQuiz">Create Quiz </button>
-
-
   </div>
-  
-
 
 </template>
 
