@@ -1,5 +1,7 @@
 package edu.ntnu.idatt2105.SpringbootBackend.model;
 
+import edu.ntnu.idatt2105.SpringbootBackend.model.Answer;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -44,4 +46,7 @@ public class Question {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Answer> answers;
 }
