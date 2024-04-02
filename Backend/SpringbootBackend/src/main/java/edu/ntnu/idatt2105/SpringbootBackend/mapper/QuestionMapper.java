@@ -23,6 +23,8 @@ public class QuestionMapper {
         dto.setQuestionType(question.getQuestionType());
         dto.setMultimediaLink(question.getMultimediaLink());
         dto.setCreationDate(question.getCreationDate());
+        dto.setImageId(question.getImage() != null ? question.getImage().getId() : null);
+
         
         return dto;
     }
@@ -37,7 +39,7 @@ public class QuestionMapper {
         question.setText(dto.getText());
         question.setQuestionType(dto.getQuestionType());
         question.setMultimediaLink(dto.getMultimediaLink());
-        question.setCreationDate(LocalDateTime.now()); // Automatically set creation date
+        question.setCreationDate(LocalDateTime.now());
         
         return question;
     }

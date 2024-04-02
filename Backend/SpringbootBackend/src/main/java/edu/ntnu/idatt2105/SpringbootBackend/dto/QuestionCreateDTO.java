@@ -31,4 +31,7 @@ public class QuestionCreateDTO {
 
     @Schema(description = "Answers associated with the question")
     private List<AnswerCreateDTO> answers; 
+
+    @Schema(description = "Identifier of the image associated with the question")
+    private UUID imageId; // Include the image ID here if you want to associate an image during question creation
 }
