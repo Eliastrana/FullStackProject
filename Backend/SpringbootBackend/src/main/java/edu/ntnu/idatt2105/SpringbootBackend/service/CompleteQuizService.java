@@ -72,13 +72,13 @@ public class CompleteQuizService {
     @Transactional
     public void createCompleteQuiz(CompleteQuizDTO completeQuizDTO) throws QuizNotFoundException {
         // Create the quiz first
-        QuizCreateDTO quizCreateDTO = new QuizCreateDTO(
-            completeQuizDTO.getTitle(),
-            completeQuizDTO.getDescription(),
-            completeQuizDTO.getCreatorId(),
-            completeQuizDTO.getCategoryId(),
-    null
-);
+        QuizCreateDTO quizCreateDTO = QuizCreateDTO.builder()
+        .title(completeQuizDTO.getTitle())
+        .description(completeQuizDTO.getDescription())
+        .creatorId(completeQuizDTO.getCreatorId())
+        .categoryId(completeQuizDTO.getCategoryId())
+        .imageId(completeQuizDTO.getImageId()) // Assuming you've added an imageId field
+        .build();
 
         var quizDTO = quizService.createQuiz(quizCreateDTO);
 
@@ -131,7 +131,7 @@ public class CompleteQuizService {
             return new CompleteQuestionDTO(question.getId(), question.getText(), question.getQuestionType(), question.getMultimediaLink(), question.getTags().stream().map(Tag::getId).collect(Collectors.toSet()), answerDTOs);
         }).collect(Collectors.toList());
 
-        return new CompleteQuizDTO(quiz.getId(), quiz.getTitle(), quiz.getDescription(), quiz.getCreator().getId(), quiz.getCategory().getId(), completeQuestionDTOs);
+        return new CompleteQuizDTO(quiz.getId(), quiz.getTitle(), quiz.getDescription(), quiz.getCreator().getId(), quiz.getCategory().getId(), completeQuestionDTOs, quiz.getImage().getId());
     }
 
     @Transactional
@@ -281,10 +281,5 @@ public void deleteCompleteQuiz(UUID quizId) throws QuizNotFoundException {
 
     // Delete the quiz. This will also delete all questions associated with the quiz if cascade delete is configured.
     quizRepository.delete(quiz);
-}
-
-
-
-
-
+    }
 }
