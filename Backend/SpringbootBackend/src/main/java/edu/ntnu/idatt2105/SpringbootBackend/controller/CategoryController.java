@@ -27,7 +27,7 @@ public class CategoryController {
   @Operation(summary = "Create a new category", description = "Creates a new category with the provided details")
   @ApiResponse(responseCode = "201", description = "Category created successfully")
   @ApiResponse(responseCode = "400", description = "Bad request when the category details are invalid")
-  @PostMapping("/create")
+  @PostMapping("/")
   public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
     CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
     return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
@@ -35,7 +35,7 @@ public class CategoryController {
 
   @Operation(summary = "Get all categories", description = "Retrieves all the categories")
   @ApiResponse(responseCode = "200", description = "Categories fetched successfully")
-  @GetMapping("/all")
+  @GetMapping("/")
   public ResponseEntity<List<CategoryDTO>> getAllCategories() {
     List<CategoryDTO> categories = categoryService.getAllCategories();
     return new ResponseEntity<>(categories, HttpStatus.OK);
