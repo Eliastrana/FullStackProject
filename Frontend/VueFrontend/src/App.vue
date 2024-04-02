@@ -17,11 +17,9 @@
 
           <!-- User Authentication Links -->
           <div class="nav-right">
-            <!-- Show this link if the user is not authenticated -->
-            <RouterLink v-if="!isAuthenticated" to="/Login" active-class="active-link">Sign in</RouterLink>
 
-            <!-- Show this link if the user is authenticated -->
-            <RouterLink v-else to="/MyAccount">{{ userName }}</RouterLink>
+            <RouterLink v-if="!isAuthenticated" to="/Login" active-class="active-link">Sign in</RouterLink>
+            <UserMenuDropdown v-else :userName="userName" activeRoute="/MyAccount" />
           </div>
         </nav>
       </div>
@@ -37,6 +35,7 @@
 <script setup>
 import { computed, watch, onMounted } from 'vue'
 import { useStore } from 'vuex';
+import UserMenuDropdown from '@/components/userDropdown/UserMenuDropdown.vue'
 
 const store = useStore();
 
@@ -142,6 +141,7 @@ nav a:hover {
 .nav-right {
   display: flex;
   justify-content: flex-end;
+  font-size: 30px;
 }
 
 .nav-center {
