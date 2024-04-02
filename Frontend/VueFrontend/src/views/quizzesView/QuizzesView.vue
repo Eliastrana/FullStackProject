@@ -14,6 +14,8 @@ const selectedQuiz = ref(null);
 
   <PublicquizzesView @quiz-selected="quiz => selectedQuiz = quiz" />
 
+
+
   <!-- Display selected quiz in fullscreen if one is selected -->
   <QuizFullScreen v-if="selectedQuiz" :quiz="selectedQuiz" @close="selectedQuiz = null" />
 </template>
@@ -26,6 +28,7 @@ h1 {
   text-align: Left;
   margin-top: 20px;
   margin-left: 40px;
+
 }
 
 </style>

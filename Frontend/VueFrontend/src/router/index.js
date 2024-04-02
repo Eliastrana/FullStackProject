@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import MixedQuizDisplayer from '@/components/displayPage/SpecifiedQuizDisplays/MixedQuizDisplayer.vue'
+import store from '@/store/index.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,11 +41,11 @@ const router = createRouter({
       name: 'QuizcreatorTool',
       component: () => import('../components/createPage/QuizcreatortoolView.vue')
     },
-    {
-      path: '/Account',
-      name: 'Account',
-      component: () => import('../views/accountView/AccountView.vue')
-    },
+    // {
+    //   path: '/Account',
+    //   name: 'Account',
+    //   component: () => import('../views/accountView/AccountView.vue')
+    // },
     {
       path: '/QuizDisplayer',
       name: 'QuizDisplayer',
@@ -56,7 +56,33 @@ const router = createRouter({
       path: '/MyAccount',
       name: 'MyAccount',
       component: () => import('../views/userPage/MyAccount.vue')
+    },
+
+    {
+      path: '/Admin',
+      name: 'Admin',
+      component: () => import('../views/adminPage/AdminView.vue')
+    },
+    {
+      path: '/Contact',
+      name: 'Contact',
+      component: () => import('../views/contactView/ContactView.vue') 
     }
+
+    // {
+    //   path: '/my-account',
+    //   name: 'MyAccount',
+    //   component: () => import('@/views/userPage/MyAccount.vue'), // Adjust the path to your MyAccount component
+    //   meta: { requiresAuth: true }, // Custom flag to indicate authentication is required
+    //   beforeEnter: (to, from, next) => {
+    //     if (!store.getters['user/isAuthenticated']) {
+    //       // Redirect to the login page if the user is not authenticated
+    //       next({ name: 'Login' }); // Adjust with your actual login route name or path
+    //     } else {
+    //       next(); // Proceed to the route if the user is authenticated
+    //     }
+    //   },
+    // },
 
   ]
 })

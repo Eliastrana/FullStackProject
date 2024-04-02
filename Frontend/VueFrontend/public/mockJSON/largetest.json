@@ -1,5 +1,6 @@
 {
   "title": "Comprehensive Mixed Quiz",
+  "image": "/Path_To_Image",
   "quizzes": [
     {
       "id": 1,
@@ -12,7 +13,8 @@
         {
           "type": "Study Card",
           "front": "Who was the first President of the United States?",
-          "back": "George Washington"
+          "back": "George Washington",
+          "tag": "History, USA"
         },
         {
           "type": "Study Card",

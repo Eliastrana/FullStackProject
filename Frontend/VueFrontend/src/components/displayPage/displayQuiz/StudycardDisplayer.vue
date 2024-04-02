@@ -4,12 +4,19 @@
   <div class="card-container" @click="toggleFlip">
     <div :class="['card', { flipped: flipped }]">
       <div class="front">
+        <div>
+          <img v-if="question.frontImage" :src="question.frontImage" alt="Question Image" class="question-image">
+        </div>
         <!-- Update to use question.front -->
         <p>{{ question.front }}</p>
+
       </div>
+
       <div class="back">
         <!-- Update to use question.back -->
+        <img v-if="question.backImage" :src="question.backImage" alt="Question Image" class="question-image">
         <p>{{ question.back }}</p>
+
       </div>
     </div>
   </div>
@@ -21,13 +28,7 @@ import { ref, defineProps } from 'vue';
 const props = defineProps({
   question: {
     type: Object,
-    default: () => ({
-      // Updated default to match expected structure
-      front: 'What is Vue.js?',
-      back: 'Vue.js is a progressive JavaScript framework',
-      id: '', // Optional: Can be used if needed
-      type: '' // Optional: Can be used if needed
-    })
+
   }
 });
 
@@ -64,8 +65,22 @@ console.log(props.question);
   transform: rotateY(180deg);
 }
 
+
+.question-image {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+
+  border-radius: 8px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .front,
 .back {
+
+  flex-direction: column; /* Stack image and text vertically */
+  text-align: center;
   position: absolute;
   width: 100%;
   height: 100%;

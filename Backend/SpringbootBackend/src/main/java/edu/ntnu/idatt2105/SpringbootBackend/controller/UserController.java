@@ -2,12 +2,17 @@ package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AuthenticationService;
+import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
+    private final UserService userService;
     private final AuthenticationService authService;
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -89,6 +95,22 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Error logging in user: " + e.getMessage());
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<UserDTO> getUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Use userService to load the user by username
+        User user = userService.loadUserByUsername(username);
+        if (user != null) {
+            UserDTO userDto = new UserDTO(user.getUsername()); // Adapt this based on the actual UserDTO constructor
+            // Populate other needed fields in UserDTO from the User entity as needed
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 }

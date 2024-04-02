@@ -56,32 +56,33 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Chicle&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Eagle+Lake&family=Felipa&family=Oi&display=swap');
 
 .first-part {
-  color: #171616; /* Change to the color you desire */
+  color: #171616; /* Keep your desired color */
+  font-family: 'DM Sans', sans-serif;
 }
 
-
 .titleContainer {
-  height: 150px; /* Adjust based on the tallest font */
+  height: 150px;
   margin-top: 10%;
   margin-bottom: 70px;
   display: flex;
-  align-items: center; /* This centers the text vertically */
+  align-items: center;
   padding-bottom: 5%;
 }
 
 p {
   font-size: 8rem;
-  margin: 0; /* Remove the top margin to prevent pushing content */
+  margin: 0;
   text-align: left;
   padding-left: 40px;
   color: #3232ff;
-  line-height: 1.2;
+  line-height: 1.2; /* Adjust this value as needed */
 }
 
 span {
   position: relative;
-  top: -20px; /* Example adjustment, adjust as needed */
+  /* top: -20px; Removed or adjust as needed */
 }
+
 
 
 </style>

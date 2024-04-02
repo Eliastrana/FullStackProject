@@ -3,10 +3,13 @@ package edu.ntnu.idatt2105.SpringbootBackend.service;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuestionCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.CategoryNotFoundException;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.CreatorNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.QuestionMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.QuizMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Category;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Image;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Question;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
@@ -51,11 +54,11 @@ public class QuizService {
     @Transactional
     public QuizDTO createQuiz(QuizCreateDTO quizCreateDTO) {
         User creator = userRepository.findById(quizCreateDTO.getCreatorId())
-                .orElseThrow(() -> new RuntimeException("Creator not found with id: " + quizCreateDTO.getCreatorId()));
+                .orElseThrow(() -> new CreatorNotFoundException(quizCreateDTO.getCreatorId()));
         Category category = null;
         if (quizCreateDTO.getCategoryId() != null) {
             category = categoryRepository.findById(quizCreateDTO.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found with id: " + quizCreateDTO.getCategoryId()));
+                    .orElseThrow(() -> new CategoryNotFoundException( quizCreateDTO.getCategoryId()));
         }
 
         Quiz quiz = quizMapper.toQuiz(quizCreateDTO, creator);
@@ -73,12 +76,14 @@ public class QuizService {
         return quizMapper.toQuizDTO(quiz);
     }
 
+    @Transactional(readOnly = true)
     public List<QuizDTO> getAllQuizzes() {
         return quizRepository.findAll().stream()
                 .map(quizMapper::toQuizDTO)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public QuizDTO getQuizById(UUID id) {
         Quiz quiz = quizRepository.findById(id)
                 .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + id));
@@ -106,5 +111,13 @@ public class QuizService {
             throw new QuizNotFoundException("Quiz not found with id: " + id);
         }
         quizRepository.deleteById(id);
+    }
+
+    public QuizDTO setImageForQuiz(UUID quizId, Image image) {
+    Quiz quiz = quizRepository.findById(quizId)
+            .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + quizId));
+    quiz.setImage(image);
+    quiz = quizRepository.save(quiz);
+    return quizMapper.toQuizDTO(quiz);
     }
 }
