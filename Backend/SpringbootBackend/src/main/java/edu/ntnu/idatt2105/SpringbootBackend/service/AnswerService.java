@@ -28,7 +28,7 @@ public class AnswerService {
     @Transactional
     public AnswerDTO createAnswer(UUID questionId, AnswerDTO answerDTO) throws QuestionNotFoundException {
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new QuestionNotFoundException("Question not found with id: " + questionId));
+                .orElseThrow(() -> new QuestionNotFoundException(questionId));
 
         Answer answer = new Answer();
         answer.setText(answerDTO.getText());

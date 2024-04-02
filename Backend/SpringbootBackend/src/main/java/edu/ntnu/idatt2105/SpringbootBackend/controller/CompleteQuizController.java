@@ -1,9 +1,8 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
-import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuestionDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
-import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.QuestionNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.service.CompleteQuizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +21,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.Map;
 import java.util.UUID;
 
 @Tag(name = "Complete Quiz Management")
@@ -41,17 +44,21 @@ public class CompleteQuizController {
     @ApiResponse(responseCode = "201", description = "Complete quiz created successfully.")
     @ApiResponse(responseCode = "400", description = "Bad request due to invalid input.")
     @ApiResponse(responseCode = "403", description = "Forbidden - user not authorized to perform this action.")
-    @PostMapping
+   @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> createCompleteQuiz(@RequestBody CompleteQuizDTO completeQuizDTO) {
+    public void createCompleteQuiz(@RequestBody CompleteQuizDTO completeQuizDTO) {
         try {
             completeQuizService.createCompleteQuiz(completeQuizDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Complete quiz created successfully.");
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(completeQuizDTO.getId()).toUri();
+            ResponseEntity.created(location).build();
         } catch (Exception e) {
             logger.error("Failed to create complete quiz: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().body("Failed to create complete quiz: " + e.getMessage());
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Failed to create complete quiz", "message", e.getMessage()));
         }
     }
+
 
     @Operation(summary = "Get a complete quiz", description = "Fetches a complete quiz with questions and answers.")
     @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.")
@@ -63,9 +70,9 @@ public class CompleteQuizController {
             CompleteQuizDTO completeQuizDTO = completeQuizService.getCompleteQuizById(quizId);
             return ResponseEntity.ok(completeQuizDTO);
 
-        } catch (Exception e) {
+        } catch (QuestionNotFoundException | QuizNotFoundException e) {
             logger.error("Failed to fetch complete quiz: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().body("Failed to fetch complete quiz: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching the quiz.");
         }     
     }
 
@@ -99,6 +106,4 @@ public class CompleteQuizController {
             return ResponseEntity.badRequest().body("Failed to delete complete quiz: " + e.getMessage());
         }
     }
-
-
 }

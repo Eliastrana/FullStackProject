@@ -6,9 +6,10 @@ import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuestionDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuestionCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.exception.AnswerNotFoundException;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.AnswerCreationException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.TagNotFoundException;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.QuestionNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Answer;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Question;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
@@ -18,7 +19,6 @@ import edu.ntnu.idatt2105.SpringbootBackend.repository.CategoryRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.QuestionRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.TagRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.AnswerRepository;
-import edu.ntnu.idatt2105.SpringbootBackend.mapper.TagMapper;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,7 +42,6 @@ public class CompleteQuizService {
     private final CategoryRepository categoryRepository;
     private final QuestionRepository questionRepository;
     private final TagRepository tagRepository;
-    private final TagMapper tagMapper;
     private final AnswerRepository answerRepository;
 
     @Autowired
@@ -54,7 +53,6 @@ public class CompleteQuizService {
         CategoryRepository categoryRepository, 
         QuestionRepository questionRepository,
         TagRepository tagRepository,
-        TagMapper tagMapper,
         AnswerRepository answerRepository
         ) 
         {
@@ -65,7 +63,6 @@ public class CompleteQuizService {
         this.categoryRepository = categoryRepository;
         this.questionRepository = questionRepository;
         this.tagRepository = tagRepository;
-        this.tagMapper = tagMapper;
         this.answerRepository = answerRepository;
     }
 
@@ -77,7 +74,7 @@ public class CompleteQuizService {
         .description(completeQuizDTO.getDescription())
         .creatorId(completeQuizDTO.getCreatorId())
         .categoryId(completeQuizDTO.getCategoryId())
-        .imageId(completeQuizDTO.getImageId()) // Assuming you've added an imageId field
+        .imageId(completeQuizDTO.getImageId()) 
         .build();
 
         var quizDTO = quizService.createQuiz(quizCreateDTO);
@@ -105,14 +102,14 @@ public class CompleteQuizService {
             // Inside the loop for creating questions and their answers
             // Inside the loop for creating questions and their answers
             question.getAnswers().forEach(answerCreateDto -> {
-            try {
-            // Convert AnswerCreateDTO to AnswerDTO
-            AnswerDTO answerDto = new AnswerDTO();
-            answerDto.setText(answerCreateDto.getText());
-            answerDto.setCorrect(answerCreateDto.isCorrect());
-            AnswerDTO createdAnswer = answerService.createAnswer(createdQuestionDTO.getId(), answerDto);
-            } catch (Exception e) {
-                throw new RuntimeException("Error creating answer: " + e.getMessage(), e);
+                try {
+                    // Convert AnswerCreateDTO to AnswerDTO
+                    AnswerDTO answerDto = new AnswerDTO();
+                    answerDto.setText(answerCreateDto.getText());
+                    answerDto.setCorrect(answerCreateDto.isCorrect());
+                    answerService.createAnswer(createdQuestionDTO.getId(), answerDto);
+                } catch (Exception e) {
+                    throw new AnswerCreationException("Failed to create answer for question with ID: " + createdQuestionDTO.getId());
                 }
             });
         }
@@ -193,7 +190,7 @@ private void createNewQuestionForQuiz(Quiz quiz, CompleteQuestionDTO completeQue
 @Transactional
 public void updateExistingQuestion(CompleteQuestionDTO completeQuestionDTO) {
     Question question = questionRepository.findById(completeQuestionDTO.getId())
-        .orElseThrow(() -> new RuntimeException("Question not found with id: " + completeQuestionDTO.getId()));
+        .orElseThrow(() -> new QuestionNotFoundException(completeQuestionDTO.getId()));
 
     question.setText(completeQuestionDTO.getText());
     question.setQuestionType(completeQuestionDTO.getQuestionType());
