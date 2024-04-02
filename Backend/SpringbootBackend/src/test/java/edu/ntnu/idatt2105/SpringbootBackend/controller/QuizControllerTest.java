@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
+/* 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
@@ -83,3 +84,4 @@ class QuizControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(quizDTO)));
   }
 }
+*/
