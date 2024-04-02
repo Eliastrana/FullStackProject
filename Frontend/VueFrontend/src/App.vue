@@ -35,18 +35,42 @@
 
 
 <script setup>
-import { computed } from 'vue';
+import { computed, watch, onMounted } from 'vue'
 import { useStore } from 'vuex';
 
 const store = useStore();
 
-// Accessing namespaced getters
 const isAuthenticated = computed(() => store.getters['user/isAuthenticated']);
-const userName = computed(() => store.getters['user/userName']);
+const userName = computed(() => store.state.user.userInfo ? store.state.user.userInfo.username : '');
+
+watch(() => store.state.user.token, async (newToken) => {
+  console.log('Token changed:', newToken);
+  if (newToken) {
+    // When a token is detected, try fetching user details
+    try {
+      await store.dispatch('user/fetchUserDetails', newToken);
+    } catch (error) {
+      console.error('Failed to fetch user details:', error);
+      // Handle the error appropriately
+    }
+  }
+});
+
+onMounted(async () => {
+  if (isAuthenticated.value && !store.state.user.userInfo) {
+    // If authenticated but user info is not loaded, fetch it
+    try {
+      await store.dispatch('user/fetchUserDetails', store.state.user.token);
+    } catch (error) {
+      console.error('Failed to fetch user details on mount:', error);
+      // You might want to clear the session or handle the error appropriately here
+    }
+  }
+
+  console.log('Mounted isAuthenticated:', isAuthenticated.value);
+  console.log('Mounted userName:', userName.value);
+});
 </script>
-
-
-
 
 
 <style>
