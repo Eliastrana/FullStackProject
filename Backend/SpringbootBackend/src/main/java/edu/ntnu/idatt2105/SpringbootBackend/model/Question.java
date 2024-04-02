@@ -34,7 +34,11 @@ public class Question {
     private QuestionType questionType;
 
     @Column
-    private String multimediaLink; 
+    private String multimediaLink;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private Image image;
 
     @Column(nullable = false)
     private LocalDateTime creationDate;

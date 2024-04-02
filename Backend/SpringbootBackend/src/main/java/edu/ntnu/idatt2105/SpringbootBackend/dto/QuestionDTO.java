@@ -36,4 +36,7 @@ public class QuestionDTO {
 
     @Schema(description = "Tags associated with the question")
     private Set<UUID> tags;
+
+    @Schema(description = "Identifier of the image associated with the question")
+    private UUID imageId; 
 }

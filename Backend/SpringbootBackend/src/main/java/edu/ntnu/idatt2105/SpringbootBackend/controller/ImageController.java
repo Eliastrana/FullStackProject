@@ -1,9 +1,9 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
-import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Image;
 import edu.ntnu.idatt2105.SpringbootBackend.service.ImageService;
 import edu.ntnu.idatt2105.SpringbootBackend.service.QuizService;
+import edu.ntnu.idatt2105.SpringbootBackend.service.QuestionService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,9 @@ public class ImageController {
     @Autowired
     private QuizService quizService;
 
+    @Autowired
+    private QuestionService questionService;
+
     private final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
     @Operation(summary = "Upload an image for a quiz", description = "Uploads an image to associate with a quiz")
@@ -40,18 +43,18 @@ public class ImageController {
     public ResponseEntity<?> uploadImage(
             @PathVariable UUID quizId,
             @RequestParam("image") MultipartFile file) {
-        try {
-            Image image = imageService.storeImage(file);
-            QuizDTO updatedQuiz = quizService.setImageForQuiz(quizId, image);
-            logger.info("Image uploaded successfully: {}", file.getOriginalFilename());
+                try {
+                    Image image = imageService.storeImage(file);
+                    quizService.setImageForQuiz(quizId, image);
+                    logger.info("Image uploaded successfully: {}", file.getOriginalFilename());
 
-            return ResponseEntity.ok().body("Image uploaded successfully: " + file.getOriginalFilename());
-        } catch (Exception e) {
-            logger.error("Failed to upload image: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Could not upload the file: " + file.getOriginalFilename() + "!");
-        }
-    }
+                    return ResponseEntity.ok().body("Image uploaded successfully: " + file.getOriginalFilename());
+                } catch (Exception e) {
+                    logger.error("Failed to upload image: {}", e.getMessage(), e);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Could not upload the file: " + file.getOriginalFilename() + "!");
+                }
+            }
 
     @Operation(summary = "Get an image by ID", description = "Retrieves an image by its unique identifier")
     @ApiResponse(responseCode = "200", description = "Successfully fetched the image")
@@ -73,4 +76,25 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @Operation(summary = "Upload an image for a question", description = "Uploads an image to associate with a question")
+    @ApiResponse(responseCode = "200", description = "Image uploaded successfully")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @PostMapping("/questions/{questionId}/image")
+    public ResponseEntity<?> uploadImageForQuestion(
+            @PathVariable UUID questionId,
+            @RequestParam("image") MultipartFile file) {
+        try {
+            Image image = imageService.storeImage(file);
+            questionService.setImageForQuestion(questionId, image);
+            logger.info("Image uploaded successfully: {}", file.getOriginalFilename());
+
+            return ResponseEntity.ok().body("Image uploaded successfully: " + file.getOriginalFilename());
+        } catch (Exception e) {
+            logger.error("Failed to upload image: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not upload the file: " + file.getOriginalFilename() + "!");
+        }
+    }
+
 }
