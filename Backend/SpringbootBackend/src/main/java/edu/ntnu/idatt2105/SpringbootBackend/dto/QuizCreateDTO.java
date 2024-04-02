@@ -36,4 +36,7 @@ public class QuizCreateDTO {
 
     @Schema(description = "List of questions for the new quiz")
     private List<QuestionCreateDTO> questions;
+
+    @Schema(description = "ImageId of the quiz")
+    private UUID imageId;
 }

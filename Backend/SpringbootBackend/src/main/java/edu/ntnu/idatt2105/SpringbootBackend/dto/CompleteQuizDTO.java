@@ -17,4 +17,5 @@ public class CompleteQuizDTO {
     private UUID creatorId;
     private UUID categoryId;
     private List<CompleteQuestionDTO> questions;
+    private UUID imageId;
 }
