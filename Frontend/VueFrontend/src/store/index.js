@@ -1,3 +1,4 @@
+//index.js
 import { createStore } from 'vuex';
 import user from './modules/user';
 import quizzes from './modules/quizzes';
@@ -10,3 +11,5 @@ export default createStore({
     quizComponents
   }
 });
+
+

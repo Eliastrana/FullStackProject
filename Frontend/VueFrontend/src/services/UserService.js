@@ -14,10 +14,22 @@ export const UserService = {
   async login(credentials) {
     const response = await axios.post(`${API_URL}/login`, credentials);
     SessionToken.setToken(response.data.token); // Save the session token
-    return response.data;
+    return {
+      token: response.data.token,
+      name: response.data.name
+    };
   },
 
   logout() {
     SessionToken.clearToken();
+  },
+
+  async getUserDetails(token) {
+    // Assuming you have an endpoint like '/api/user/details' that returns user details
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const response = await axios.get(`${API_URL}/details`, config);
+    return response.data; // Assuming this includes the user's name
   },
 };

@@ -32,6 +32,9 @@ const checkAnswer = () => {
 
 <template>
   <div class="question-container">
+    <div>
+      <img v-if="question.image" :src="question.image" alt="Question Image" class="question-image">
+    </div>
     <div class="question">
       {{ question.questionText }}
       <input v-model="userAnswer"
@@ -73,6 +76,13 @@ const checkAnswer = () => {
   margin-bottom: 20px;
   font-size: 2rem;
   font-family: 'DM Sans', sans-serif;
+}
+
+.question-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  margin-top: 20px;
 }
 
 .checkAnswerButton {
