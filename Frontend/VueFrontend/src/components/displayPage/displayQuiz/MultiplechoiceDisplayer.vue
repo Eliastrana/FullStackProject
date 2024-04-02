@@ -37,6 +37,8 @@ const getOptionClasses = (index) => {
 <template>
   <div class="quiz-container">
     <div class="question-title">{{ props.question.questionText }}</div>
+    <img v-if="question.image" :src="question.image" alt="Question Image" class="question-image">
+
     <div class="answers-grid">
       <button
         v-for="(option, index) in props.question.options"
@@ -100,8 +102,18 @@ li {
 
 .question-title {
   margin-bottom: 20px;
+  font-size: 2rem;
+  font-family: 'DM Sans', sans-serif;
 }
 
+
+.question-image {
+  max-width: 100%;
+  max-height: 150px;
+  border-radius: 8px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 
 
 .answer {
