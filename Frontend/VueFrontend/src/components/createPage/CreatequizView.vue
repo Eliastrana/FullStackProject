@@ -129,7 +129,8 @@ const navigateToLogin = () => {
   font-size: 1.5rem;
   text-align: center;
   color: #333;
-  background-color: #ffb02e;
+  background-image: linear-gradient(to right, #CAE9FF, #BEE9E8, #62B6CB);
+
 }
 
 .squareFill:hover {

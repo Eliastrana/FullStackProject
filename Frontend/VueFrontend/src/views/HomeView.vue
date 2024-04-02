@@ -7,6 +7,9 @@ import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDispla
 
 <template>
 
+  <div class="display-page-container">
+
+
   <WelcomeIntro />
 
   <FunctionalityDisplayer
@@ -36,10 +39,40 @@ import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDispla
 
 
 
+  </div>
+
 </template>
 
-
 <style scoped>
+/* Use a Flexbox layout to center the content vertically and horizontally */
+.display-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* Adjust based on your spacing preference */
+  padding: 20px; /* Add some padding around the content */
+}
 
+@media (max-width: 768px) {
+  .display-page-container {
+    padding: 10px;
+  }
+}
+
+/* Inside FunctionalityDisplayer.vue */
+.functionality-image {
+  width: 100%; /* Make the image responsive */
+  max-width: 400px; /* Prevent it from becoming too large */
+  height: auto; /* Maintain aspect ratio */
+}
+
+
+@media (max-width: 768px) {
+  /* Adjust styles for smaller screens */
+  .functionality-displayer-title {
+    font-size: 18px; /* Smaller font size on small devices */
+  }
+}
 
 </style>

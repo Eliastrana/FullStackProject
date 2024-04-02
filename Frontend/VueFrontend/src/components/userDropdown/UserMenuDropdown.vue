@@ -90,11 +90,13 @@ const logout = () => {
 }
 
 .dropdown-content a:hover {
-  color: #3232ff;
+  color: #ffffaa;
+
 }
 
 .active-link {
-  color: #3232ff; /* Example active color */
+  color: #FFD700; /* Example active color */
   font-weight: bold;
+
 }
 </style>
