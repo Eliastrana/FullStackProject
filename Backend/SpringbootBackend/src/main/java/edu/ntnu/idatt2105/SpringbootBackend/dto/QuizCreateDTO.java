@@ -3,8 +3,10 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Schema(description = "Quiz Create DTO for creating new quizzes")
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class QuizCreateDTO {
 
     @NotBlank(message = "Title is required")

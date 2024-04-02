@@ -2,13 +2,11 @@ package edu.ntnu.idatt2105.SpringbootBackend.mapper;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuestionCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuestionDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.model.Tag;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Question;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 @Component
 public class QuestionMapper {
@@ -25,7 +23,7 @@ public class QuestionMapper {
         dto.setQuestionType(question.getQuestionType());
         dto.setMultimediaLink(question.getMultimediaLink());
         dto.setCreationDate(question.getCreationDate());
-        dto.setTags(question.getTags().stream().map(Tag::getId).collect(Collectors.toSet()));
+        
         return dto;
     }
 
@@ -44,7 +42,7 @@ public class QuestionMapper {
         return question;
     }
 
-        public Question updateQuestionFromDTO(QuestionDTO dto, Question question) {
+    public Question updateQuestionFromDTO(QuestionDTO dto, Question question) {
         if (dto == null || question == null) {
             return null;
         }
@@ -52,7 +50,6 @@ public class QuestionMapper {
         question.setText(dto.getText());
         question.setQuestionType(dto.getQuestionType());
         question.setMultimediaLink(dto.getMultimediaLink());
-
         // Note: CreationDate and QuizId should not be updated here
         
         return question;

@@ -3,6 +3,7 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+
 import java.util.UUID;
 
 @Schema(description = "Quiz DTO for displaying quiz information")
