@@ -22,22 +22,25 @@ const scrollDown = () => {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
 
+  <div class="image-container">
+        <img class="logo" src="/images/logo/quanda_logo.png" alt="Qanda logo">
+  </div>
+
   <div class="container">
-    <h1>Qanda</h1>
-<!--    <img class="logo" src="/images/logo/quanda_logo_crop.png" alt="Qanda logo">-->
+    <h1>Take learning to new heights</h1>
   </div>
 
   <div class="container">
     <button @click="navigateToCreateQuiz">Create Quiz </button>
   </div>
 
-  <div class="undertitle">
-    <h2>Take learning to new heights</h2>
-</div>
+<!--  <div class="undertitle">-->
+<!--    <h2>Explore</h2>-->
+<!--</div>-->
 
-  <div class="arrow" @click="scrollDown">
-    <i class="fas fa-arrow-down"></i> <!-- Font Awesome arrow icon -->
-  </div>
+<!--  <div class="arrow" @click="scrollDown">-->
+<!--    <i class="fas fa-arrow-down"></i> &lt;!&ndash; Font Awesome arrow icon &ndash;&gt;-->
+<!--  </div>-->
 
 
 
@@ -67,10 +70,12 @@ body {
 }
 
 h1 {
-  font-size: 20rem;
+  font-size: 10rem;
   margin: 0; /* Adjust or remove margin as necessary */
   font-family: 'DM Sans', sans-serif;
   font-weight: bold;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 h2 {
@@ -83,9 +88,9 @@ h2 {
 
 .container {
   display: flex;
-  justify-content: left; /* Centers horizontally */
+  justify-content: center; /* Centers horizontally */
   align-items: center; /* Centers vertically */
-  text-align: left; /* Ensures text within the container is centered */
+  text-align: center; /* Ensures text within the container is centered */
 
 }
 
@@ -127,6 +132,13 @@ button:hover {
   margin-right: 5%;
 }
 
+.image-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 25%;
+  margin-bottom: -40px;
+}
 
 
 </style>

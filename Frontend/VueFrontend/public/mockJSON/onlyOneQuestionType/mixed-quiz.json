@@ -9,6 +9,7 @@
     {
       "id": "1",
       "type": "Fill in the Blank",
+      "image": "/images/quizImages/eiffel.png",
       "questionText": "The capital of France is:",
       "answer": "Paris"
     },
@@ -16,6 +17,7 @@
       "id": "2",
       "type": "Multiple Choice",
       "questionText": "What is the largest planet in our solar system?",
+      "image": "/images/quizImages/solarsystem.png",
       "options": [
         "Earth",
         "Jupiter",
@@ -28,7 +30,9 @@
       "id": "3",
       "type": "Study Card",
       "front": "Photosynthesis Equation",
-      "back": "6CO2 + 6H2O + light energy → C6H12O6 + 6O2"
+      "frontImage": "/images/quizImages/plant.png",
+      "back": "6CO2 + 6H2O + light energy → C6H12O6 + 6O2",
+      "backImage": "/images/quizImages/chemistry.png"
     },
     {
       "id": "4",
