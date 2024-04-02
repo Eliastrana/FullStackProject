@@ -41,11 +41,11 @@ const router = createRouter({
       name: 'QuizcreatorTool',
       component: () => import('../components/createPage/QuizcreatortoolView.vue')
     },
-    {
-      path: '/Account',
-      name: 'Account',
-      component: () => import('../views/accountView/AccountView.vue')
-    },
+    // {
+    //   path: '/Account',
+    //   name: 'Account',
+    //   component: () => import('../views/accountView/AccountView.vue')
+    // },
     {
       path: '/QuizDisplayer',
       name: 'QuizDisplayer',
@@ -57,6 +57,17 @@ const router = createRouter({
       name: 'MyAccount',
       component: () => import('../views/userPage/MyAccount.vue')
     },
+
+    {
+      path: '/Admin',
+      name: 'Admin',
+      component: () => import('../views/adminPage/AdminView.vue')
+    },
+    {
+      path: '/Contact',
+      name: 'Contact',
+      component: () => import('../views/contactView/ContactView.vue') 
+    }
 
     // {
     //   path: '/my-account',

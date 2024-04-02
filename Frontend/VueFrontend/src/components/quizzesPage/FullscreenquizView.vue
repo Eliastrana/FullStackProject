@@ -92,12 +92,7 @@ export default {
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
-.quiz-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
+
 
 button {
   padding: 10px 20px;
@@ -125,8 +120,8 @@ button:hover {
     object-fit: cover;
     border-radius: 8px;
 
-    min-width: 600px;
-    width: 100%; /* Ensure the image takes up the full width */
+    max-width: 500px;
+    min-width: 500px;
     max-height: 200px; /* Set a max-height   to prevent images from stretching */
 
 
@@ -188,9 +183,6 @@ button:hover {
   margin: 0; /* Remove default <p> margin if needed */
 }
 
-
-
-
 .close-btn {
   position: absolute;
   background-color: #007bff;
@@ -211,12 +203,6 @@ button:hover {
 }
 
 
-
-.quiz-image {
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 20px; /* Adjust if necessary */
-}
 
 @media (max-width: 600px) { /* Example breakpoint */
   .header-container {

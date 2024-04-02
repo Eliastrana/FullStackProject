@@ -57,6 +57,7 @@ export default {
 
 .first-part {
   color: #171616; /* Keep your desired color */
+  font-family: 'DM Sans', sans-serif;
 }
 
 .titleContainer {
