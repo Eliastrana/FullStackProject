@@ -18,7 +18,7 @@
           <!-- User Authentication Links -->
           <div class="nav-right">
             <!-- Show this link if the user is not authenticated -->
-            <RouterLink v-if="!isAuthenticated" to="/Login" active-class="active-link">Log in</RouterLink>
+            <RouterLink v-if="!isAuthenticated" to="/Login" active-class="active-link">Sign in</RouterLink>
 
             <!-- Show this link if the user is authenticated -->
             <RouterLink v-else to="/MyAccount">{{ userName }}</RouterLink>

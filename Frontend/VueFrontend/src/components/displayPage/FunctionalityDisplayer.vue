@@ -1,21 +1,36 @@
 <script setup>
-
+const props = defineProps({
+  title: String,
+  description: String,
+  imageUrl: String,
+  imagePosition: {
+    type: String,
+    default: 'left', // Default to left if not specified
+  },
+  backgroundColor: {
+    type: String,
+    default: '#fffff7', // A default background color
+  },
+});
 </script>
 
+
+
+
 <template>
-  <div class="functionality">
-
-
-    <div class="content-wrapper">
-      <img class="functionality-image" src="/images/dalle/corpcore.png">
-
+  <div class="functionality" :style="{ backgroundColor: props.backgroundColor }">
+    <div class="content-wrapper" :class="{ 'image-right': props.imagePosition === 'right' }">
+      <img class="functionality-image" :src="props.imageUrl" alt="Functionality Image">
       <div class="text-content">
-        <h1>Functionality Displayer</h1>
-        <p>Here you can see the functionality of the app</p>
+        <h1>{{ props.title }}</h1>
+        <p>{{ props.description }}</p>
       </div>
     </div>
   </div>
 </template>
+
+
+
 
 
 <style scoped>
@@ -29,7 +44,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-align: center;
   width: 90%;
-  margin-top: -100px;
+  margin-top: 2%;
   margin-right: 40px;
   margin-left: 40px;
   display: flex; /* Use flex display */
@@ -40,11 +55,15 @@
 }
 
 .content-wrapper {
-  display: flex; /* Enables flexbox for direct children, i.e., text-content and functionality-image */
-  align-items: center; /* Vertically aligns the flex items */
-  justify-content: center; /* Horizontally centers the flex items in the container */
-  text-align: left; /* Aligns the text to the left */
-  width: 100%; /* Ensures the wrapper takes the full width of its parent */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  /* Ensure the default layout has the image on the left */
+}
+
+.content-wrapper.image-right {
+  flex-direction: row-reverse; /* Flips the order when image is supposed to be on the right */
 }
 
 .text-content {

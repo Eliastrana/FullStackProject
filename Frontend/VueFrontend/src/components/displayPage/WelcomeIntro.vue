@@ -72,11 +72,9 @@ button {
   margin-right: 10px;
   text-align: center;
   background-color: #FFD700;
-  margin-bottom: 180px; /* Adjust margin as necessary */
 }
 
 button:hover {
-  transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   background: #b9a824;
 

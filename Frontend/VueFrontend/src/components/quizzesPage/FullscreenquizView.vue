@@ -2,9 +2,17 @@
   <transition name="fade">
     <div class="quiz-fullscreen" v-if="quiz" @click="closeQuiz">
       <div class="quiz-content" @click.stop>
+
+
+
         <div class="image-container">
           <img :src="quiz.image" alt="Quiz Image" class="quiz-image">
         </div>
+
+        <button class="close-btn" @click.stop="closeQuiz">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+
 
         <button @click.stop="startQuiz" class="start-quiz-btn">Start Quiz</button>
 
@@ -71,6 +79,7 @@ export default {
 }
 
 .quiz-content {
+  position: relative; /* Needed for absolute positioning of the close button */
   background-color: white; /* White background */
   color: black; /* Adjust text color for better readability */
   text-align: left;
@@ -135,7 +144,7 @@ button {
 
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #5d9ff3;
 }
 
 
@@ -179,6 +188,27 @@ button:hover {
   margin: 0; /* Remove default <p> margin if needed */
 }
 
+
+
+
+.close-btn {
+  position: absolute;
+  background-color: #007bff;
+  top: 10px;
+  right: 10px;
+  border: none;
+  cursor: pointer;
+  padding: 5px; /* Adjust as needed */
+  display: flex; /* Helps center the icon if it's not filling the button */
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background-color: rgba(0,0,0,0.1);
+  background-color: #5d9ff3;
+
+}
 
 
 

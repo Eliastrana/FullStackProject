@@ -26,7 +26,7 @@
         <img :src="quiz.image" alt="Quiz Image">
         <h2>{{ quiz.title }}</h2>
         <p>{{ quiz.description }}</p>
-        <p><strong>Category:</strong> {{ quiz.category }}</p>
+        <p class="category-badge">#{{ quiz.category }}</p>
         <!-- Optionally display difficulty if present in your data -->
       </div>
     </div>
@@ -131,7 +131,15 @@ const uniqueCategories = computed(() => {
   height: auto; /* Allows box height to grow with content */
 }
 
-
+.category-badge {
+  display: inline-block; /* Treat the <p> tag more like an inline element */
+  background-color: rgb(23, 22, 22); /* Example background color */
+  color: #ffffff; /* Text color */
+  padding: 5px 15px; /* Vertical and horizontal padding */
+  border-radius: 20px; /* Rounded corners */
+  font-size: 0.8rem; /* Adjust font size as needed */
+  margin: 0; /* Remove default <p> margin if needed */
+}
 
 
 .quiz-box:hover {
