@@ -1,32 +1,34 @@
 <script setup>
-  import { ref, watch, defineEmits } from 'vue';
-  import { debounce } from 'lodash-es'; // Anta at lodash er installert, ellers kan du implementere din egen debounce-funksjon
+import { ref, watch, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import { debounce } from 'lodash-es';
 
-  const title = ref('');
-  const answers = ref([{ text: '' }, { text: '' }, { text: '' }, { text: '' }]);
-  const correctAnswer = ref(null);
-  const emits = defineEmits(['submitData']);
+const store = useStore();
+const title = ref('');
+const answers = ref([{ text: '' }, { text: '' }, { text: '' }, { text: '' }]);
+const correctAnswer = ref(null);
 
-
-  // Debounce-funksjonen sørger for at emitCurrentData kun blir kalt
-  // hvis det ikke har vært noen endringer i de overvåkede dataene på 500 millisekunder
-
-
-  const debouncedEmitData = debounce(() => {
-  emits('submitData', {
-    type: 'multipleChoice',
-    question: title.value,
-    options: answers.value.map(a => a.text),
-    correctOption: correctAnswer.value,
+// Definer debouncedUpdateStore utenfor onMounted for å unngå å re-definere den ved hver komponentoppdatering
+const debouncedUpdateStore = debounce(() => {
+  store.dispatch('quizComponents/updateCurrentQuiz', {
+    title: title.value,
+    answers: answers.value,
+    correctAnswer: correctAnswer.value,
   });
-}, 5000); // Juster tidsforsinkelsen etter behov
+}, 500); // Debounce for å begrense hyppigheten av oppdateringer
 
-  // Overvåker endringer i title, answers, og correctAnswer,
-  // og bruker den debounced versjonen av emit funksjonen ved endringer.
-  watch([title, answers, correctAnswer], debouncedEmitData, { deep: true });
+watch([title, answers, correctAnswer], debouncedUpdateStore, { deep: true });
+
+onMounted(() => {
+  // Hent den lagrede quiz-tilstanden fra Vuex når komponenten monteres
+  const currentQuiz = store.state.quizzes.currentQuiz;
+  if (currentQuiz) {
+    title.value = currentQuiz.title;
+    answers.value = currentQuiz.answers.length > 0 ? currentQuiz.answers : answers.value;
+    correctAnswer.value = currentQuiz.correctAnswer;
+  }
+});
 </script>
-
-
 
 <template>
   <div class="question-container">
@@ -109,7 +111,6 @@
   padding: 8px;
   border: none;
   border-radius: 10px;
-
 
 }
 
