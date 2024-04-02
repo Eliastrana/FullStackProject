@@ -1,49 +1,76 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-</script>
+//App.vue
 
 <template>
   <div id="app">
-  <header>
-    <div class="wrapper">
-      <nav>
-        <!-- Emoji on the left -->
-        <RouterLink to="/" active-class="active-link">💻</RouterLink>
+    <header>
+      <div class="wrapper">
+        <nav>
+          <!-- Emoji on the left -->
+          <RouterLink to="/" active-class="active-link">💻</RouterLink>
 
-        <!-- Centered Links -->
-        <div class="nav-center">
-          <RouterLink to="/Quizzes" active-class="active-link">Quizzes</RouterLink>
-          <h1> | </h1>
-          <RouterLink to="/Create" active-class="active-link">Create</RouterLink>
+          <!-- Centered Links -->
+          <div class="nav-center">
+            <RouterLink to="/Quizzes" active-class="active-link">Quizzes</RouterLink>
+            <h1> | </h1>
+            <RouterLink to="/Create" active-class="active-link">Create</RouterLink>
+          </div>
 
-        </div>
+          <!-- User Authentication Links -->
+          <div class="nav-right">
+            <!-- Show this link if the user is not authenticated -->
+            <RouterLink v-if="!isAuthenticated" to="/Login" active-class="active-link">Sign in</RouterLink>
 
-        <!-- Log in on the right -->
-        <div class="nav-right">
-          <RouterLink to="/Login" active-class="active-link">Log in</RouterLink>
-        </div>
-
-        <div class="nav-right">
-          <RouterLink to="/MyAccount" active-class="active-link">🧑</RouterLink>
-        </div>
-
-      </nav>
-    </div>
-  </header>
+            <!-- Show this link if the user is authenticated -->
+            <RouterLink v-else to="/MyAccount">{{ userName }}</RouterLink>
+          </div>
+        </nav>
+      </div>
+    </header>
 
     <div class="content">
       <RouterView />
     </div>
-
-<!--  <FooterView />-->
-
   </div>
-
 </template>
 
 
+<script setup>
+import { computed, watch, onMounted } from 'vue'
+import { useStore } from 'vuex';
 
+const store = useStore();
 
+const isAuthenticated = computed(() => store.getters['user/isAuthenticated']);
+const userName = computed(() => store.state.user.userInfo ? store.state.user.userInfo.username : '');
+
+watch(() => store.state.user.token, async (newToken) => {
+  console.log('Token changed:', newToken);
+  if (newToken) {
+    // When a token is detected, try fetching user details
+    try {
+      await store.dispatch('user/fetchUserDetails', newToken);
+    } catch (error) {
+      console.error('Failed to fetch user details:', error);
+      // Handle the error appropriately
+    }
+  }
+});
+
+onMounted(async () => {
+  if (isAuthenticated.value && !store.state.user.userInfo) {
+    // If authenticated but user info is not loaded, fetch it
+    try {
+      await store.dispatch('user/fetchUserDetails', store.state.user.token);
+    } catch (error) {
+      console.error('Failed to fetch user details on mount:', error);
+      // You might want to clear the session or handle the error appropriately here
+    }
+  }
+
+  console.log('Mounted isAuthenticated:', isAuthenticated.value);
+  console.log('Mounted userName:', userName.value);
+});
+</script>
 
 
 <style>

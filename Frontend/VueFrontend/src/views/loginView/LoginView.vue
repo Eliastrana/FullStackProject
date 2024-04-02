@@ -1,3 +1,4 @@
+//LoginView.vue
 <template>
   <div class="center-container"></div>
   <div class="login-container">
@@ -38,7 +39,7 @@ const login = async () => {
     });
 
     // Navigate to the home view upon successful login
-    router.push({name: 'home'}); // Make sure the route name matches your routes configuration
+    router.push({name: 'MyAccount'}); // Make sure the route name matches your routes configuration
   } catch (error) {
     console.error("Login failed:", error);
     // Handle login failure, such as displaying an error message to the user
