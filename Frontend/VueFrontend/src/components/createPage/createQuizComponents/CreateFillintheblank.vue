@@ -1,50 +1,37 @@
 <script setup>
-import { watch, ref, defineEmits } from 'vue';
+import { ref, watch, defineProps, defineEmits } from 'vue';
+import { useStore } from 'vuex';
 
-// Definerer emits
+const { uuid } = defineProps(['uuid']);
 const emits = defineEmits(['submitData']);
+const store = useStore();
 
-// Definerer reactive data for spørsmålet
-const question = ref({
-  title: '',
-  answer: ''
-});
+const title = ref('');
+const blankAnswer = ref('');
 
-function debounce(func, wait) {
-  let timeout;
-  return function(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(this, args);
-    }, wait);
-  };
-}
-
-// Debounced funksjon som emitter spørsmålsdata
-const emitDataDebounced = debounce(() => {
+watch([title, blankAnswer], () => {
   emits('submitData', {
+    uuid,
     type: 'fillInTheBlank',
-    question: question.value.title,
-    word: question.value.answer
+    title: title.value,
+    blankAnswer: blankAnswer.value,
   });
-}, 5000);
+}, { deep: true });
 
-// Bruker watch for å reagere på endringer i question og kaller den debounced funksjonen
-watch(question, emitDataDebounced, { deep: true });
+// Initialize component with existing data if available
+const existingQuestion = store.state.quizzes.questions.find(q => q.uuid === uuid);
+if (existingQuestion) {
+  title.value = existingQuestion.title;
+  blankAnswer.value = existingQuestion.blankAnswer;
+}
 </script>
-
 
 <template>
   <div class="question-container">
-    <h3>Fill in the Blank</h3>
-    <div class="question-box">
-      <input v-model="question.title" type="text" placeholder="Enter your question here" class="question-title"/>
-      <input v-model="question.answer" type="text" placeholder="Answer" class="answer-text"/>
-    </div>
+    <input v-model="title" placeholder="Question title" />
+    <input v-model="blankAnswer" placeholder="Correct answer for the blank" />
   </div>
 </template>
-
-
 
 <style scoped>
 .question-container {

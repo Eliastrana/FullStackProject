@@ -1,52 +1,45 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, defineProps, defineEmits } from 'vue';
 import { useStore } from 'vuex';
-import { debounce } from 'lodash-es';
 
+const { uuid } = defineProps(['uuid']);
+const emits = defineEmits(['submitData']);
 const store = useStore();
+
 const title = ref('');
-const answers = ref([{ text: '' }, { text: '' }, { text: '' }, { text: '' }]);
-const correctAnswer = ref(null);
+const answers = ref([{ text: '', isCorrect: false }]);
 
-// Definer debouncedUpdateStore utenfor onMounted for å unngå å re-definere den ved hver komponentoppdatering
-const debouncedUpdateStore = debounce(() => {
-  store.dispatch('quizComponents/updateCurrentQuiz', {
+function addAnswer() {
+  answers.value.push({ text: '', isCorrect: false });
+}
+
+watch([title, answers], () => {
+  emits('submitData', {
+    uuid,
+    type: 'multipleChoice',
     title: title.value,
-    answers: answers.value,
-    correctAnswer: correctAnswer.value,
+    answers: answers.value.map(answer => ({ text: answer.text, isCorrect: !!answer.isCorrect })),
   });
-}, 500); // Debounce for å begrense hyppigheten av oppdateringer
+}, { deep: true });
 
-watch([title, answers, correctAnswer], debouncedUpdateStore, { deep: true });
-
-onMounted(() => {
-  // Hent den lagrede quiz-tilstanden fra Vuex når komponenten monteres
-  const currentQuiz = store.state.quizzes.currentQuiz;
-  if (currentQuiz) {
-    title.value = currentQuiz.title;
-    answers.value = currentQuiz.answers.length > 0 ? currentQuiz.answers : answers.value;
-    correctAnswer.value = currentQuiz.correctAnswer;
-  }
-});
+// Initialize component with existing data if available
+const existingQuestion = store.state.quizzes.questions.find(q => q.uuid === uuid);
+if (existingQuestion) {
+  title.value = existingQuestion.title;
+  answers.value = existingQuestion.answers;
+}
 </script>
 
 <template>
   <div class="question-container">
-    <h3>Multiple Choice</h3>
-    <div class="question-box">
-      <input v-model="title" type="text" placeholder="Enter your question here" class="question-title"/>
-      <div class="answers-container">
-        <div class="answer-row" v-for="(answer, index) in answers" :key="index">
-          <input v-model="answer.text" type="text" :placeholder="'Answer ' + (index + 1)" class="answer-text"/>
-          <input type="radio" :value="index" v-model="correctAnswer" class="correct-answer-checkbox"/>
-        </div>
-      </div>
+    <input v-model="title" placeholder="Question title" />
+    <div v-for="(answer, index) in answers" :key="index">
+      <input v-model="answer.text" placeholder="Answer text" />
+      <input type="checkbox" v-model="answer.isCorrect" /> Correct
     </div>
+    <button @click="addAnswer">Add Answer</button>
   </div>
 </template>
-
-
-
 
 <style scoped>
 .question-container {

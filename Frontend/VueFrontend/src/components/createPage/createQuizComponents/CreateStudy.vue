@@ -1,49 +1,37 @@
 <script setup>
-import { watch, ref, defineEmits } from 'vue';
+import { ref, watch, defineProps, defineEmits } from 'vue';
+import { useStore } from 'vuex';
 
+const { uuid } = defineProps(['uuid']);
 const emits = defineEmits(['submitData']);
+const store = useStore();
 
-const studyCard = ref({
-  question: '',
-  answer: ''
-});
+const question = ref('');
+const answer = ref('');
 
-// Enkel debounce-funksjon
-function debounce(func, wait) {
-  let timeout;
-  return function(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(this, args);
-    }, wait);
-  };
-}
-
-// Debounced funksjon som emitter studiekortdata
-const emitDataDebounced = debounce(() => {
+watch([question, answer], () => {
   emits('submitData', {
+    uuid,
     type: 'study',
-    question: studyCard.value.question,
-    answer: studyCard.value.answer
+    question: question.value,
+    answer: answer.value,
   });
-}, 5000); // 500ms ventetid for å forhindre for mange oppdateringer
+}, { deep: true });
 
-// Bruker watch for å reagere på endringer i studyCard og kaller den debounced funksjonen
-watch(studyCard, emitDataDebounced, { deep: true });
+// Initialize component with existing data if available
+const existingQuestion = store.state.quizzes.questions.find(q => q.uuid === uuid);
+if (existingQuestion) {
+  question.value = existingQuestion.question;
+  answer.value = existingQuestion.answer;
+}
 </script>
-
-
 
 <template>
   <div class="question-container">
-    <div class="question-box">
-      <h3>Study Card</h3>
-      <input v-model="studyCard.question" type="text" placeholder="Enter your question here" class="question-title"/>
-      <textarea v-model="studyCard.answer" placeholder="Enter the answer here" class="answer-text"></textarea>
-    </div>
+    <input v-model="question" placeholder="Study card question" />
+    <textarea v-model="answer" placeholder="Study card answer"></textarea>
   </div>
 </template>
-
 
 <style scoped>
 .question-container {
