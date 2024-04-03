@@ -1,83 +1,51 @@
-// FillintheblankQuizDisplayer.vue
 <template>
-  <div class="quiz-container">
-    <h1>Fill in the Blank Quiz</h1>
-    <div v-if="questions.length > 0">
-      <FillintheblankDisplayer :question="questions[currentQuestionIndex]" />
-      <div class="navigation">
-        <button @click="goToPrevious()" :disabled="currentQuestionIndex === 0">Previous</button>
-        <button @click="goToNext()" :disabled="currentQuestionIndex === questions.length - 1">Next</button>
-      </div>
-      <div class="question-navigation">
-        <span v-for="(question, index) in questions" :key="question.id" class="navigation-dot" :class="{active: currentQuestionIndex === index}" @click="goToQuestion(index)">
-          {{ index + 1 }}
-        </span>
-      </div>
-    </div>
+  <div class="fill-in-the-blank-container">
+    <p>{{ question.questionText }}</p>
+    <input v-model="userAnswer" type="text" placeholder="Type your answer here" />
+    <button @click="submitAnswer">Submit</button>
   </div>
 </template>
 
-
 <script setup>
-import { ref, onMounted } from 'vue';
-import FillintheblankDisplayer from '@/components/displayPage/displayQuiz/FillintheblankDisplayer.vue';
+import { defineProps, ref, defineEmits } from 'vue';
 
-const questions = ref([]);
-const currentQuestionIndex = ref(0);
-
-const goToNext = () => {
-  if (currentQuestionIndex.value < questions.value.length - 1) {
-    currentQuestionIndex.value++;
-  }
-};
-
-const goToPrevious = () => {
-  if (currentQuestionIndex.value > 0) {
-    currentQuestionIndex.value--;
-  }
-};
-
-const goToQuestion = (index) => {
-  currentQuestionIndex.value = index;
-};
-
-onMounted(async () => {
-  try {
-    const response = await fetch('mockJSON/onlyOneQuestionType/fillintheblank.json');
-    if (!response.ok) throw new Error('Failed to load');
-    const data = await response.json();
-    questions.value = data.filter(q => q.Type === "Fill in the Blank");
-  } catch (error) {
-    console.error("Error loading fill-in-the-blank questions:", error);
-  }
+const props = defineProps({
+  question: Object,
 });
+const userAnswer = ref('');
+const emit = defineEmits(['answered']);
+
+const submitAnswer = () => {
+  const isCorrect = userAnswer.value.trim().toLowerCase() === props.question.correctAnswer.trim().toLowerCase();
+  emit('answered', { isCorrect, userAnswer: userAnswer.value });
+  userAnswer.value = ''; // Optionally clear input after submission if desired
+};
 </script>
 
-
 <style scoped>
-.quiz-container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  text-align: center;
-}
-.navigation {
-  margin-top: 20px;
+.fill-in-the-blank-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-.navigation-dot {
-  display: inline-block;
+.fill-in-the-blank-container p {
+  margin: 0;
+}
+
+.fill-in-the-blank-container input {
+  line-height: 1.5;
+  padding: 0.5em;
+  margin: 0.5em;
+}
+
+.fill-in-the-blank-container button {
   cursor: pointer;
-  padding: 5px;
-  margin-right: 5px;
-  background-color: #eee;
-}
-
-.navigation-dot.active {
-  background-color: #333;
+  padding: 0.5em 1em;
+  background-color: #4CAF50;
   color: white;
+  border: none;
+  border-radius: 5px;
 }
-
-
-/* Add additional styling as needed */
 </style>

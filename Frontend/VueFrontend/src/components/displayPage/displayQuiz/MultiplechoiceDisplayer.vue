@@ -1,3 +1,4 @@
+//MultiplechoiceDisplayer.vue
 <script setup>
 import { defineProps, ref } from 'vue';
 
