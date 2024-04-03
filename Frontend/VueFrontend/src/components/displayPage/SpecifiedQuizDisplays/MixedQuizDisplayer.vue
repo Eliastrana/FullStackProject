@@ -10,8 +10,9 @@
 
     <div class="quiz-header">
       <button @click="randomizeQuestions" :disabled="quizStarted" class="icon-button">
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-random"></i>
       </button>
+
       <h1>{{ quizTitle }}</h1>
       <button @click="openResults" type="submit" class="icon-button" aria-label="Submit">
         <i class="fas fa-check"></i>
@@ -52,8 +53,8 @@
         </li>
       </ul>
       <div class="buttonbox">
-      <button @click="restartQuiz">Try again</button>
-      <button @click="goToprofile">Next</button>
+      <button @click="restartQuiz">Try Again</button>
+      <button @click="goToprofile">More Quizzes</button>
       </div>
     </div>
   </div>

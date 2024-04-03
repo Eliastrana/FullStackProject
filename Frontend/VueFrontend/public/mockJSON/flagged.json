@@ -1,0 +1,163 @@
+[
+  {
+    "id": 1,
+    "Type": "Study Card",
+    "title": "History Quiz",
+    "creator": "Elias",
+    "description": "Test your knowledge of historical events.",
+    "difficulty": "Easy",
+    "category": "History",
+    "quizpath": "/mockJSON/onlyOneQuestionType/mixed-quiz.json",
+    "image": "/images/quizImages/history-quiz.jpg",
+    "flagged": true,
+    "severity": "High",
+    "flaggingreason": "Contains inaccurate information",
+    "flaggedword": "Pythagoras theorem is stated incorrectly.",
+    "questions": [
+      {
+        "questionText": "Who was the first President of the United States?",
+        "answer": "George Washington"
+      },
+      {
+        "questionText": "Who was the first President of the United States?",
+        "answer": "George Nei"
+      },
+      {
+        "questionText": "Who was the first President of the United States?",
+        "answer": "George Ja"
+      },
+      {
+        "questionText": "Who was the first President of the United States?",
+        "answer": "George Test"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "Type": "Multiple Choice",
+    "title": "Science Quiz",
+    "creator": "Erik",
+    "description": "Explore the wonders of science.",
+    "difficulty": "Medium",
+    "category": "Science",
+    "image": "/images/quizImages/science-quiz.jpg",
+    "flagged": true,
+    "severity": "Low",
+    "quizpath": "/quizzes/mixed-quiz.json",
+    "flaggingreason": "Contains inaccurate information",
+    "flaggedword": "Pythagoras theorem is stated incorrectly.",
+    "questions": [
+      {
+        "questionText": "What is the chemical symbol for water?",
+        "answer": "H2O"
+      }
+    ],
+    "options": [
+      {
+        "optionText": "H2O",
+        "isCorrect": true
+      },
+      {
+        "optionText": "CO2",
+        "isCorrect": false
+      },
+      {
+        "optionText": "O2",
+        "isCorrect": false
+      },
+      {
+        "optionText": "NaCl",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "Type": "Multiple Choice",
+    "title": "Geography Quiz",
+    "creator": "Sander",
+    "description": "Discover fascinating facts about the world.",
+    "category": "Geography",
+    "difficulty": "Easy",
+    "image": "/images/quizImages/geography-quiz.jpg",
+    "flagged": true,
+    "severity": "medium",
+    "quizpath": "/quizzes/mixed-quiz.json",
+    "flaggingreason": "Contains inaccurate information",
+    "flaggedword": "Pythagoras theorem is stated incorrectly.",
+    "questions": [
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      },
+      {
+        "questionText": "What is the largest continent on Earth?",
+        "answer": "Asia"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "Type": "Fill in the Blank",
+    "title": "Math Quiz",
+    "creator": "Vegard",
+    "description": "Test your mathematical skills.",
+    "category": "Math",
+    "difficulty": "Easy",
+    "flagged": true,
+    "severity": "medium",
+    "flaggingreason": "Profanity",
+    "flaggedword": "He should not have said that.",
+    "image": "/images/quizImages/math-quiz.jpg",
+    "quizpath": "/quizzes/mixed-quiz.json",
+    "questions": [
+      {
+        "questionText": "What is the value of Pi to two decimal places?",
+        "answer": "3.14"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "Type": "Fill in the Blank",
+    "title": "Math Quiz",
+    "creator": "Elias",
+    "description": "Test your mathematical skills.",
+    "category": "Math",
+    "difficulty": "Hard",
+    "flagged": false,
+    "severity": "medium",
+
+    "image": "/images/quizImages/math-quiz.jpg",
+    "quizpath": "/quizzes/mixed-quiz.json",
+    "questions": [
+      {
+        "questionText": "What is the value of Pi to two decimal places?",
+        "answer": "3.14"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "Type": "Fill in the Blank",
+    "title": "Math Quiz",
+    "creator": "Elias",
+    "description": "Test your mathematical skills.",
+    "category": "Math",
+    "difficulty": "Medium",
+    "flagged": false,
+    "severity": "high",
+    "image": "/images/quizImages/math-quiz.jpg",
+    "quizpath": "/quizzes/mixed-quiz.json",
+    "questions": [
+      {
+        "questionText": "What is the value of Pi to two decimal places?",
+        "answer": "3.14"
+      }
+    ]
+  }
+]
