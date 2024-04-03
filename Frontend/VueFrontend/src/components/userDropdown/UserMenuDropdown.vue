@@ -20,6 +20,8 @@ import router from '@/router/index.js'
 
 
 
+const emit = defineEmits(['closeNavbar']);
+
 const route = useRoute();
 
 // Accepting userName as a prop
@@ -51,7 +53,7 @@ const hideDropdown = () => {
 
 const logout = () => {
   store.dispatch('user/logout').then(() => {
-    // Assuming you have a 'home' route or similar that's accessible to non-authenticated users
+    emit('closeNavbar'); // Emit the event right before redirecting
     router.push({ name: 'home' }).catch(err => {
       console.error(err);
     });
@@ -60,6 +62,7 @@ const logout = () => {
     // Handle the error, maybe show a message to the user
   });
 };
+
 
 </script>
 
@@ -90,7 +93,8 @@ const logout = () => {
 }
 
 .dropdown-content a:hover {
-  color: #ffffaa;
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: bold;
 
 }
 
