@@ -91,20 +91,17 @@ public class QuizService {
     }
 
     @Transactional
-    public QuizDTO updateQuiz(UUID id, QuizDTO quizUpdateDTO) {
-        Quiz quiz = quizRepository.findById(id)
-                .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + id));
-        // If category update is allowed, fetch and set the category as done in createQuiz
+public QuizDTO updateQuiz(UUID id, QuizDTO quizUpdateDTO) {
+    Quiz quiz = quizRepository.findById(id)
+            .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + id));
 
-        // Apply updates from quizUpdateDTO to quiz
-        quizMapper.updateQuizFromDTO(quizUpdateDTO, quiz);
+    // Assuming QuizMapper's updateQuizFromDTO now handles difficulty
+    quizMapper.updateQuizFromDTO(quizUpdateDTO, quiz);
 
-        // Save the updated quiz
-        quiz = quizRepository.save(quiz);
+    quiz = quizRepository.save(quiz);
+    return quizMapper.toQuizDTO(quiz);
+}
 
-        // Convert updated Quiz entity to QuizDTO and return
-        return quizMapper.toQuizDTO(quiz);
-    }
 
     public void deleteQuiz(UUID id) {
         if (!quizRepository.existsById(id)) {

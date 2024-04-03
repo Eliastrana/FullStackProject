@@ -3,6 +3,7 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 import java.util.List;
 import java.util.UUID;
 
+import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class CompleteQuizDTO {
     private String description;
     private UUID creatorId;
     private String categoryName;
+    private Difficulty difficulty;
     private List<CompleteQuestionDTO> questions;
 
     // Image fields

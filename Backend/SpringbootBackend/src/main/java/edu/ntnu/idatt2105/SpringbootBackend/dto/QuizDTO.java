@@ -6,6 +6,8 @@ import lombok.Data;
 
 import java.util.UUID;
 
+import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
+
 @Schema(description = "Quiz DTO for displaying quiz information")
 @Data
 @Builder
@@ -18,6 +20,9 @@ public class QuizDTO {
 
     @Schema(required = true, example = "A quiz covering a wide range of topics.", description = "Description of the quiz")
     private String description;
+
+    @Schema(required = true, example = "EASY", description = "Difficulty of the quiz")
+    private Difficulty difficulty;
 
     @Schema(description = "CategoryId of the quiz")
     private UUID categoryId;
