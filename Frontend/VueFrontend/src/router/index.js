@@ -2,7 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import store from '@/store/index.js'
 
+
+
 const router = createRouter({
+
+
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
@@ -33,13 +37,14 @@ const router = createRouter({
     {
       path: '/quizcreator',
       name: 'Quizcreator',
-      component: () => import('../components/createPage/QuizcreatortoolView.vue')
-
+      component: () => import('../components/createPage/QuizcreatortoolView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/QuizcreatorTool',
       name: 'QuizcreatorTool',
-      component: () => import('../components/createPage/QuizcreatortoolView.vue')
+      component: () => import('../components/createPage/QuizcreatortoolView.vue'),
+      meta: { requiresAuth: true }
     },
     // {
     //   path: '/Account',
@@ -86,5 +91,16 @@ const router = createRouter({
 
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const isAuthenticated = store.getters['user/isAuthenticated'];
+
+  if (requiresAuth && !isAuthenticated) {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
 
 export default router
