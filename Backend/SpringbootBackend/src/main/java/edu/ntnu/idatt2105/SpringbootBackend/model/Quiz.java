@@ -33,6 +33,9 @@ public class Quiz {
     @Column(length = 1000)
     private String description;
 
+    @Column(nullable = false)
+    private Difficulty difficulty;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;

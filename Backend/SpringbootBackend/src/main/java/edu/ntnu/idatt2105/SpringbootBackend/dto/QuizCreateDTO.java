@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
+import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
+
 @Schema(description = "Quiz Create DTO for creating new quizzes")
 @Data
 @Builder
@@ -27,6 +29,10 @@ public class QuizCreateDTO {
     @Size(min = 1, max = 1000, message = "Description must be between 1 and 1000 characters")
     @Schema(required = true, example = "A quiz covering a wide range of topics.", description = "Description of the new quiz")
     private String description;
+
+    @NotBlank(message = "Difficulty is required")
+    @Schema(required = true, example = "EASY", description = "Difficulty of the new quiz")
+    private Difficulty difficulty;
 
     @Schema(required = true, example = "123e4567-e89b-12d3-a456-426614174000", description = "Unique identifier of the quiz creator")
     private UUID creatorId;

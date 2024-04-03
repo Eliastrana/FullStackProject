@@ -68,6 +68,7 @@ public class QuizMapper {
                 .title(quizCreateDTO.getTitle())
                 .description(quizCreateDTO.getDescription())
                 .creator(creator)
+                .difficulty(quizCreateDTO.getDifficulty())
                 // Assume that category is set elsewhere since it's not in QuizCreateDTO
                 .build();
     }
@@ -77,6 +78,9 @@ public class QuizMapper {
         existingQuiz.setTitle(quizDTO.getTitle());
         existingQuiz.setDescription(quizDTO.getDescription());
         existingQuiz.setCategory(Category.builder().id(quizDTO.getCategoryId()).build());
+        existingQuiz.setCreator(User.builder().id(quizDTO.getCreatorId()).build());
+        existingQuiz.setImage(Image.builder().id(quizDTO.getImageId()).build());
+        existingQuiz.setDifficulty(quizDTO.getDifficulty());
         return existingQuiz;
     }
 
@@ -133,6 +137,7 @@ public class QuizMapper {
                 quiz.getDescription(),
                 quiz.getCreator().getId(),
                 categoryName,
+                quiz.getDifficulty(),
                 completeQuestionDTOs,
                 imageName,
                 imageType,
