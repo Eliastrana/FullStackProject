@@ -11,11 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class CompleteQuizDTO {
-    private UUID id;
     private String title;
     private String description;
     private UUID creatorId;
-    private UUID categoryId;
+    private String categoryName;
     private List<CompleteQuestionDTO> questions;
-    private UUID imageId;
+
+    // Image fields
+    private String imageName;
+    private String imageType;
+    private String imageData;
 }

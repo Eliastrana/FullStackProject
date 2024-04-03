@@ -54,7 +54,7 @@ public class QuizService {
     @Transactional
     public QuizDTO createQuiz(QuizCreateDTO quizCreateDTO) {
         User creator = userRepository.findById(quizCreateDTO.getCreatorId())
-                .orElseThrow(() -> new CreatorNotFoundException(quizCreateDTO.getCreatorId()));
+                .orElseThrow(() -> new CreatorNotFoundException(quizCreateDTO.getCreatorId().toString()));
         Category category = null;
         if (quizCreateDTO.getCategoryId() != null) {
             category = categoryRepository.findById(quizCreateDTO.getCategoryId())
