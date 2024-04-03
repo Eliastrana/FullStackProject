@@ -118,10 +118,18 @@ completeQuizDTO.getQuestions().forEach(questionDTO -> {
     
     // Process and save each answer associated with the question
     questionDTO.getAnswers().forEach(answerCreateDTO -> {
-        Answer answer = answerMapper.toEntity(answerCreateDTO, question); // Ensure this method now accepts AnswerCreateDTO
+
+        Optional<Answer> existingAnswer = answerRepository.findByQuestionAndText(question, answerCreateDTO.getText());
+        Answer answer;
+        if (existingAnswer.isPresent()) {
+            answer = existingAnswer.get();
+            answer.setCorrect(answerCreateDTO.isCorrect());
+        } else {
+            answer = answerMapper.toEntity(answerCreateDTO, question);
+        }
         answerRepository.save(answer);
+        });
     });
-});
     
     return savedQuiz.getId(); // Return the ID of the saved quiz
 }

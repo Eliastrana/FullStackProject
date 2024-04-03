@@ -14,7 +14,7 @@ import edu.ntnu.idatt2105.SpringbootBackend.repository.CategoryRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.ImageRepository;
 
 import java.util.Base64;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -108,7 +108,7 @@ public class QuizMapper {
         if (dto.getQuestions() != null) {
             quiz.setQuestions(dto.getQuestions().stream()
                 .map(questionDTO -> questionMapper.toEntity(questionDTO, quiz))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toSet())); // Collect to a Set instead of a List
         }
 
         return quiz;
@@ -116,9 +116,9 @@ public class QuizMapper {
 
 
     public CompleteQuizDTO toCompleteQuizDTO(Quiz quiz) {
-        List<CompleteQuestionDTO> completeQuestionDTOs = quiz.getQuestions().stream()
+        Set<CompleteQuestionDTO> completeQuestionDTOs = quiz.getQuestions().stream()
                 .map(question -> questionMapper.toCompleteQuestionDTO(question))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         String categoryName = quiz.getCategory() != null ? quiz.getCategory().getCategoryName() : null;
 
