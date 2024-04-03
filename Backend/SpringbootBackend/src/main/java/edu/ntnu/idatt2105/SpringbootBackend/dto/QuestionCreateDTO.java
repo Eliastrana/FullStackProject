@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,7 +29,7 @@ public class QuestionCreateDTO {
     private Set<UUID> tags;
 
     @Schema(description = "Answers associated with the question")
-    private List<AnswerCreateDTO> answers; 
+    private Set<AnswerCreateDTO> answers; 
 
     @Schema(description = "Identifier of the image associated with the question")
     private UUID imageId; // Include the image ID here if you want to associate an image during question creation

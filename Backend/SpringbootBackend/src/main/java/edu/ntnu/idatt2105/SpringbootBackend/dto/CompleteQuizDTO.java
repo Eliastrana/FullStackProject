@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
@@ -17,7 +17,7 @@ public class CompleteQuizDTO {
     private UUID creatorId;
     private String categoryName;
     private Difficulty difficulty;
-    private List<CompleteQuestionDTO> questions;
+    private Set<CompleteQuestionDTO> questions;
 
     // Image fields
     private String imageName;
