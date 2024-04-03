@@ -1,86 +1,47 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { v4 as uuidv4 } from 'uuid';
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex';
-import CreateMultiplechoice from '@/components/createPage/createQuizComponents/CreateMultiplechoice.vue';
-import CreateFillintheblank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
-import CreateStudy from '@/components/createPage/createQuizComponents/CreateStudy.vue';
+import CreateMultipleChoice from '@/components/createPage/createQuizComponents/CreateMultiplechoice.vue';
+import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
+import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
 
 const store = useStore();
 
-// Definerer quiztyper
-const quizTypes = [
+const questions = computed(() => store.state.quizzes.questions);
+
+const quizTypes = ref([
   { id: 'multipleChoice', name: 'Multiple Choice', color: "#CAE9FF" },
   { id: 'fillInTheBlank', name: 'Fill in the Blank', color: "#62B6CB" },
   { id: 'study', name: 'Study', color: "#BEE9E8" }
-];
+]);
 
-const selectedQuizTypes = computed(() => store.state.quizzes.selectedQuizTypes);
-
-function addQuizType(quizTypeId) {
-  const quizType = quizTypes.find(type => type.id === quizTypeId);
-  if (quizType) {
-    store.commit('quizzes/ADD_QUIZ_TYPE', quizType);
-    selectedQuizTypes.value = store.state.quizzes.selectedQuizTypes;
-  }
+function addQuestionType(type) {
+  const uuid = uuidv4();
+  store.dispatch('quizzes/addOrUpdateQuestion', {
+    uuid,
+    type,
+    title: '', // Initial title set as empty
+    answers: [], // Initial answers set as empty array
+  });
 }
-
-
-
-
-// Gjenoppretter valgte quiztyper ved innlastning
-onMounted(() => {
-  selectedQuizTypes.value = store.state.quizzes.selectedQuizTypes;
-});
-
-function getComponentName(quizTypeId) {
-  switch (quizTypeId) {
-    case 'multipleChoice': return CreateMultiplechoice;
-    case 'fillInTheBlank': return CreateFillintheblank;
-    case 'study': return CreateStudy;
-    default: return null; // Denne linjen er viktig for å unngå render av undefined komponenter
-  }
-}
-
-function getQuizTypeColor(quizTypeId) {
-  const quizType = quizTypes.find(type => type.id === quizTypeId);
-  return quizType ? quizType.color : 'transparent';
-}
-
-
-const quizData = ref([]);
 
 function handleQuizData(data) {
-  const existingIndex = quizData.value.findIndex(item => item.question === data.question);
-  if (existingIndex !== -1) {
-    // Overskriv eksisterende oppføring for å unngå duplikater
-    quizData.value[existingIndex] = data;
-  } else {
-    // Legg til ny data
-    quizData.value.push(data);
+  store.dispatch('quizzes/addOrUpdateQuestion', data);
+}
+
+function getComponent(type) {
+  switch (type) {
+    case 'multipleChoice':
+      return CreateMultipleChoice;
+    case 'fillInTheBlank':
+      return CreateFillInTheBlank;
+    case 'study':
+      return CreateStudyCard;
+    default:
+      return null;
   }
 }
-
-async function compileQuizToJson() {
-  // Anta at quizData.value allerede inneholder all data korrekt samlet fra barnekomponentene
-  const quizJson = JSON.stringify(quizData.value, null, 2);
-  console.log(quizJson);
-
- // downloadQuizJson(quizJson); // Utløser nedlasting av JSON-filen
-}
-
-
-/*
-function downloadQuizJson(quizJson) {
-  const blob = new Blob([quizJson], { type: 'application/json' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'quizData.json';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-*/
-
 </script>
 
 <template>
@@ -98,7 +59,7 @@ function downloadQuizJson(quizJson) {
         <button
             v-for="quizType in quizTypes"
             :key="quizType.id"
-            @click="addQuizType(quizType.id)"
+            @click="addQuestionType(quizType.id)"
             :style="{ backgroundColor: quizType.color }"
             class="quiz-type-button"
         >
@@ -110,13 +71,12 @@ function downloadQuizJson(quizJson) {
     <h2>Your Questions:</h2>
 
     <!-- Container for quiz components with dynamic border color -->
-    <div
-      v-for="(quizType) in selectedQuizTypes"
-      :key="quizType.id"
-      class="quiz-component-container"
-      :style="{ borderColor: getQuizTypeColor(quizType.id) }"
-    >
-      <component :is="getComponentName(quizType.id)" @submitData="handleQuizData" />
+    <div v-for="question in questions" :key="question.uuid" class="question-editor">
+      <component
+        :is="getComponent(question.type)"
+        :uuid="question.uuid"
+        @submitData="handleQuizData"
+      />
     </div>
 
     <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>

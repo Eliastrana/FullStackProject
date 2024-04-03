@@ -1,30 +1,27 @@
 export default {
   namespaced: true,
   state: () => ({
-    selectedQuizTypes: [], // Holder styr på hvilke typer quizer som er valgt
-    quizzes: []
+    questions: [], // Stores question data including UUID
   }),
   mutations: {
-
-    ADD_QUIZ_TYPE(state, type) {
-      if (!state.selectedQuizTypes.some(t => t.id === type.id)) {
-        state.selectedQuizTypes.push(type);
-      }
+    ADD_QUESTION(state, question) {
+      state.questions.push(question);
     },
-    ADD_QUIZ(state, quiz) {
-      const existingIndex = state.quizzes.findIndex(q => q.id === quiz.id);
-      if (existingIndex !== -1) {
-        // Hvis quizzen allerede finnes, oppdaterer vi den eksisterende
-        state.quizzes[existingIndex] = quiz;
-      } else {
-        // Ellers legger vi til en ny quiz
-        state.quizzes.push(quiz);
+    UPDATE_QUESTION(state, updatedQuestion) {
+      const index = state.questions.findIndex(question => question.uuid === updatedQuestion.uuid);
+      if (index !== -1) {
+        state.questions[index] = updatedQuestion;
       }
     },
   },
   actions: {
-    updateCurrentQuiz({ commit }, quizData) {
-      commit('UPDATE_CURRENT_QUIZ', quizData);
-    }
+    addOrUpdateQuestion({ commit, state }, question) {
+      const existingQuestion = state.questions.find(q => q.uuid === question.uuid);
+      if (existingQuestion) {
+        commit('UPDATE_QUESTION', question);
+      } else {
+        commit('ADD_QUESTION', question);
+      }
+    },
   },
 };
