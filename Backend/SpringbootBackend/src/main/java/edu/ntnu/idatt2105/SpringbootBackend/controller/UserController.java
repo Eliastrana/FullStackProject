@@ -20,6 +20,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 
 /**
  * Controller for handling user authentication requests such as login and registration.
@@ -99,16 +101,16 @@ public class UserController {
     }
 
     @GetMapping("/details")
-    public ResponseEntity<UserDTO> getUserDetails() {
+    public ResponseEntity<User> getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
         // Use userService to load the user by username
         User user = userService.loadUserByUsername(username);
         if (user != null) {
-            UserDTO userDto = new UserDTO(user.getUsername()); // Adapt this based on the actual UserDTO constructor
+            //UserDTO userDto = new UserDTO(user.getUsername()); // Adapt this based on the actual UserDTO constructor
             // Populate other needed fields in UserDTO from the User entity as needed
-            return ResponseEntity.ok(userDto);
+            return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.notFound().build();
         }
