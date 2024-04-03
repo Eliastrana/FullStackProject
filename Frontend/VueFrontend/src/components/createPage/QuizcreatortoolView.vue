@@ -1,11 +1,10 @@
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex';
 import CreateMultipleChoice from '@/components/createPage/createQuizComponents/CreateMultiplechoice.vue';
 import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
 import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
-import axios from 'axios';
 
 const store = useStore();
 
@@ -16,23 +15,28 @@ const coverImage = ref(null);
 
 const questions = computed(() => store.state.quizzes.questions);
 
+onMounted(() => {
+  const quizDetails = store.state.quizzes.quizDetails;
+  quizTitle.value = quizDetails.title;
+  quizDescription.value = quizDetails.description;
+  quizCategory.value = quizDetails.category;
+  coverImage.value = quizDetails.coverImage;
+});
+
 const quizTypes = ref([
   { id: 'multipleChoice', name: 'Multiple Choice', color: "#CAE9FF" },
   { id: 'fillInTheBlank', name: 'Fill in the Blank', color: "#62B6CB" },
   { id: 'study', name: 'Study', color: "#BEE9E8" }
 ]);
 
-async function createQuiz(quizData) {
-  try {
-    // Erstatt 'https://your-backend-api.com/quizzes' m ed URL-en til ditt faktiske endepunkt
-    const response = await axios.post('https://api/completeQuiz', quizData);
-    console.log('Quiz opprettet:', response.data);
-    // Videre håndtering, for eksempel omdirigering eller visning av suksessmelding
-  } catch (error) {
-    console.error('Feil ved oppretting av quiz:', error);
-    // Feilhåndtering, for eksempel visning av feilmelding
-  }
-}
+// async function createQuiz(quizData) {
+//   try {
+//     const response = await axios.post('https://api/completeQuiz', quizData);
+//     console.log('Quiz opprettet:', response.data);
+//   } catch (error) {
+//     console.error('Feil ved oppretting av quiz:', error);
+//   }
+// }
 
 function addQuestionType(type) {
   console.log('Adding question type:', type);
@@ -40,8 +44,8 @@ function addQuestionType(type) {
   store.dispatch('quizzes/addOrUpdateQuestion', {
     uuid,
     type,
-    title: '', // Initial title set as empty
-    answers: [], // Initial answers set as empty array
+    title: '',
+    answers: [],
   });
 }
 
@@ -62,6 +66,16 @@ function getComponent(type) {
   }
 }
 
+function updateQuizDetails() {
+  console.log('Updating quiz details')
+  store.commit('quizzes/SET_QUIZ_DETAILS', {
+    title: quizTitle.value,
+    description: quizDescription.value,
+    category: quizCategory.value,
+    coverImage: coverImage.value,
+  });
+}
+
 
 async function compileQuizToJson() {
   const quizData = {
@@ -75,8 +89,7 @@ async function compileQuizToJson() {
   const quizJson = JSON.stringify(quizData, null, 2);
   console.log(quizJson);
 
-  // Kaller funksjonen for å sende quizdata til server
-  await createQuiz(quizData);
+//  await createQuiz(quizData);
 }
 
 </script>
@@ -86,11 +99,11 @@ async function compileQuizToJson() {
   <div class="app-container">
     <div class="top-container">
       <h1>Quiz Creator Tool</h1>
-      <input id="quiz-title-input" v-model="quizTitle" placeholder="Enter title of your quiz" />
-      <textarea v-model="quizDescription" placeholder="Enter description of your quiz"></textarea>
+      <input id="quiz-title-input" v-model="quizTitle" @blur="updateQuizDetails" placeholder="Enter title of your quiz" />
+      <textarea v-model="quizDescription" @blur="updateQuizDetails" placeholder="Enter description of your quiz"></textarea>
 
       <div id="bottom-container">
-        <select v-model="quizCategory">
+        <select v-model="quizCategory" @change="updateQuizDetails">
           <option disabled value="">Choose category</option>
           <option v-for="category in categories" :key="category.value" :value="category.value">
             {{ category.text }}

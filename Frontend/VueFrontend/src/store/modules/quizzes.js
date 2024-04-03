@@ -2,14 +2,17 @@ export default {
   namespaced: true,
   state: () => ({
     questions: [], // Stores question data including UUID
+    quizDetails: {
+      title: '',
+      description: '',
+      category: '',
+      coverImage: null,
+    }
   }),
   mutations: {
     ADD_QUESTION(state, { question, userId }) {
-      console.log('Adding question with mutation', question, userId);
       question.userId = userId;
-      console.log('Adding question 2', question, userId)
       state.questions.push(question);
-      console.log('Adding question 3', question, userId)
     },
     UPDATE_QUESTION(state, updatedQuestion) {
       const index = state.questions.findIndex(question => question.uuid === updatedQuestion.uuid);
@@ -20,14 +23,17 @@ export default {
     CLEAR_QUIZZES(state) {
       state.questions = [];
     },
+    SET_QUIZ_DETAILS(state, { title, description, category, coverImage }) {
+      state.quizDetails.title = title;
+      state.quizDetails.description = description;
+      state.quizDetails.category = category;
+      state.quizDetails.coverImage = coverImage;
+    }
   },
   actions: {
     addOrUpdateQuestion({ commit, state, rootGetters }, newQuestion) {
       // Accessing userId from the user module via rootGetters
       const userId = rootGetters['user/userId'];
-
-      // Logging for debugging purposes
-      console.log('UserId from getter:', userId);
 
       // Check if userId is not found
       if (!userId) {
@@ -40,13 +46,14 @@ export default {
 
       if (existingQuestion) {
         // If the question exists, update it
-        console.log('Updating question', newQuestion, userId);
         commit('UPDATE_QUESTION', { question: newQuestion, userId });
       } else {
         // If the question does not exist, add it
-        console.log('Adding new question', newQuestion, userId);
         commit('ADD_QUESTION', { question: newQuestion, userId });
       }
+    },
+    updateQuizDetails({ commit }, quizDetails) {
+      commit('SET_QUIZ_DETAILS', quizDetails);
     },
   },
 };
