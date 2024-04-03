@@ -14,9 +14,6 @@ const props = defineProps({
 });
 </script>
 
-
-
-
 <template>
   <div class="functionality" :style="{ backgroundColor: props.backgroundColor }">
     <div class="content-wrapper" :class="{ 'image-right': props.imagePosition === 'right' }">
@@ -29,58 +26,79 @@ const props = defineProps({
   </div>
 </template>
 
-
-
-
-
 <style scoped>
-
 .functionality {
   font-family: 'DM Sans', sans-serif;
   padding: 20px;
   border: none;
   border-radius: 20px;
-  background-color: #fffff7;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-align: center;
   width: 90%;
   margin-top: 2%;
-  margin-right: 40px;
-  margin-left: 40px;
-  display: flex; /* Use flex display */
-  flex-direction: column; /* Stack content vertically */
-  align-items: center; /* Center-align items */
-  height: 100%;
-
+  margin-right: auto; /* Sentrerer komponenten horisontalt */
+  margin-left: auto; /* Sentrerer komponenten horisontalt */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* Legger til mellomrom mellom bildet og teksten */
 }
 
 .content-wrapper {
+  font-size: 1rem;
   display: flex;
+  flex-direction: row; /* Standard layout */
   align-items: center;
   justify-content: center;
-  text-align: left;
-  /* Ensure the default layout has the image on the left */
+  gap: 20px; /* Legger til mellomrom mellom bildet og teksten */
+  width: 100%; /* Bruker full bredde til å håndtere layout */
 }
 
 .content-wrapper.image-right {
-  flex-direction: row-reverse; /* Flips the order when image is supposed to be on the right */
+  flex-direction: row-reverse; /* Bytter rekkefølge for høyreorientert bilde */
 }
 
 .text-content {
-  flex: 1; /* Allows the text content to fill the available space */
-  padding: 40px; /* Adds padding around the text content */
-  margin-left: 40px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1.7rem; /* Adjust font size as necessary */
+  flex: 1;
+  padding: 20px;
+  max-width: 60%; /* Setter en maksbredde for å begrense bildets størrelse */
+  height: auto; /* Beholder bildets aspektforhold */
+  line-height: 1.3; /* Gir bedre lesbarhet */
 
 }
 
 .functionality-image {
-
-  max-height: 600px;
-
-
-  border-radius: 10px; /* Optional: Rounds the corners of the image */
+  flex: 1; /* Gjør bildet fleksibelt innenfor containerens tilgjengelige plass */
+  max-width: 60%; /* Setter en maksbredde for å begrense bildets størrelse */
+  height: auto; /* Beholder bildets aspektforhold */
+  border-radius: 10px;
 }
+.text-content h1 {
+  font-size: clamp(0.9rem, 2.6vw, 20rem); /* Juster disse verdiene etter behov */
+}
+
+.text-content p {
+  font-size: clamp(1.2rem, 1vw, 10rem);
+}
+
+@media (max-width: 868px) {
+  .content-wrapper, .content-wrapper.image-right {
+    flex-direction: column;
+    text-align: center;
+  }
+  .text-content, .functionality-image {
+    max-width: 100%;
+    padding: 10px 0; /* Reduserer padding på mindre skjermer */
+    border-radius: 30px;
+  }
+  .text-content h1 {
+    font-size: clamp(1.7rem, 2.6vw, 20rem); /* Juster disse verdiene etter behov */
+  }
+
+  .text-content p {
+    font-size: clamp(1.2rem, 1vw, 10rem);
+  }
+}
+
 
 </style>
