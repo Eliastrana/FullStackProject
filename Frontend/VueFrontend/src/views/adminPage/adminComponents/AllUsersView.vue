@@ -40,9 +40,20 @@ onMounted(async () => {
       <h3>Username: {{ user.username }}</h3>
       <h4>Email: {{ user.email }}</h4>
       <h4>Quizzes: {{user.quizzes}} </h4>
-      <div @click="deleteUser(user.userId)" class="delete-icon">
-        <span class="material-symbols-outlined">delete</span>
+
+
+
+
+      <div class="action-icons">
+        <div @click="deleteUser(user.userId)" class="delete-icon">
+          <span class="material-symbols-outlined">delete</span>
+        </div>
+        <div @click="deleteUser(user.userId)" class="block-icon">
+          <span class="material-symbols-outlined">do_not_disturb</span>
+        </div>
       </div>
+
+
     </div>
   </div>
 </template>
@@ -50,92 +61,77 @@ onMounted(async () => {
 
 
 <style scoped>
+
+/* Base styles for headings */
 h1, h2 {
   font-family: 'DM Sans', sans-serif;
 }
 
-
 h2 {
-  font-family: 'DM Sans', sans-serif;
   color: #3232ff;
-
 }
+
+/* Main container for user profiles */
 .user-container {
-  width: 100%; /* Use 100% of the width */
-  margin: 5% auto; /* Keep it centered */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-left: 1%;
+  max-width: 90%;
   padding: 20px;
   background-color: #ececec;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align the container's items to the left */
-  max-width: 90%; /* Ensure the container doesn't get too wide */
-
 }
 
+/* Individual user profile card */
 .profile {
-  background-color: #fafafa;
+  position: relative;
+  width: 100%;
   padding: 20px;
+  margin-bottom: 20px;
+  background-color: #fafafa;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
 }
-
-.user-stats {
-  display: flex;
-  gap: 20px;
-  margin-top: 10px;
-}
-
-
-
-
-.profile {
-  /* Existing styles */
-  margin-bottom: 20px; /* Add space between user profiles */
-}
-/* Feel free to adjust or add more styles based on your design */
-
-.profile {
-   position: relative; /* Needed for absolute positioning of children */
-   background-color: #fafafa;
-   padding: 20px;
-   border-radius: 8px;
-   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-   margin-bottom: 20px; /* Space between profiles */
-   width: 95%; /* Ensure it fills the container */
-  transition: transform 0.3s;
-
-}
-
 
 .profile:hover {
   transform: translateY(-5px);
   background-color: #f0f0f0;
 }
 
-.delete-icon {
+/* Flex container for action icons */
+.action-icons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px; /* Adjust gap between icons */
+}
+
+/* Styling for both delete and block icons */
+.delete-icon, .block-icon {
   cursor: pointer;
-  position: absolute; /* Position it within the .profile */
-  top: 10px; /* Adjust top spacing */
-  right: 10px; /* Adjust right spacing */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px; /* Adjust based on actual size */
+  height: 24px; /* Adjust based on actual size */
+  fill: #4a5568; /* Icon color */
 }
 
+.delete-icon:hover, .block-icon:hover {
+  fill: rgba(0, 0, 0, 0.8); /* Icon hover color */
+}
+
+/* Material icons */
 .material-symbols-outlined {
-  font-size: 24px; /* Adjust the icon size */
-  color: #4a5568; /* Icon color */
+  font-size: 24px; /* Adjust based on preference */
+  color: inherit; /* Ensures icon color matches parent */
 }
 
-.material-symbols-outlined:hover {
-  color: rgba(0, 0, 0, 0.8); /* Icon hover color */
-}
-
-
-
-h1, h2 {
-  width: 100%; /* Full width to align text properly */
-  text-align: left; /* Align the text to the left */
-}
 </style>
 
 
