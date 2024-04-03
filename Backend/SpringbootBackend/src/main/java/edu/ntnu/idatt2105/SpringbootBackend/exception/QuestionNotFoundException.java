@@ -6,5 +6,9 @@ public class QuestionNotFoundException extends RuntimeException {
     public QuestionNotFoundException(UUID message) {
         super(String.format("Question, %s, is not found:",  message));
     }
+
+    public QuestionNotFoundException(String message) {
+        super(String.format("Question, %s, is not found:",  message));
+    }
     
 }

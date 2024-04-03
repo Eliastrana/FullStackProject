@@ -45,10 +45,8 @@ public class CompleteQuizController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> createCompleteQuiz(@RequestBody CompleteQuizDTO completeQuizDTO) {
     try {
-        completeQuizService.createCompleteQuiz(completeQuizDTO);
-        // Since the method is void, we can't directly get the created quiz ID here
-        // Respond with a general success message
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Complete quiz created successfully."));
+        UUID createdQuizId = completeQuizService.createCompleteQuiz(completeQuizDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", createdQuizId, "message", "Complete quiz created successfully."));
     } catch (Exception e) {
         logger.error("Failed to create complete quiz: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
