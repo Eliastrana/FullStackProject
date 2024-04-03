@@ -1,12 +1,18 @@
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import CreateMultipleChoice from '@/components/createPage/createQuizComponents/CreateMultiplechoice.vue';
 import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
 import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
+import axios from 'axios';
 
 const store = useStore();
+
+const quizTitle = ref('');
+const quizDescription = ref('');
+const quizCategory = ref('');
+const coverImage = ref(null);
 
 const questions = computed(() => store.state.quizzes.questions);
 
@@ -15,6 +21,18 @@ const quizTypes = ref([
   { id: 'fillInTheBlank', name: 'Fill in the Blank', color: "#62B6CB" },
   { id: 'study', name: 'Study', color: "#BEE9E8" }
 ]);
+
+async function createQuiz(quizData) {
+  try {
+    // Erstatt 'https://your-backend-api.com/quizzes' m ed URL-en til ditt faktiske endepunkt
+    const response = await axios.post('https://api/completeQuiz', quizData);
+    console.log('Quiz opprettet:', response.data);
+    // Videre håndtering, for eksempel omdirigering eller visning av suksessmelding
+  } catch (error) {
+    console.error('Feil ved oppretting av quiz:', error);
+    // Feilhåndtering, for eksempel visning av feilmelding
+  }
+}
 
 function addQuestionType(type) {
   console.log('Adding question type:', type);
@@ -43,14 +61,60 @@ function getComponent(type) {
       return null;
   }
 }
+
+
+async function compileQuizToJson() {
+  const quizData = {
+    title: quizTitle.value,
+    description: quizDescription.value,
+    category: quizCategory.value,
+    coverImage: coverImage.value,
+    questions: questions.value,
+  };
+
+  const quizJson = JSON.stringify(quizData, null, 2);
+  console.log(quizJson);
+
+  // Kaller funksjonen for å sende quizdata til server
+  await createQuiz(quizData);
+}
+
 </script>
+
 
 <template>
   <div class="app-container">
-  <div class="top-container">
-    <h1>Quiz Creator Tool</h1>
-    <input placeholder="Enter title of you quiz" id="quiz-title-input">
-  </div>
+    <div class="top-container">
+      <h1>Quiz Creator Tool</h1>
+      <input id="quiz-title-input" v-model="quizTitle" placeholder="Enter title of your quiz" />
+      <textarea v-model="quizDescription" placeholder="Enter description of your quiz"></textarea>
+
+      <div id="bottom-container">
+        <select v-model="quizCategory">
+          <option disabled value="">Choose category</option>
+          <option v-for="category in categories" :key="category.value" :value="category.value">
+            {{ category.text }}
+          </option>
+        </select>
+
+        <!-- Quiz Difficulty Dropdown -->
+        <select v-model="quizDifficulty">
+          <option disabled value="">Choose difficulty</option>
+          <option v-for="difficulty in difficulties" :key="difficulty.value" :value="difficulty.value">
+            {{ difficulty.text }}
+          </option>
+        </select>
+
+        <input type="file" id="upload" hidden @change="handleFileUpload" accept="image/*"/>
+        <label for="upload">Choose file</label>
+
+
+      <!-- Image Preview -->
+      <div v-if="coverImage" class="image-preview">
+        <img :src="coverImage" alt="Cover Image Preview" />
+      </div>
+        </div>
+    </div>
 
 
   <div class="quiz-container">
@@ -127,17 +191,13 @@ h2 {
   transform: translateY(-2px);
 }
 
-.quiz-component-container {
-  padding: 10px;
-  border-radius: 8px;
-}
-
 .quiz-container {
   display: flex;
   align-items: center;
   height: 100vh;
   width: 100vw;
   flex-direction: column;
+  grid-gap: 30px;
 
 }
 
@@ -169,18 +229,20 @@ h2 {
   justify-content: center;
   background-color: rgb(249, 249, 249);
   border-radius: 20px;
-  max-width: 50vw;
+  max-width: 70vw;
   text-align: center;
   padding: 20px 300px 0 300px;
   margin-top: 30px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
 }
 #quiz-title-input {
-  margin: 10px 0 30px 0;
+  margin: 0 0 0 0;
   font-size: 20px;
-  border: none;
   padding: 10px;
   border-radius: 10px;
+  border: 1px solid #ccc;
+
 }
 .app-container {
   display: flex;
@@ -189,6 +251,29 @@ h2 {
   justify-content: center;
   text-align: center;
   width: 100%;
+}
+textarea {
+  margin: 10px 0 10px 0;
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  font-family:"DM Sans",serif;
+  width: 400px;
+  border: 1px solid #ccc;
+}
+.image-preview img {
+  max-width: 100%; /* Begrense bredden til bildet for forhåndsvisning */
+  max-height: 200px; /* Sett en maksimal høyde for forhåndsvisning */
+  object-fit: cover; /* Sørge for at bildet dekker området proporsjonalt */
+}
+#bottom-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgb(249, 249, 249);
+  max-width: 70vw;
+  text-align: center;
+  margin-top: 30px;
 }
 
 </style>
