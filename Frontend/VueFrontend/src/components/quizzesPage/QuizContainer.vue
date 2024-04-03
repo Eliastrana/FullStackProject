@@ -133,7 +133,7 @@ const uniqueCategories = computed(() => {
 
 .category-badge {
   display: inline-block; /* Treat the <p> tag more like an inline element */
-  background-color: rgb(23, 22, 22); /* Example background color */
+  background-color: #3232ff; /* Example background color */
   color: #ffffff; /* Text color */
   padding: 5px 15px; /* Vertical and horizontal padding */
   border-radius: 20px; /* Rounded corners */

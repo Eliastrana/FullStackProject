@@ -10,9 +10,15 @@ const deleteQuiz = (id) => {
   // Implementation for editing a quiz goes here
 };
 
+// Dummy function for downloading quizzes
+const disableUser = (id) => {
+  alert(`Disableed user with ID: ${id}`);
+  // Implementation for downloading a quiz goes here
+};
+
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/testdata.json');
+    const response = await axios.get('/mockJSON/flagged.json');
     quizzes.value = response.data;
   } catch (error) {
     console.error('Failed to load quizzes:', error);
@@ -41,12 +47,15 @@ onMounted(async () => {
             <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>
           </div>
 
-          <div @click="deleteQuiz(quiz.id)" class="delete-icon">
-            <span class="material-symbols-outlined">delete</span>
+
+          <div class="action-icons">
+            <div @click="deleteQuiz(quiz.id)" class="icon delete-icon">
+              <span class="material-symbols-outlined">delete</span>
+            </div>
+            <div @click="disableUser(quiz.id)" class="icon download-icon">
+              <span class="material-symbols-outlined">download</span>
+            </div>
           </div>
-
-
-
         </div>
       </div>
     </div>
@@ -59,9 +68,9 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   width: fit-content;
+  margin-right: 1%;
   min-width: 45%;
   padding: 20px;
-  margin-top: 5%;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   background-color: #ececec;
@@ -78,6 +87,20 @@ onMounted(async () => {
 }
 
 .delete-icon:hover {
+  fill: rgba(0, 0, 0, 0.8); /* Icon color on hover */
+}
+
+.download-icon {
+  cursor: pointer;
+  width: 20px; /* Adjust icon size as needed */
+  height: 20px; /* Adjust icon size as needed */
+  position: absolute;
+  top: 20px;
+  right: 50px;
+  fill: #4a5568; /* Icon color */
+}
+
+.download-icon:hover {
   fill: rgba(0, 0, 0, 0.8); /* Icon color on hover */
 }
 
@@ -144,4 +167,7 @@ h2 {
   align-self: stretch; /* Makes the headings container take the full width */
   text-align: left; /* Aligns the text to the left */
 }
+
+
+
 </style>
