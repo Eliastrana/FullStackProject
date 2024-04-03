@@ -101,6 +101,7 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
             quiz.setDescription(completeQuizDTO.getDescription());
             quiz.setCreator(creator);
             quiz.setCategory(category);
+            quiz.setDifficulty(completeQuizDTO.getDifficulty());
 
     
     Image image = processImage(completeQuizDTO.getImageName(), completeQuizDTO.getImageType(), completeQuizDTO.getImageData());
