@@ -56,19 +56,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and()
-                .csrf().disable()
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**", "/error").permitAll()
-                        .requestMatchers("/home", "/login", "api/user/register", "api/user/login").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .cors().and()
+            .csrf().disable()
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**", "/error").permitAll()
+                    .requestMatchers("/home", "/login", "api/user/register", "api/user/login", "/api/difficulties/**").permitAll() // Include your endpoint here
+                    .anyRequest().authenticated()
+            )
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        return http.build();
-    }
+    return http.build();
+}
+
 
     /**
      * Configures CORS settings for the application, allowing requests from any origin
