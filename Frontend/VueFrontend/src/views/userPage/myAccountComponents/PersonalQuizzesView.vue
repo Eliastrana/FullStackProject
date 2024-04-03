@@ -48,10 +48,13 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: fit-content;
-  min-width: 45%;
+  width: 100%; /* Ensures full width usage, better for responsiveness */
+  max-width: 800px; /* Limits the maximum width for large screens */
   padding: 20px;
-  margin-top: 5%;
+  margin: 5% auto; /* Centers the container horizontally */
+  margin-right: 2%;
+  margin-left: 2%;
+
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   background-color: #ececec;
@@ -59,16 +62,16 @@ onMounted(async () => {
 
 .edit-icon {
   cursor: pointer;
-  width: 20px; /* Adjust icon size as needed */
-  height: 20px; /* Adjust icon size as needed */
+  width: 20px;
+  height: 20px;
   position: absolute;
   top: 20px;
   right: 20px;
-  fill: #4a5568; /* Icon color */
+  fill: #4a5568;
 }
 
 .edit-icon:hover {
-  fill: rgba(0, 0, 0, 0.8); /* Icon color on hover */
+  fill: rgba(0, 0, 0, 0.8);
 }
 
 .quizzes {
@@ -80,19 +83,20 @@ onMounted(async () => {
 
 .quiz-info {
   display: flex;
+  flex-wrap: wrap; /* Allows items to wrap on smaller screens */
   align-items: center;
   gap: 20px;
-  margin-bottom: -10px;
 }
 
 .quiz-image {
-  width: 100px; /* Adjust the image size as needed */
-  height: fit-content;
+  width: 100px; /* Consider using max-width for scalability */
+  height: auto; /* Maintain aspect ratio */
   border-radius: 8px;
 }
 
 .quiz-text {
   flex: 1;
+  min-width: 50%; /* Ensures text doesn't become too narrow on small screens */
 }
 
 .quiz {
@@ -101,8 +105,7 @@ onMounted(async () => {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   transition: transform 0.3s;
-  position: relative; /* This is necessary to position the edit icon correctly */
-
+  position: relative;
 }
 
 .quiz:hover {
@@ -110,13 +113,26 @@ onMounted(async () => {
   background-color: #f0f0f0;
 }
 
-h1 {
+@media (max-width: 768px) {
+  .quiz-info {
+    flex-direction: column; /* Stacks image and text vertically on smaller screens */
+  }
+
+  .quiz-image {
+    width: 80%; /* Larger images for narrower screens */
+    max-width: 200px; /* Prevents the image from becoming too large */
+    margin: 0 auto; /* Centers the image */
+  }
+}
+
+h1, h2 {
   font-family: 'DM Sans', sans-serif;
+  text-align: center; /* Centers the titles */
 }
 
 h2 {
-  font-family: 'DM Sans', sans-serif;
   color: #3232ff;
-
+  margin-bottom: 20px; /* Adds space between the title and content */
 }
 </style>
+

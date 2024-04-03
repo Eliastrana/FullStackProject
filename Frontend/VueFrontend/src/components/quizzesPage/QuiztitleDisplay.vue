@@ -44,45 +44,50 @@ export default {
 };
 </script>
 
+
 <style scoped>
-
-
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Felipa&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Felipa&family=Oi&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Chicle&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Felipa&family=Oi&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Chicle&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Eagle+Lake&family=Felipa&family=Oi&display=swap');
 
 .first-part {
-  color: #171616; /* Keep your desired color */
+  color: #171616;
   font-family: 'DM Sans', sans-serif;
 }
 
 .titleContainer {
-  height: 150px;
-  margin-top: 10%;
-  margin-bottom: 70px;
+  height: 15vh; /* Use viewport height for better scalability */
+  margin-top: 20vh;
+  margin-bottom: 7vh;
   display: flex;
   align-items: center;
+  justify-content: center; /* Center horizontally */
   padding-bottom: 5%;
 }
 
 p {
-  font-size: 8rem;
-  margin: 0;
+  font-size: 8vw; /* Use viewport width for scalability */
+  margin: 0; /* Adjusted to remove unnecessary top margin */
   text-align: left;
-  padding-left: 40px;
+  margin-left: 2%;
   color: #3232ff;
-  line-height: 1.2; /* Adjust this value as needed */
+  line-height: 1.2;
 }
 
-span {
-  position: relative;
-  /* top: -20px; Removed or adjust as needed */
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .titleContainer {
+    font-size: 20vw;
+    margin-top: 5vh; /* Slightly reduced for better appearance on tablets */
+    margin-left: 2%;
+  }
 }
 
+/* Additional breakpoints for extra small devices */
+@media (max-width: 480px) {
+  .titleContainer {
+    margin-top: 5vh; /* Significantly reduced to minimize the gap on mobile devices */
+    margin-left: 2%;
 
-
+  }
+}
 </style>
+

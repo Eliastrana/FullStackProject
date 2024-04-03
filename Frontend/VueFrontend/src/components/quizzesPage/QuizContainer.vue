@@ -93,9 +93,7 @@ const uniqueCategories = computed(() => {
 
 
 
-
 <style scoped>
-
 .controls-container {
   display: flex;
   justify-content: space-between;
@@ -103,109 +101,102 @@ const uniqueCategories = computed(() => {
   margin-bottom: 20px;
 }
 
-.quiz-container {
+.search-bar, .filters {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start; /* Adjust alignment if necessary */
-  gap: 20px; /* Adjust based on your design */
+  flex-wrap: wrap; /* Allows content to wrap on smaller screens */
 }
-
-
-
-.quiz-box {
-  flex: 0 0 calc((100% / 3) - 30px); /* Adjust calculation for 3 in a row */
-  /* Explanation for calculation:
-     100% / 3 = 33.33% for each box to take one-third of the container's width.
-     Subtract a bit more space for the gap to ensure they fit.
-     The exact value may need tweaking based on the total gap size and any margins. */
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-left: 12px;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-sizing: border-box; /* Includes padding and border in the element's total width/height */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  height: auto; /* Allows box height to grow with content */
-}
-
-.category-badge {
-  display: inline-block; /* Treat the <p> tag more like an inline element */
-  background-color: #3232ff; /* Example background color */
-  color: #ffffff; /* Text color */
-  padding: 5px 15px; /* Vertical and horizontal padding */
-  border-radius: 20px; /* Rounded corners */
-  font-size: 0.8rem; /* Adjust font size as needed */
-  margin: 0; /* Remove default <p> margin if needed */
-}
-
-
-.quiz-box:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Media query for larger screens */
-@media (max-width: 800px) {
-  .quiz-box {
-    flex: 0 0 100%; /* Full width for smaller screens */
-    margin-right: 20px;
-    margin-left: 20px;
-  }
-}
-
-h2 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-
-img {
-  object-fit: cover;
-  border-radius: 8px;
-
-  width: 100%; /* Ensure the image takes up the full width */
-  max-height: 200px; /* Set a max-height   to prevent images from stretching */
-
-}
-
-h2, p {
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Adjust number of lines for h2, and separately for p */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 
 input[type="text"], select {
   padding: 10px;
   margin: 10px 0;
-  margin-right: 20px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1.5rem;
   border: none;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; /* Keep font size reasonable on all devices */
 }
 
-
-select {
-  cursor: pointer;
-}
-
-.search-bar {
-  flex: 1;
+.search-bar input[type="text"] {
+  flex-grow: 1; /* Allows the search input to grow and fill available space */
+  margin-right: 20px; /* Ensures spacing between the search bar and filters */
   margin-left: 20px;
-  border: none;
 }
 
-.filters {
+.filters select {
+  margin-right: 20px; /* Consistent spacing around filters */
+}
+
+.quiz-container {
   display: flex;
-  gap: 10px; /* Space between filters */
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 20px;
 }
 
+.quiz-box {
+  flex: 0 0 calc(33.333% - 20px); /* Allows for 3 boxes per row, adjusting the gap */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
 
+.quiz-box img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
 
+h2, p {
+  margin-top: 10px; /* Adjust spacing for readability */
+}
+
+.category-badge {
+  background-color: #3232ff;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-top: 10px; /* Adjust spacing for consistency */
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  .quiz-box {
+    flex: 0 0 calc(50% - 20px); /* Adjust to 2 boxes per row on medium screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .controls-container {
+    flex-direction: column;
+    align-items: stretch; /* Stretch children to match parent's width */
+  }
+
+  .search-bar, .filters {
+    width: 50%; /* Ensure full width for the search bar and filters container */
+    justify-content: center; /* Center children if needed */
+    margin: 0 10px; /* Add some margin on the left and right */
+  }
+
+  .search-bar input[type="text"], .filters select {
+    width: 100%; /* Make input and select elements take up full width */
+    margin: 10px 0; /* Adjust margin for vertical spacing */
+  }
+
+  .quiz-box {
+    flex-basis: 100%; /* Make quiz box take full width */
+    margin-left: 2%; /* Adjust margins as needed for consistent spacing */
+    margin-right: 2%;
+
+  }
+}
 </style>
+
 
 
