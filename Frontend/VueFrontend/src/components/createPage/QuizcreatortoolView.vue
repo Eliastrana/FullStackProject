@@ -17,6 +17,7 @@ const quizTypes = ref([
 ]);
 
 function addQuestionType(type) {
+  console.log('Adding question type:', type);
   const uuid = uuidv4();
   store.dispatch('quizzes/addOrUpdateQuestion', {
     uuid,

@@ -68,7 +68,7 @@ public class QuestionService {
 
     public QuestionDTO getQuestionById(UUID questionId) throws QuestionNotFoundException {
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new QuestionNotFoundException("Question not found with id: " + questionId));
+                .orElseThrow(() -> new QuestionNotFoundException(questionId));
         
         return questionMapper.toQuestionDTO(question);
     }
@@ -76,7 +76,7 @@ public class QuestionService {
     @Transactional
     public QuestionDTO updateQuestion(UUID questionId, QuestionDTO questionDTO) throws QuestionNotFoundException {
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new QuestionNotFoundException("Question not found with id: " + questionId));
+                .orElseThrow(() -> new QuestionNotFoundException(questionId));
 
         // Fetch and set tags
         if (questionDTO.getTags() != null && !questionDTO.getTags().isEmpty()) {
@@ -101,7 +101,7 @@ public class QuestionService {
     @Transactional
     public void deleteQuestion(UUID questionId) throws QuestionNotFoundException {
         if (!questionRepository.existsById(questionId)) {
-            throw new QuestionNotFoundException("Question not found with id: " + questionId);
+            throw new QuestionNotFoundException(questionId);
         }
         
         questionRepository.deleteById(questionId);
@@ -115,7 +115,7 @@ public class QuestionService {
     @Transactional
     public void setImageForQuestion(UUID questionId, Image image) throws QuestionNotFoundException {
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new QuestionNotFoundException("Question not found with id: " + questionId));
+                .orElseThrow(() -> new QuestionNotFoundException(questionId));
         question.setImage(image);
         questionRepository.save(question);
     }
