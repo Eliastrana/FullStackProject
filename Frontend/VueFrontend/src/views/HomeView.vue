@@ -2,6 +2,7 @@
 
 import WelcomeIntro from '@/components/displayPage/WelcomeIntro.vue'
 import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDisplayer.vue'
+import FlipcardDisplayer from '@/components/displayPage/FlipcardDisplayer.vue'
 
 </script>
 
@@ -27,13 +28,7 @@ import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDispla
     backgroundColor="#BEE9E8" />
 
 
-  <FunctionalityDisplayer
-    title="Practice with quizzes to improve your knowledge."
-    description="See your stats and track your progress!"
-    imageUrl="/images/dalle/corpcore4.png"
-    imagePosition="left"
-    backgroundColor="#CAE9FF" />
-
+    <FlipcardDisplayer />
 
   </div>
 
