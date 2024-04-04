@@ -35,10 +35,6 @@ import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDispla
     backgroundColor="#CAE9FF" />
 
 
-
-
-
-
   </div>
 
 </template>

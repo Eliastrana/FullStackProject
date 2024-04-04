@@ -9,21 +9,28 @@
       <button class="hamburger" @click="toggleNavbar" v-if="!isNavbarOpen && screenWidth <= 768">
         <i class="material-icons">menu</i>
       </button>
-      <nav :class="{ 'open': isNavbarOpen }">
+      <nav :class="{ 'open': isNavbarOpen, 'closing': isNavbarClosing }">
         <div class="close-icon" @click="toggleNavbar" v-if="isNavbarOpen">✕</div>
 
         <div class="nav-links" v-show="isNavbarOpen || screenWidth > 768">
-          <RouterLink to="/Quizzes" active-class="active-link" @click.stop="closeNavbar()">Quizzes</RouterLink>
-          <RouterLink to="/Create" active-class="active-link" @click.stop="closeNavbar()">Create</RouterLink>
-          <RouterLink to="/Login" active-class="active-link" @click.stop="closeNavbar()" v-if="!isAuthenticated">Sign in</RouterLink>
+
+          <div @click="navigateAfterClose('/Quizzes')" class="alternativeRouter">Quizzes</div>
+          <div @click="navigateAfterClose('/Create')" class="alternativeRouter">Create</div>
+          <div @click="navigateAfterClose('/Login')" class="alternativeRouter" v-if="!isAuthenticated">Sign in</div>
+
+<!--          <RouterLink to="/Quizzes" active-class="active-link" @click="closeNavbar()" v-if="isAuthenticated">Quizzes</RouterLink>-->
+<!--          <RouterLink to="/Create" active-class="active-link" @click.stop="closeNavbar()">Create</RouterLink>-->
+<!--          <RouterLink to="/Login" active-class="active-link" @click.stop="closeNavbar()" v-if="!isAuthenticated">Sign in</RouterLink>-->
 
           <template v-if="isAuthenticated">
             <div v-if="screenWidth <= 768 && isNavbarOpen" @click.stop="toggleNavbar" class="smallermenu">
               <!-- Fullscreen Mobile Navbar Links -->
               <RouterLink to="/MyAccount" active-class="active-link">{{ userName }}</RouterLink>
+              <div class="undermenu">
               <RouterLink to="/Admin" active-class="active-link">Admin</RouterLink>
               <RouterLink to="/Contact" active-class="active-link">Contact</RouterLink>
               <a href="#" @click.prevent="logout">Logout</a>
+                </div>
             </div>
             <!-- Desktop View Dropdown -->
             <UserMenuDropdown v-else @closeNavbar="closeNavbar()" :userName="userName" activeRoute="/MyAccount" />
@@ -57,9 +64,28 @@ const screenWidth = ref(window.innerWidth);
 
 
 
+const navigateAfterClose = (path) => {
+  router.push(path); // Navigate after the animation duration
+  isNavbarClosing.value = true; // Trigger the closing animation
+  setTimeout(() => {
+    isNavbarClosing.value = false; // Reset the state
+    isNavbarOpen.value = false; // Ensure the navbar is closed
+  }, 500); // This duration should match your CSS animation
+};
+
+
+const isNavbarClosing = ref(false);
+
 const toggleNavbar = () => {
-  isNavbarOpen.value = !isNavbarOpen.value;
-  console.log("Navbar toggled: ", isNavbarOpen.value);
+  if (isNavbarOpen.value) {
+    isNavbarClosing.value = true;
+    setTimeout(() => {
+      isNavbarClosing.value = false;
+      isNavbarOpen.value = !isNavbarOpen.value;
+    }, 500); // Assuming the closing animation also takes 0.5s
+  } else {
+    isNavbarOpen.value = !isNavbarOpen.value;
+  }
 };
 
 const closeNavbar = () => {
@@ -119,6 +145,27 @@ const userName = computed(() => store.state.user.userInfo ? store.state.user.use
 
 /* Include the Roboto font */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+
+@keyframes slideDownBackground {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+
+@keyframes slideUpBackground {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
 
 header {
   font-family: 'DN Sans', sans-serif;
@@ -207,6 +254,17 @@ nav {
 }
 
 
+.undermenu {
+  display: flex;
+  flex-direction: column;
+  text-align: center  ;
+  align-items: flex-start; /* Aligns items to the start (left) */
+  gap: 20px;
+  padding-left: 40px;
+  font-family: 'DM Sans', sans-serif;
+
+}
+
 
 /* Remaining styles unchanged */
 
@@ -214,6 +272,23 @@ nav a {
   font-size: 40px; /* Larger font size */
   text-decoration: none;
   color: #fffffa; /* Adjust color based on your preference */
+}
+
+
+.alternativeRouter {
+  font-size: 40px; /* Larger font size */
+  text-decoration: none;
+  color: #fffffa; /* Adjust color based on your preference */
+}
+
+.alternativeRouter:hover {
+  color: #ffffaa; /* Adjust hover color based on your preference */
+  cursor: pointer;
+}
+
+nav a:hover {
+  color: #ffffaa; /* Adjust hover color based on your preference */
+
 }
 
 
@@ -299,10 +374,7 @@ nav.open .close-icon {
     display: flex;
     flex-direction: column;
     text-align: center  ;
-
     align-items: flex-start; /* Aligns items to the start (left) */
-
-    gap: 20px;
     padding-left: 40px;
     font-family: 'DM Sans', sans-serif;
   }
@@ -327,7 +399,7 @@ nav.open .close-icon {
 
   .nav-links a, .nav-links router-link {
     font-family: 'DM Sans', sans-serif;
-    font-size: 3rem; /* Larger font size for easy reading */
+    font-size: 40px; /* Larger font size for easy reading */
     padding: 10px; /* Padding for larger tap targets */
     color: #ffffff; /* Color for better contrast */
     text-align: center;
@@ -357,6 +429,8 @@ nav.open .close-icon {
 
   }
 
+
+
   nav.open {
     display: flex;
     flex-direction: column;
@@ -368,8 +442,19 @@ nav.open .close-icon {
     width: 100%;
     height: 100vh; /* Full viewport height */
     background-color: #3232ff; /* Adjust background color as needed */
+    animation: slideDownBackground 0.5s ease forwards; /* Apply the animation */
     z-index: 999; /* Ensure nav is above other content */
   }
+
+  nav.open {
+    animation: slideDownBackground 0.5s ease forwards;
+  }
+
+  nav.closing {
+    animation: slideUpBackground 0.5s ease forwards;
+  }
+
+
 }
 
 

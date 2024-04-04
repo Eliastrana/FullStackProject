@@ -30,6 +30,7 @@ const password = ref('');
 const router = useRouter();
 const store = useStore();
 
+
 const login = async () => {
   try {
     // Dispatching a Vuex action instead of directly calling the API

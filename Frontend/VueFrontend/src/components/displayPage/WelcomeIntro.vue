@@ -70,8 +70,8 @@ body {
 }
 
 h1 {
-  font-size: 10rem;
-  margin: 0; /* Adjust or remove margin as necessary */
+  font-size: clamp(2.5rem, 8vw, 10rem);
+  margin: 0; /* Juster eller fjern margin etter behov */
   font-family: 'DM Sans', sans-serif;
   font-weight: bold;
   padding-left: 40px;
@@ -87,6 +87,8 @@ h2 {
 
 
 .container {
+  flex: 1;
+  margin-bottom: 80px;
   display: flex;
   justify-content: center; /* Centers horizontally */
   align-items: center; /* Centers vertically */
@@ -112,7 +114,7 @@ button {
   cursor: pointer;
   color: #171616; /* Ensure text is readable on colored backgrounds */
   font-family: 'DM Sans', sans-serif;
-  font-size: 4rem;
+  font-size: 3rem;
   margin-right: 10px;
   text-align: center;
   background-color: #FFD700;
@@ -121,7 +123,6 @@ button {
 button:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   background: #b9a824;
-
 }
 
 .logo {
@@ -129,7 +130,7 @@ button:hover {
   height: auto;
   display: block;
   margin: 0 auto;
-  margin-right: 5%;
+
 }
 
 .image-container{
@@ -140,5 +141,44 @@ button:hover {
   margin-bottom: -40px;
 }
 
+@media (max-width: 768px) {
+  .container {
+    margin-bottom: 140px; /* Øker avstand til neste element */
+  }
+
+  button {
+    font-size: 3rem; /* Reduserer skriftstørrelsen for knappen */
+    padding: 8px 16px; /* Mindre padding for en mindre knapp */
+    border-radius: 15px; /* Mindre avrundede hjørner */
+    margin-top: 20px; /* Øker avstand fra toppen, juster etter behov */
+    align-self: center; /* Sentrerer knappen hvis .container bruker flex */
+  }
+
+  .logo {
+    width: 150%; /* Øker størrelsen på logoen i mobilvisning */
+    margin-bottom: 20px; /* Øker avstand under logoen */
+  }
+
+  h1 {
+    font-size: 4rem; /* Juster font-størrelse for h1 for konsistens */
+    padding: 0 20px; /* Tilpass padding for å passe bedre i små skjermer */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    margin-top: 50px;
+    margin-bottom: 50px; /* Juster avstand for enda mindre skjermer */
+  }
+
+  button {
+    font-size: 2.5rem; /* Ytterligere reduksjon av skriftstørrelse */
+    margin-top: 50px; /* Juster avstand fra toppen etter behov */
+  }
+
+  .logo {
+    width: 200%; /* Gjør logoen enda større for de minste skjermene */
+  }
+}
 
 </style>
