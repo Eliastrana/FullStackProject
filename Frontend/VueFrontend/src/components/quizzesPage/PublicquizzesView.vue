@@ -1,45 +1,50 @@
-// PublicquizzesView.vue
 <template>
   <div>
-    <QuizContainer @select-quiz="handleQuizSelect" />
+    <QuizContainer @select-quiz="handleQuizSelect" @update:quizzes="updateQuizzes" />
+    <div v-if="!quizzes.length" class="no-quizzes">
+      <img src="/images/404/noquizzes.png" alt="No Quizzes Available">
+      <p>We weren't able find any quizzes for you.</p>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import QuizContainer from '@/components/quizzesPage/QuizContainer.vue';
-import { defineEmits } from 'vue';
 
 const emit = defineEmits(['quiz-selected']);
+const quizzes = ref([]);
 
 const handleQuizSelect = (quiz) => {
   emit('quiz-selected', quiz);
 };
+
+const updateQuizzes = (newQuizzes) => {
+  quizzes.value = newQuizzes;
+};
 </script>
 
 <style scoped>
-h1 {
+/* Existing styles... */
+
+.no-quizzes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.no-quizzes img {
+  max-width: 30%;
+  height: auto;
+}
+
+.no-quizzes p {
   font-family: 'DM Sans', sans-serif;
-  font-size: 3rem; /* Base size for larger screens */
-  text-align: left;
   margin-top: 20px;
-  margin-left: 40px;
-}
+  font-size: 1.5rem;
+  margin-bottom: 100px;
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2.5rem; /* Slightly smaller font size for tablets */
-    margin-top: 15px;
-    margin-left: 20px;
-  }
-}
-
-/* Extra small devices (phones) */
-@media (max-width: 480px) {
-  h1 {
-    font-size: 2rem; /* Smaller font size for mobile phones */
-    margin-top: 10px;
-    margin-left: 10px;
-  }
 }
 </style>
