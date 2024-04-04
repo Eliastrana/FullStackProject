@@ -9,7 +9,7 @@ const currentCardIndex = ref(0);
 const flipped = ref(false);
 
 onMounted(() => {
-  fetch('mockJSON/onlyOneQuestionType/studycards.json')
+  fetch('mockJSON/onlyOneQuestionType/frontpageshowoff.json')
     .then(response => response.json())
     .then(data => {
       quizTitle.value = data.title; // Access the title
