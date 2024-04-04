@@ -24,7 +24,7 @@ public class QuizDTO {
     @Schema(required = true, example = "EASY", description = "Difficulty of the quiz")
     private Difficulty difficulty;
 
-    @Schema(description = "CategoryId of the quiz")
+    @Schema(example = "23e4567-e89b-12d3-a456-426614174000",description = "CategoryId of the quiz")
     private UUID categoryId;
 
     @Schema(required = true, example = "123e4567-e89b-12d3-a456-426614174000", description = "Unique identifier of the quiz creator")
