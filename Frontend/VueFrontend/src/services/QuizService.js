@@ -1,7 +1,8 @@
 import axios from 'axios'
 import store from '@/store/index.js'
 
-const API_URL = 'http://localhost:8080/api/completeQuiz';
+const COMPLETE_API_URL = 'http://localhost:8080/api/completeQuiz';
+const QUIZ_API_URL = 'http://localhost:8080/api/quiz';
 const token = store.state.user.token;
 
 export const QuizService = {
@@ -27,7 +28,24 @@ export const QuizService = {
       return question;
     });
 
-    const response = await axios.post(`${API_URL}`, modifiedQuizDetails, config);
+    const response = await axios.post(`${COMPLETE_API_URL}`, modifiedQuizDetails, config);
+    return response.data;
+  },
+
+  async getAllQuizzes() {
+    const response = await axios.get(`${QUIZ_API_URL}`, );
+    response.data.forEach(quiz => {
+      console.log(quiz)
+      console.log(quiz.difficulty)
+    });
+    return response.data;
+  },
+
+  async getQuizById(quizId) {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const response = await axios.get(`${COMPLETE_API_URL}/${quizId}`, config);
     return response.data;
   }
 }

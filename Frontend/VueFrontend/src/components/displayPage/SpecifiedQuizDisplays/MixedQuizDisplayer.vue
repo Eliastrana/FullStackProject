@@ -1,97 +1,164 @@
 //MixedQuizDisplayer.vue
 <template>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-
   <div class="quiz-container">
+    <!-- Overlay for Quiz Completion -->
     <div v-if="quizCompleted" class="overlay"></div>
 
-
+    <!-- Quiz Header -->
     <div class="quiz-header">
+      <!-- Randomize Questions Button -->
       <button @click="randomizeQuestions" :disabled="quizStarted" class="icon-button">
         <i class="fas fa-random"></i>
       </button>
 
+      <!-- Quiz Title -->
       <h1>{{ quizTitle }}</h1>
-      <button @click="openResults" type="submit" class="icon-button" aria-label="Submit">
+
+      <!-- Submit/Complete Quiz Button -->
+      <button @click="openResults" class="icon-button" aria-label="Submit" :disabled="!quizStarted">
         <i class="fas fa-check"></i>
       </button>
     </div>
 
+    <!-- Score Display -->
     <div class="score-container">
       Score: {{ currentScore }}/{{ totalQuestionsForScore }}
     </div>
 
+    <!-- Navigation Buttons and Progress Bar -->
     <div class="navigation">
-      <button class="navigation-button" @click="prevQuestion" :disabled="currentQuestionIndex === 0">←</button>
+      <button class="navigation-button" @click="prevQuestion" :disabled="currentQuestionIndex === 0">← Previous</button>
       <div class="progress-bar-container">
         <div class="progress-bar" :style="{ width: progressBarWidth }"></div>
       </div>
-      <button class="navigation-button" @click="nextQuestion" :disabled="currentQuestionIndex === questions.length - 1">→</button>
+      <button class="navigation-button"
+              @click="nextQuestion"
+              :disabled="currentQuestionIndex === (questions.value?.length ?? 0) - 1">
+        Next →
+      </button>
     </div>
 
+    <!-- Questions Display -->
     <div v-if="questions.length > 0">
       <transition name="slide" mode="out-in">
+        <!-- Dynamically display the current question component -->
         <component :is="currentQuizComponent"
-                   :key="currentQuestion.id"
+                   :key="currentQuestion.id || `fallback-${currentQuestionIndex}`"
                    :question="currentQuestion"
-                   :updateScore="handleAnswered"
-                   @answered="handleFillinBlankAnswer" />
+                   @answered="handleAnswered" />
       </transition>
     </div>
 
+    <!-- Quiz Completion Display -->
     <div v-if="quizCompleted" class="results-window">
       <h2>Quiz Completed!</h2>
       <p>Your score: {{ currentScore }}/{{ totalQuestionsForScore }}</p>
       <ul class="answer-summary">
+        <!-- Display each question's result -->
         <li v-for="(question, index) in questions" :key="index" :class="{'correct': question.correct, 'incorrect': question.answered && !question.correct}">
-          Q{{ index + 1 }}: {{ question.questionText }} - <strong>
-          <!-- Check if it's a study card or if it has been correctly or incorrectly answered -->
-          {{ question.type === 'Study Card' ? 'Study Card' : (question.correct ? 'Correct' : 'Incorrect') }}
+          Q{{ index + 1 }}: {{ question.text }} - <strong>
+          {{ question.questionType === 'STUDY' ? 'Study Note' : (question.correct ? 'Correct' : 'Incorrect') }}
         </strong>
         </li>
       </ul>
       <div class="buttonbox">
-      <button @click="restartQuiz">Try Again</button>
-      <button @click="goToprofile">More Quizzes</button>
+        <!-- Restart and Profile Navigation Buttons -->
+        <button @click="restartQuiz">Try Again</button>
+        <button @click="goToProfile">More Quizzes</button>
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
-import { ref, computed, onMounted, defineProps } from 'vue';
-import FillintheblankDisplayer from '@/components/displayPage/displayQuiz/FillintheblankDisplayer.vue';
-import MultiplechoiceDisplayer from '@/components/displayPage/displayQuiz/MultiplechoiceDisplayer.vue';
-import StudycardDisplayer from '@/components/displayPage/displayQuiz/StudycardDisplayer.vue';
-import router from '@/router/index.js'
+import { ref, computed, watch } from 'vue';
+import { useStore } from 'vuex';
+import FillInTheBlankDisplayer from '@/components/displayPage/displayQuiz/FillintheblankDisplayer.vue';
+import MultipleChoiceDisplayer from '@/components/displayPage/displayQuiz/MultiplechoiceDisplayer.vue';
+import StudyCardDisplayer from '@/components/displayPage/displayQuiz/StudycardDisplayer.vue';
+import router from '@/router/index.js';
 
-// Define props, including the jsonPath for the quiz data
-const props = defineProps({
-  jsonPath: String
-});
+const store = useStore();
 
-const quizTitle = ref('');
-const questions = ref([]);
+const currentQuestion = computed(() => questions.value[currentQuestionIndex.value] || {});
+const quizData = computed(() => store.state.quizAttempt.quizData);
+const quizTitle = computed(() => quizData.value.title);
+const questions = ref([...quizData.value.questions]);
 const currentQuestionIndex = ref(0);
 const currentScore = ref(0);
-const totalQuestionsForScore = ref(0);
-
-const handleFillinBlankAnswer = (answerData) => {
-  handleAnswered(answerData); // Forward the received data to handleAnswered
-};
-
-
-const quizComponents = {
-  "Fill in the Blank": FillintheblankDisplayer,
-  "Multiple Choice": MultiplechoiceDisplayer,
-  "Study Card": StudycardDisplayer
-};
-
-const currentQuestion = computed(() => questions.value[currentQuestionIndex.value]);
-const currentQuizComponent = computed(() => quizComponents[currentQuestion.value.type]);
+const quizStarted = ref(false);
 const quizCompleted = ref(false);
+
+// Maintain a separate ref for the total number of questions for scoring,
+// excluding study cards since they don't count towards the score.
+const totalQuestionsForScore = computed(() =>
+  questions.value.filter(q => q.questionType !== "STUDY").length
+);
+
+// Component mapping based on the question type
+const quizComponents = {
+  STUDY: StudyCardDisplayer,
+  MULTIPLE_CHOICE: MultipleChoiceDisplayer,
+  FILL_IN_BLANK: FillInTheBlankDisplayer,
+};
+
+const currentQuizComponent = computed(() =>
+  quizComponents[questions.value[currentQuestionIndex.value]?.questionType]
+);
+
+watch(quizData, (newQuizData) => {
+  console.log('new quiz data: ')
+  console.log(newQuizData)
+  if (newQuizData) {
+    questions.value = [...newQuizData.questions];
+  }
+});
+
+const handleAnswered = (isCorrect) => {
+  const currentIndex = currentQuestionIndex.value;
+  const currentQuestion = questions.value[currentIndex];
+
+  // Check if the question has already been answered to prevent re-processing
+  if (!currentQuestion.answered) {
+    // Mark as answered and set correctness
+    currentQuestion.answered = true;
+    currentQuestion.correct = isCorrect;
+
+    // Update the score if the answer is correct
+    if (isCorrect) {
+      currentScore.value++;
+    }
+
+    // Handle navigation or completion after a brief pause
+    if (currentIndex < questions.value.length - 1) {
+      setTimeout(() => currentQuestionIndex.value++, 500);
+    } else {
+      quizCompleted.value = true;
+    }
+  }
+};
+
+
+const randomizeQuestions = () => {
+  if (!quizStarted.value) {
+    questions.value.sort(() => 0.5 - Math.random());
+  }
+};
+
+const nextQuestion = () => {
+  if (currentQuestionIndex.value < questions.value.length - 1) {
+    quizStarted.value = true;
+    currentQuestionIndex.value++;
+  }
+};
+
+const prevQuestion = () => {
+  if (currentQuestionIndex.value > 0) {
+    quizStarted.value = true;
+    currentQuestionIndex.value--;
+  }
+};
 
 const restartQuiz = () => {
   currentQuestionIndex.value = 0;
@@ -100,95 +167,25 @@ const restartQuiz = () => {
   quizStarted.value = false;
   questions.value.forEach(question => {
     question.answered = false;
+    question.correct = null;
   });
+  randomizeQuestions();
 };
 
-const randomizeQuestions = () => {
-  questions.value.sort(() => Math.random() - 0.5);
+const goToProfile = () => {
+  router.push({ name: 'MyAccount' });
 };
-
 
 const openResults = () => {
   quizCompleted.value = true;
 };
 
-const goToprofile = () => {
-  router.push({ name: 'MyAccount' });
-};
-
-const handleAnswered = (isCorrect) => {
-  if (!currentQuestion.value.answered) {
-    currentQuestion.value.answered = true; // Mark as answered
-    currentQuestion.value.correct = isCorrect; // Set whether it was answered correctly
-
-    if (isCorrect) {
-      currentScore.value++;
-    }
-
-    if (currentQuestionIndex.value === questions.value.length - 1) {
-      // Last question has been answered
-      quizCompleted.value = true;
-    } else {
-      // Not the last question, move to the next one
-      setTimeout(nextQuestion, 500);
-    }
-  }
-};
-
-const navigationDirection = ref('next'); // default to 'next'
-
-
-
-const quizStarted = ref(false);
-
-
-const nextQuestion = () => {
-  if (currentQuestionIndex.value < questions.value.length - 1) {
-    quizStarted.value = true;
-    navigationDirection.value = 'next';
-    currentQuestionIndex.value++;
-  }
-};
-
-const prevQuestion = () => {
-  if (currentQuestionIndex.value > 0) {
-    quizStarted.value = true;
-    navigationDirection.value = 'previous';
-    currentQuestionIndex.value--;
-  }
-};
-
 const progressBarWidth = computed(() => {
-  const progress = ((currentQuestionIndex.value + 1) / questions.value.length) * 100;
-  return `${progress}%`;
-});
-
-onMounted(async () => {
-  const response = await fetch(props.jsonPath);
-  const data = await response.json();
-  quizTitle.value = data.title;
-
-  // Initialize questions with 'answered', 'correct', and adjust for study cards
-  questions.value = data.questions.map(question => {
-    // For study cards, consider them as 'answered' but not applicable for 'correct' or 'incorrect'
-    if (question.type === "Study Card") {
-      return {
-        ...question,
-        answered: true, // Study cards are considered as 'answered'
-        correct: null // 'correct' is not applicable for study cards
-      };
-    } else {
-      return {
-        ...question,
-        answered: false, // Other questions are not answered initially
-        correct: null // 'correct' state is null initially
-      };
-    }
-  });
-  totalQuestionsForScore.value = questions.value.filter(q => q.type !== "Study Card").length;
+  return `${(currentQuestionIndex.value + 1) / questions.value.length * 100}%`;
 });
 
 </script>
+
 
 
 <!-- Add styles as needed -->
@@ -397,4 +394,3 @@ body {
 
 
 </style>
-```

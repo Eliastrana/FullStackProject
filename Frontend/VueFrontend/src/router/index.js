@@ -54,7 +54,8 @@ const router = createRouter({
     {
       path: '/QuizDisplayer',
       name: 'QuizDisplayer',
-      component: () => import('../components/displayPage/QuizDisplayer.vue')
+      component: () => import('../components/displayPage/QuizDisplayer.vue'),
+      meta: { requiresAuth: true }
     },
 
     {

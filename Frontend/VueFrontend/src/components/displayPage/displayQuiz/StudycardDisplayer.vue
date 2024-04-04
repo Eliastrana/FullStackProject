@@ -8,14 +8,14 @@
           <img v-if="question.frontImage" :src="question.frontImage" alt="Question Image" class="question-image">
         </div>
         <!-- Update to use question.front -->
-        <p>{{ question.front }}</p>
+        <p>{{ question.text }}</p>
 
       </div>
 
       <div class="back">
         <!-- Update to use question.back -->
         <img v-if="question.backImage" :src="question.backImage" alt="Question Image" class="question-image">
-        <p>{{ question.back }}</p>
+        <p>{{ question.answers[0].text }}</p>
 
       </div>
     </div>
@@ -25,22 +25,24 @@
 <script setup>
 import { ref, defineProps } from 'vue';
 
+// Props updated to reflect expected structure more clearly
 const props = defineProps({
   question: {
     type: Object,
-
+    required: true,
   }
 });
 
+// Ref for managing the flip state of the card
 const flipped = ref(false);
 
+// Function to toggle the card's flip state
 const toggleFlip = () => {
   flipped.value = !flipped.value;
 };
 
-// Debugging
-console.log(props.question);
 </script>
+
 
 
 

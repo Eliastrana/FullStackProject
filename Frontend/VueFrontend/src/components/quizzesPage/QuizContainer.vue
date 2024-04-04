@@ -26,7 +26,7 @@
         <img :src="quiz.image" alt="Quiz Image">
         <h2>{{ quiz.title }}</h2>
         <p>{{ quiz.description }}</p>
-        <p class="category-badge">#{{ quiz.category }}</p>
+        <p class="category-badge">#{{ quiz.category_id }}</p>
         <!-- Optionally display difficulty if present in your data -->
       </div>
     </div>
@@ -36,8 +36,8 @@
 
 <script setup>
 
-import { ref, onMounted, computed } from 'vue';
-import { defineEmits } from 'vue';
+import { computed, defineEmits, onMounted, ref } from 'vue'
+import { QuizService } from '@/services/QuizService.js'
 
 const emit = defineEmits(['select-quiz']);
 const quizzes = ref([]);
@@ -50,6 +50,7 @@ const selectedCategory = ref('');
 // Assuming QuizContainer directly manages individual quiz items
 
 const handleQuizClick = (quiz) => {
+  console.log('Selected quiz:', quiz)
   emit('select-quiz', quiz);
 };
 
@@ -58,22 +59,16 @@ const filteredQuizzes = computed(() => {
   return quizzes.value.filter((quiz) => {
     return quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
       (selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value) &&
-      (selectedCategory.value === '' || quiz.category === selectedCategory.value);
+      (selectedCategory.value === '' || quiz.category_id === selectedCategory.value);
   });
 });
 
 
 onMounted(async () => {
   try {
-    const response = await fetch('mockJSON/testdata.json');
-    if (response.ok) {
-      quizzes.value = await response.json();
-
-    } else {
-      console.error('Failed to load testdata.json', response.status);
-    }
+    quizzes.value = await QuizService.getAllQuizzes();
   } catch (error) {
-    console.error('Error while fetching testdata.json', error);
+    console.error('Error while fetching quizzes', error);
   }
 });
 
