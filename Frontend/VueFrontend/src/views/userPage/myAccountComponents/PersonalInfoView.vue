@@ -44,9 +44,9 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: fit-content;
+  max-width: 90%; /* Allows container to scale but not exceed the screen width */
+  margin: 5% auto; /* Centers the container and maintains margin from the top */
   padding: 20px;
-  margin-top: 5%;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   background-color: #ececec;
@@ -54,11 +54,12 @@ onMounted(async () => {
 
 .basic-info, .level-info, .achievements {
   width: 100%;
+  max-width: 600px; /* Ensures content within these divs doesn't become too wide */
   text-align: center;
-  margin: 10px 0;
+  margin: 10px auto; /* Centers content blocks */
 }
 
-h1, h2 {
+h1, h2, .highlight {
   font-family: 'DM Sans', sans-serif;
 }
 
@@ -67,19 +68,19 @@ h2 {
 }
 
 .user-photo {
-  width: 100px;
-  height: 100px;
+  width: 100px; /* Consider making this responsive with a percentage or max-width */
+  height: 100px; /* Maintain aspect ratio */
   border-radius: 50%;
   margin: 20px 0;
 }
 
 .highlight {
-  font-size: 1.2em; /* Makes text larger */
-  color: #4a5568; /* Darker text color for emphasis */
+  font-size: 1.2em;
+  color: #4a5568;
 }
 
 .achievements ul {
-  list-style-type: none; /* Removes default list styling */
+  list-style-type: none;
   padding: 0;
 }
 
@@ -91,11 +92,22 @@ h2 {
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-.user-details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+@media (max-width: 768px) {
+  .user-info-container {
+    width: auto; /* Allows the container to fill the screen width on smaller devices */
+    margin: 5% 10px; /* Adds a small margin to the sides */
+    padding: 10px; /* Adjusts padding for smaller screens */
+  }
+
+  .user-photo {
+    width: 80px; /* Slightly smaller photo for smaller screens */
+    height: 80px;
+  }
+
+  .highlight {
+    font-size: 1em; /* Adjusts font size for smaller screens */
+  }
 }
 </style>
+
 

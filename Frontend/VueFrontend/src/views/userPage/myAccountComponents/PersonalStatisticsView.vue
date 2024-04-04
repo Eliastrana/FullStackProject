@@ -38,35 +38,36 @@ onMounted(async () => {
 <style scoped>
 h1, h2 {
   font-family: 'DM Sans', sans-serif;
+  text-align: center; /* Center titles for better mobile aesthetics */
 }
 
 h2 {
   color: #3232ff;
   margin-top: -20px;
-
 }
 
 .achievements-container {
-
   background-color: #ececec;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  width: fit-content;
+  width: 100%; /* Use 100% width for better scalability */
+  max-width: 800px; /* Max width to prevent it from becoming too wide on large screens */
   padding: 20px;
   margin-top: 5%;
-  margin-left: 2%;
+  margin-left: auto; /* Center the container */
+  margin-right: auto; /* Center the container */
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* This already provides good scalability */
   gap: 20px;
   width: 100%;
+  padding: 0 20px; /* Add padding to prevent content from touching the sides */
 }
 
 .tile {
@@ -74,12 +75,11 @@ h2 {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-
+  transition: transform 0.3s, background-color 0.3s; /* Smooth transition for hover effect */
 }
 
 .tile:hover {
   transform: translateY(-5px);
-  transition: transform 0.3s;
   background-color: #f0f0f0;
 }
 
@@ -87,22 +87,33 @@ h2 {
   background-color: #e0e0e0;
   border-radius: 10px;
   overflow: hidden;
+  width: 100%; /* Ensure progress bar container takes full width */
 }
 
 .progress-bar {
   background-color: #4caf50;
   height: 10px;
   border-radius: 20px;
-
 }
 
-
 .gold-background {
-  background-color: gold !important; /* Use important to override other background color styles if necessary */
+  background-color: gold !important;
   border: 4px solid goldenrod;
 }
 
 .gold-background:hover {
-  background-color: goldenrod !important; /* Use important to override other background color styles if necessary */
+  background-color: goldenrod !important;
+}
+
+/* Additional Media Query for very small devices */
+@media (max-width: 480px) {
+  .tiles {
+    grid-template-columns: 1fr; /* Stack tiles on very small screens */
+  }
+
+  h1, h2 {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 }
 </style>
