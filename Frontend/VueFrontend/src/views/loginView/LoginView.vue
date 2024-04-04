@@ -11,6 +11,7 @@
       <div class="input-container">
         <input v-model="password" type="password" id="password" placeholder=" " required>
         <label for="password">Password</label>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       </div>
       <div id="button-container">
         <button id="sign-in" type="submit" :disabled="username.trim() === '' || password.trim() === '' ">Sign in</button>
@@ -27,6 +28,7 @@ import { useStore } from 'vuex';
 
 const username = ref('');
 const password = ref('');
+const errorMessage = ref('');
 const router = useRouter();
 const store = useStore();
 
@@ -43,7 +45,8 @@ const login = async () => {
     router.push({name: 'MyAccount'}); // Make sure the route name matches your routes configuration
   } catch (error) {
     console.error("Login failed:", error);
-    // Handle login failure, such as displaying an error message to the user
+    errorMessage.value = "Incorrect username or password.";
+
   }
 };
 
@@ -168,5 +171,10 @@ label {
 #create-user-link:hover {
   color: #0056b3;
   text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
 </style>

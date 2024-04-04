@@ -19,6 +19,7 @@
         <input v-model="passwordConfirmation" type="password" id="password-confirmation" placeholder=" " required>
         <label for="password-confirmation">Confirm Password</label>
       </div>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       <div id="button-container">
         <button id="register-user" type="submit" :disabled="username.trim() === '' || password.trim() === '' || email.trim() === '' || passwordConfirmation.trim() === ''">Register</button>
       </div>
@@ -36,12 +37,14 @@ const username = ref('');
 const email = ref('');
 const password = ref('');
 const passwordConfirmation = ref('');
+const errorMessage = ref('');
 const router = useRouter();
 const store = useStore();
 
 const registerUser = async () => {
+  errorMessage.value = '';
   if (password.value !== passwordConfirmation.value) {
-    alert("Passwords do not match.");
+    errorMessage.value = "Passwords do not match.";
     return;
   }
 
@@ -56,12 +59,18 @@ const registerUser = async () => {
     router.push({ name: 'login' });
   } catch (error) {
     console.error("Registration failed:", error);
+    errorMessage.value = "An error occurred. Please try again."; // Generell feilmelding for andre feil
   }
 };
 </script>
 
 
 <style scoped>
+
+.error-message {
+  color: red;
+}
+
 .center-container {
   display: flex;
   justify-content: center;
