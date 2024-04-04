@@ -51,6 +51,7 @@ public class Question {
     )
     private Set<Tag> tags;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Answer> answers;
+
 }

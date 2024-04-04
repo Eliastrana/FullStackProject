@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.mapper;
 
+import edu.ntnu.idatt2105.SpringbootBackend.dto.AnswerCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuestionDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuestionCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuestionDTO;
@@ -133,12 +134,17 @@ public class QuestionMapper {
             // Normally, imageData is not included here to avoid large payloads
         }
         dto.setTags(question.getTags().stream()
-            .map(Tag::getName) // Use getName() instead of getId()
+            .map(Tag::getName)
             .collect(Collectors.toSet()));
 
-            dto.setTags(question.getTags().stream()
-                .map(Tag::getName)
-                .collect(Collectors.toSet()));
+
+        if (question.getAnswers() != null && !question.getAnswers().isEmpty()) {
+            dto.setAnswers(question.getAnswers().stream()
+                    .map(answer -> new AnswerCreateDTO(answer.getText(), answer.isCorrect()))
+                    .collect(Collectors.toSet()));
+        }
+
+    
                 
         return dto;
     }
