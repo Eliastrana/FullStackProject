@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import store from '@/store/index.js'
+import NotFound from '../views/NotFound.vue';
+
 
 
 
@@ -13,6 +15,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/:pathMatch(.*)*', // This will catch all unmatched routes
+      name: 'NotFound',
+      component: NotFound,
     },
     {
       path: '/create',
