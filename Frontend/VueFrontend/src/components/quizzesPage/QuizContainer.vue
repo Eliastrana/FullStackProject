@@ -96,6 +96,32 @@ const uniqueCategories = computed(() => {
 
 <style scoped>
 
+.top-container select {
+  padding: 10px;
+  margin: 10px 0;
+  margin-right: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  width: auto; /* Adjusted to fit content */
+}
+
+.top-container select:focus {
+  outline: none; /* Removes default focus outline */
+  box-shadow: 0 0 0 2px #62B6CB; /* Adds a custom focus style */
+}
+
+#bottom-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px; /* Adjust as needed for spacing */
+}
+
 .controls-container {
   display: flex;
   flex-direction: row; /* Standard layout for større skjermer */
@@ -222,6 +248,17 @@ select {
     border: 1px solid #ddd; /* Legger til en grense for å gjøre feltet mer synlig */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Legger til en boks-skygge for å fremheve feltet */
   }
+
+    #bottom-container {
+      flex-direction: column;
+      align-items: stretch; /* Align items to stretch to full width */
+    }
+
+    .top-container select {
+      width: 100%; /* Full width for smaller screens */
+      margin: 10px 0; /* Adjust margin for vertical stacking */
+    }
+
 }
 @media (max-width: 668px) {
   .quiz-box {
