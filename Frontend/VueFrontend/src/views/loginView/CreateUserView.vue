@@ -19,8 +19,9 @@
         <input v-model="passwordConfirmation" type="password" id="password-confirmation" placeholder=" " required>
         <label for="password-confirmation">Confirm Password</label>
       </div>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       <div id="button-container">
-        <button id="register-user" type="submit">Register</button>
+        <button id="register-user" type="submit" :disabled="username.trim() === '' || password.trim() === '' || email.trim() === '' || passwordConfirmation.trim() === ''">Register</button>
       </div>
     </form>
   </div>
@@ -36,12 +37,14 @@ const username = ref('');
 const email = ref('');
 const password = ref('');
 const passwordConfirmation = ref('');
+const errorMessage = ref('');
 const router = useRouter();
 const store = useStore();
 
 const registerUser = async () => {
+  errorMessage.value = '';
   if (password.value !== passwordConfirmation.value) {
-    alert("Passwords do not match.");
+    errorMessage.value = "Passwords do not match.";
     return;
   }
 
@@ -56,13 +59,18 @@ const registerUser = async () => {
     router.push({ name: 'login' });
   } catch (error) {
     console.error("Registration failed:", error);
+    errorMessage.value = "An error occurred. Please try again."; // Generell feilmelding for andre feil
   }
 };
 </script>
 
 
-
 <style scoped>
+
+.error-message {
+  color: red;
+}
+
 .center-container {
   display: flex;
   justify-content: center;
@@ -130,7 +138,7 @@ label {
   pointer-events: none;
 }
 
-#register-user, #create-user-link {
+#register-user{
   padding: 10px 30px;
   margin-top: 20px;
   border: none;
@@ -138,35 +146,30 @@ label {
   background-color: #0056b3;
   color: #ffffff;
   cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.2s, transform 0.2s;
+  transition: background-color 0.3s, box-shadow 0.2s, transform 0.2s; /* Sørger for jevne overganger */
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   font-size: 20px;
 }
+#register-user:disabled {
+  background-color: #d3d3d3;
+  color: #8c8c8c;
+  cursor: not-allowed;
+}
 
-#register-user:hover, #create-user-link:hover {
+#register-user:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   background-color: #007bff;
 }
 
-#register-user:active, #create-user-link:active {
+#register-user:active{
   background-color: #3232ff;
   transform: translateY(2px);
 }
 
-#create-user-link {
-  background-color: transparent;
-  color: #424242;
-  padding: 0;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 15px;
-  margin-top: 10px;
-}
-
-#create-user-link:hover {
-  color: #0056b3;
-  text-decoration: underline;
+#register-user:disabled, #register-user:disabled:hover {
+  background-color: #d3d3d3;
+  color: #8c8c8c;
+  cursor: not-allowed;
 }
 </style>

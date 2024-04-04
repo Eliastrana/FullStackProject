@@ -11,9 +11,10 @@
       <div class="input-container">
         <input v-model="password" type="password" id="password" placeholder=" " required>
         <label for="password">Password</label>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       </div>
       <div id="button-container">
-        <button id="sign-in" type="submit">Sign in</button>
+        <button id="sign-in" type="submit" :disabled="username.trim() === '' || password.trim() === '' ">Sign in</button>
         <button id="create-user-link" type="button" @click="navigateToCreateUser">Register</button>
       </div>
     </form>
@@ -27,6 +28,7 @@ import { useStore } from 'vuex';
 
 const username = ref('');
 const password = ref('');
+const errorMessage = ref('');
 const router = useRouter();
 const store = useStore();
 
@@ -43,7 +45,8 @@ const login = async () => {
     router.push({name: 'MyAccount'}); // Make sure the route name matches your routes configuration
   } catch (error) {
     console.error("Login failed:", error);
-    // Handle login failure, such as displaying an error message to the user
+    errorMessage.value = "Incorrect username or password.";
+
   }
 };
 
@@ -137,17 +140,22 @@ label {
 }
 
 #sign-in:hover {
-  transform: translateY(-2px); /* Flytter knappen opp for "sveve" effekt */
+  transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  background-color: #007bff; /* Mørkere farge for å vise aktiv tilstand */
+  background-color: #007bff;
 
 }
 
 #sign-in:active {
-  background-color: #3232ff; /* Mørkere farge for å vise aktiv tilstand */
-  transform: translateY(2px); /* Flytter knappen ned for "presset" effekt */
+  background-color: #3232ff;
+  transform: translateY(2px);
 }
 
+#sign-in:disabled {
+  background-color: #d3d3d3;
+  color: #8c8c8c;
+  cursor: not-allowed;
+}
 
 #create-user-link {
   background-color: transparent;
@@ -163,5 +171,10 @@ label {
 #create-user-link:hover {
   color: #0056b3;
   text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
 </style>
