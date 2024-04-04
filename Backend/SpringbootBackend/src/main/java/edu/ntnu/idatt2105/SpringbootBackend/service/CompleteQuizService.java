@@ -93,8 +93,11 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
     User creator = userRepository.findById(completeQuizDTO.getCreatorId())
             .orElseThrow(() -> new CreatorNotFoundException("Creator with ID: " + completeQuizDTO.getCreatorId() + " not found."));
 
-    Category category = categoryRepository.findByCategoryName(completeQuizDTO.getCategoryName())
-            .orElseThrow(() -> new CategoryNotFoundException(completeQuizDTO.getCategoryName()));
+    Category category = null;
+    if (completeQuizDTO.getCategoryName() != null && !completeQuizDTO.getCategoryName().isEmpty()) {
+        category = categoryRepository.findByCategoryName(completeQuizDTO.getCategoryName())
+                .orElseThrow(() -> new CategoryNotFoundException(completeQuizDTO.getCategoryName()));
+    }
     
             Quiz quiz = new Quiz();
             quiz.setTitle(completeQuizDTO.getTitle());
@@ -111,8 +114,8 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
     // Save the quiz entity with the category set
     Quiz savedQuiz = quizRepository.save(quiz);
 
-// Process each question in the DTO as a new question.
-completeQuizDTO.getQuestions().forEach(questionDTO -> {
+    // Process each question in the DTO as a new question.
+    completeQuizDTO.getQuestions().forEach(questionDTO -> {
     Question question = questionMapper.toEntity(questionDTO, savedQuiz);
     questionRepository.save(question);
     

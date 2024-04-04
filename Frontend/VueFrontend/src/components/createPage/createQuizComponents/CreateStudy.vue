@@ -1,35 +1,30 @@
 <script setup>
-import { ref, watch, defineProps, defineEmits } from 'vue';
-import { useStore } from 'vuex';
+import { ref, defineProps, defineEmits, watch } from 'vue';
 
-const { uuid } = defineProps(['uuid']);
+const props = defineProps({
+  uuid: String,
+  text: String,
+  answers: Array
+});
 const emits = defineEmits(['submitData']);
-const store = useStore();
 
-const question = ref('');
-const answer = ref('');
+const question = ref(props.text);
+const answers = ref(props.answers);
 
-watch([question, answer], () => {
+watch([question, answers], () => {
   emits('submitData', {
-    uuid,
-    type: 'study',
-    question: question.value,
-    answer: answer.value,
+    uuid: props.uuid,
+    text: question.value,
+    questionType: 'STUDY',
+    answers: [{ text: answers.value, correct: true }]
   });
 }, { deep: true });
-
-// Initialize component with existing data if available
-const existingQuestion = store.state.quizzes.questions.find(q => q.uuid === uuid);
-if (existingQuestion) {
-  question.value = existingQuestion.question;
-  answer.value = existingQuestion.answer;
-}
 </script>
 
 <template>
   <div class="question-container">
     <input v-model="question" placeholder="Study card question" />
-    <textarea v-model="answer" placeholder="Study card answer"></textarea>
+    <textarea v-model="answers[0].text" placeholder="Study card answer"></textarea>
   </div>
 </template>
 

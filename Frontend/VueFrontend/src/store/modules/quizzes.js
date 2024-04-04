@@ -1,59 +1,50 @@
+// store/modules/quizzes.js
 export default {
   namespaced: true,
   state: () => ({
-    questions: [], // Stores question data including UUID
+    questions: [], // Retain for storing question data
     quizDetails: {
       title: '',
       description: '',
-      category: '',
-      coverImage: null,
-    }
+      creatorId: '',
+      categoryName: '',
+      questions: [],
+    },
   }),
   mutations: {
-    ADD_QUESTION(state, { question, userId }) {
-      question.userId = userId;
-      state.questions.push(question);
+    ADD_QUESTION(state, question) {
+      console.log('ADD_QUESTION', question)
+      state.quizDetails.questions.push(question);
+      console.log(state.quizDetails.questions)
     },
     UPDATE_QUESTION(state, updatedQuestion) {
-      const index = state.questions.findIndex(question => question.uuid === updatedQuestion.uuid);
+      const index = state.quizDetails.questions.findIndex(q => q.uuid === updatedQuestion.uuid);
       if (index !== -1) {
-        state.questions[index] = updatedQuestion;
+        state.quizDetails.questions[index] = updatedQuestion;
       }
     },
     CLEAR_QUIZZES(state) {
       state.questions = [];
+      state.quizDetails = { title: '', description: '', creatorId: '', categoryName: '', questions: [] };
     },
-    SET_QUIZ_DETAILS(state, { title, description, category, coverImage }) {
-      state.quizDetails.title = title;
-      state.quizDetails.description = description;
-      state.quizDetails.category = category;
-      state.quizDetails.coverImage = coverImage;
-    }
+    SET_QUIZ_DETAILS(state, details) {
+      state.quizDetails = { ...state.quizDetails, ...details };
+    },
   },
   actions: {
-    addOrUpdateQuestion({ commit, state, rootGetters }, newQuestion) {
-      // Accessing userId from the user module via rootGetters
-      const userId = rootGetters['user/userId'];
-
-      // Check if userId is not found
-      if (!userId) {
-        console.error('User ID not found');
-        return; // Stop execution if userId is undefined or null
-      }
-
-      // Finding if the question already exists for the given userId
-      const existingQuestion = state.questions.find(q => q.uuid === newQuestion.uuid && q.userId === userId);
-
-      if (existingQuestion) {
-        // If the question exists, update it
-        commit('UPDATE_QUESTION', { question: newQuestion, userId });
+    addOrUpdateQuestion({ commit, state, rootGetters }, questionData) {
+      console.log('addOrUpdateQuestion', questionData)
+      state.quizDetails.creatorId = rootGetters['user/userId'];
+      const existingIndex = state.quizDetails.questions.findIndex(q => q.uuid === questionData.uuid);
+      if (existingIndex !== -1) {
+        commit('UPDATE_QUESTION', questionData);
       } else {
-        // If the question does not exist, add it
-        commit('ADD_QUESTION', { question: newQuestion, userId });
+        console.log('addOrUpdateQuestion2', questionData)
+        commit('ADD_QUESTION', questionData);
       }
     },
-    updateQuizDetails({ commit }, quizDetails) {
-      commit('SET_QUIZ_DETAILS', quizDetails);
+    setQuizDetails({ commit }, details) {
+      commit('SET_QUIZ_DETAILS', details);
     },
   },
 };

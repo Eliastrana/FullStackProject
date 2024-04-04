@@ -1,35 +1,31 @@
 <script setup>
-import { ref, watch, defineProps, defineEmits } from 'vue';
-import { useStore } from 'vuex';
+import { ref, defineProps, defineEmits, watch } from 'vue';
 
-const { uuid } = defineProps(['uuid']);
+const props = defineProps({
+  uuid: String,
+  text: String,
+  answers: Array // Assuming you are handling it in a similar way to multiple choice
+});
 const emits = defineEmits(['submitData']);
-const store = useStore();
 
-const title = ref('');
-const blankAnswer = ref('');
+const title = ref(props.text);
+const answers = ref(props.answers);
 
-watch([title, blankAnswer], () => {
+watch([title, answers], () => {
+  console.log('Submitting data for fill in the blank question');
   emits('submitData', {
-    uuid,
-    type: 'fillInTheBlank',
-    title: title.value,
-    blankAnswer: blankAnswer.value,
+    uuid: props.uuid,
+    text: title.value,
+    questionType: 'FILL_IN_BLANK',
+    answers: [{ text: answers.value, correct: true }]
   });
 }, { deep: true });
-
-// Initialize component with existing data if available
-const existingQuestion = store.state.quizzes.questions.find(q => q.uuid === uuid);
-if (existingQuestion) {
-  title.value = existingQuestion.title;
-  blankAnswer.value = existingQuestion.blankAnswer;
-}
 </script>
 
 <template>
   <div class="question-container">
     <input v-model="title" placeholder="Question title" />
-    <input v-model="blankAnswer" placeholder="Correct answer for the blank" />
+    <input v-model="answers[0].text" placeholder="Correct answer for the blank" />
   </div>
 </template>
 

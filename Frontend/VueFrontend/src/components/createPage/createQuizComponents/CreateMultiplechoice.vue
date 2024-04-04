@@ -1,42 +1,39 @@
 <script setup>
-import { ref, computed, watch, defineProps, defineEmits } from 'vue';
-import { useStore } from 'vuex';
+import { ref, computed, defineProps, defineEmits, watch } from 'vue'
 
-const { uuid } = defineProps(['uuid']);
+const props = defineProps({
+  uuid: String,
+  text: String,
+  answers: Array,
+});
 const emits = defineEmits(['submitData']);
-const store = useStore();
 
-const title = ref('');
-const answers = ref([{ text: '', isCorrect: false }]);
+const title = ref(props.text);
+const answers = ref(props.answers);
 
 function addAnswer() {
-  answers.value.push({ text: '', isCorrect: false });
+  answers.value.push({ text: '', correct: false });
 }
+
 const canAddMoreAnswers = computed(() => answers.value.length < 4);
 
+// Whenever the title or answers change, emit the update to the parent.
 watch([title, answers], () => {
   emits('submitData', {
-    uuid,
-    type: 'multipleChoice',
-    title: title.value,
-    answers: answers.value.map(answer => ({ text: answer.text, isCorrect: !!answer.isCorrect })),
+    uuid: props.uuid,
+    text: title.value,
+    questionType: 'MULTIPLE_CHOICE',
+    answers: answers.value,
   });
 }, { deep: true });
-
-// Initialize component with existing data if available
-const existingQuestion = store.state.quizzes.questions.find(q => q.uuid === uuid);
-if (existingQuestion) {
-  title.value = existingQuestion.title;
-  answers.value = existingQuestion.answers;
-}
 </script>
 
 <template>
   <div class="question-container">
-    <input Class="question-input" v-model="title" placeholder="Your question" />
+    <input class="question-input" v-model="title" placeholder="Your question" />
     <div class="answer-group" v-for="(answer, index) in answers" :key="index">
       <input class="question-answer" v-model="answer.text" placeholder="Answer text" />
-      <input class="question-checkbox" type="checkbox" v-model="answer.isCorrect" />
+      <input class="question-checkbox" type="checkbox" v-model="answer.correct" />
     </div>
     <button id="add-answers" @click="addAnswer" :disabled="!canAddMoreAnswers">Add Answer</button>
   </div>

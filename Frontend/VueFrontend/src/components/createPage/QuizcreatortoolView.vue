@@ -5,21 +5,24 @@ import { useStore } from 'vuex';
 import CreateMultipleChoice from '@/components/createPage/createQuizComponents/CreateMultiplechoice.vue';
 import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
 import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
+import { QuizService } from '@/services/QuizService.js'
 
 const store = useStore();
 
 const quizTitle = ref('');
 const quizDescription = ref('');
 const quizCategory = ref('');
+const quizDifficulty = ref('');
 const coverImage = ref(null);
 
-const questions = computed(() => store.state.quizzes.questions);
+const questions = computed(() => store.state.quizzes.quizDetails.questions);
 
 onMounted(() => {
   const quizDetails = store.state.quizzes.quizDetails;
   quizTitle.value = quizDetails.title;
   quizDescription.value = quizDetails.description;
   quizCategory.value = quizDetails.category;
+  quizDifficulty.value = quizDetails.difficulty;
   coverImage.value = quizDetails.coverImage;
 });
 
@@ -27,6 +30,12 @@ const quizTypes = ref([
   { id: 'multipleChoice', name: 'Multiple Choice', color: "#CAE9FF" },
   { id: 'fillInTheBlank', name: 'Fill in the Blank', color: "#62B6CB" },
   { id: 'study', name: 'Study', color: "#BEE9E8" }
+]);
+
+const difficulties = ref([
+  { value: 'EASY', text: 'Easy' },
+  { value: 'MEDIUM', text: 'Medium' },
+  { value: 'HARD', text: 'Hard' },
 ]);
 
 // async function createQuiz(quizData) {
@@ -40,14 +49,40 @@ const quizTypes = ref([
 
 function addQuestionType(type) {
   console.log('Adding question type:', type);
-  const uuid = uuidv4();
-  store.dispatch('quizzes/addOrUpdateQuestion', {
+  const uuid = uuidv4(); // Generate a unique identifier for the question
+
+  let questionTemplate = {
     uuid,
-    type,
-    title: '',
-    answers: [],
-  });
+    text: '', // Default text for the question
+    questionType: '', // To be set based on type
+    tags: [], // Assuming tags might be optional or provided later
+    answers: [] // Default answers array
+  };
+
+  // Customize the question template based on the type
+  switch (type) {
+    case 'multipleChoice':
+      questionTemplate.questionType = 'MULTIPLE_CHOICE';
+      // Initialize with one default answer option
+      questionTemplate.answers = [{ text: 'New Answer', correct: false }];
+      break;
+    case 'fillInTheBlank':
+      questionTemplate.questionType = 'FILL_IN_BLANK';
+      // Fill in the blank might only need one correct answer
+      questionTemplate.answers = [{ text: '', correct: true }];
+      break;
+    case 'study':
+      questionTemplate.questionType = 'STUDY';
+      // Study card might not have traditional answers but handled as one correct concept or explanation
+      questionTemplate.answers = [{ text: 'Study note or detail', correct: true }];
+      break;
+  }
+
+  // Dispatch the action to add this new question to the Vuex store
+  store.dispatch('quizzes/addOrUpdateQuestion', questionTemplate);
+  console.log(questions)
 }
+
 
 function handleQuizData(data) {
   store.dispatch('quizzes/addOrUpdateQuestion', data);
@@ -55,11 +90,11 @@ function handleQuizData(data) {
 
 function getComponent(type) {
   switch (type) {
-    case 'multipleChoice':
+    case 'MULTIPLE_CHOICE':
       return CreateMultipleChoice;
-    case 'fillInTheBlank':
+    case 'FILL_IN_BLANK':
       return CreateFillInTheBlank;
-    case 'study':
+    case 'STUDY':
       return CreateStudyCard;
     default:
       return null;
@@ -72,25 +107,36 @@ function updateQuizDetails() {
     title: quizTitle.value,
     description: quizDescription.value,
     category: quizCategory.value,
+    difficulty: quizDifficulty.value,
     coverImage: coverImage.value,
   });
 }
 
+async function createQuiz() {
+  const quizDetails = store.state.quizzes.quizDetails;
+  try {
+    console.log('Creating quiz:', quizDetails)
+    const response = await QuizService.create(quizDetails);
+    console.log('Quiz created successfully:', response);
+  } catch (error) {
+    console.error('Error creating quiz:', error);
+  }
+}
+
+
 
 async function compileQuizToJson() {
-  const quizData = {
-    title: quizTitle.value,
-    description: quizDescription.value,
-    category: quizCategory.value,
-    coverImage: coverImage.value,
-    questions: questions.value,
-  };
+  // Assuming store dispatch or commit has already been done to update quizDetails
+  const quizData = store.state.quizzes.quizDetails; // Adjust path as necessary
 
-  const quizJson = JSON.stringify(quizData, null, 2);
-  console.log(quizJson);
-
-//  await createQuiz(quizData);
+  try {
+    const response = await QuizService.create(quizData);
+    console.log('Quiz created successfully', response);
+  } catch (error) {
+    console.error('Error creating quiz', error);
+  }
 }
+
 
 </script>
 
@@ -111,7 +157,7 @@ async function compileQuizToJson() {
         </select>
 
         <!-- Quiz Difficulty Dropdown -->
-        <select v-model="quizDifficulty">
+        <select v-model="quizDifficulty" @change="updateQuizDetails">
           <option disabled value="">Choose difficulty</option>
           <option v-for="difficulty in difficulties" :key="difficulty.value" :value="difficulty.value">
             {{ difficulty.text }}
@@ -151,13 +197,15 @@ async function compileQuizToJson() {
     <!-- Container for quiz components with dynamic border color -->
     <div v-for="question in questions" :key="question.uuid" class="question-editor">
       <component
-        :is="getComponent(question.type)"
+        :is="getComponent(question.questionType)"
         :uuid="question.uuid"
         @submitData="handleQuizData"
+        v-bind="question"
       />
     </div>
 
     <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>
+    <button class="compileButton" @click="createQuiz">Create Quiz</button>
   </div>
   </div>
 </template>
