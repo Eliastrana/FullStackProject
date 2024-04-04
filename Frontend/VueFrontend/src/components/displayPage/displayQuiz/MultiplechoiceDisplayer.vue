@@ -2,58 +2,49 @@
 <script setup>
 import { defineProps, ref } from 'vue';
 
-// Update the props to accept a single question object
 const props = defineProps({
   question: Object,
 });
 
 const selectedOptionIndex = ref(-1);
-
-// Emit an event when an option is selected
-const emit = defineEmits(['answer']);
+const emit = defineEmits(['answered']);
 
 const selectOption = (index) => {
   selectedOptionIndex.value = index;
-  const isCorrect = index === props.question.correctIndex;
-  emit('answered', { isCorrect });
+  // Determine if the selected answer is correct
+  const isCorrect = props.question.answers[index].correct;
+  emit('answered', isCorrect);
 };
-
 
 const getOptionClasses = (index) => {
   const classes = [];
+  // Only modify classes if an option has been selected
   if (selectedOptionIndex.value !== -1) {
-    // An option has been selected
-    if (index === props.question.correctIndex) {
-      classes.push('correct'); // Apply 'correct' class to the correct option
+    if (props.question.answers[index].correct) {
+      classes.push('correct');
     } else if (index === selectedOptionIndex.value) {
-      classes.push('selected'); // Apply 'selected' class to the selected option
+      classes.push('selected');
     } else {
-      classes.push('incorrect'); // Apply 'incorrect' class to all other options
+      classes.push('incorrect');
     }
   }
   return classes;
 };
 </script>
 
+
 <template>
   <div class="quiz-container">
-    <div class="question-title">{{ props.question.questionText }}</div>
-    <img v-if="question.image" :src="question.image" alt="Question Image" class="question-image">
-
+    <div class="question-title">{{ props.question?.text }}</div>
+    <img v-if="props.question.multimediaLink" :src="props.question.multimediaLink" alt="Question Image" class="question-image">
     <div class="answers-grid">
-      <button
-        v-for="(option, index) in props.question.options"
-        :key="index"
-        class="answer"
-        :class="getOptionClasses(index)"
-        @click="selectOption(index)"
-        :disabled="selectedOptionIndex !== -1"
-      >
-        {{ option }}
+      <button v-for="(answer, index) in props.question.answers" :key="index" class="answer" :class="getOptionClasses(index)" @click="selectOption(index)" :disabled="selectedOptionIndex !== -1">
+        {{ answer.text }}
       </button>
     </div>
   </div>
 </template>
+
 
 
 
