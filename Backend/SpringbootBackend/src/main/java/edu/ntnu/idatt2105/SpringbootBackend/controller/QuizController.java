@@ -36,7 +36,7 @@ public class QuizController {
     @Operation(summary = "Create a new quiz", description = "Creates a new quiz with the provided details")
     @ApiResponse(responseCode = "200", description = "Successfully created the quiz")
     @ApiResponse(responseCode = "400", description = "Error creating the quiz")
-    @PostMapping("/")
+    @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<QuizDTO> createQuiz(@RequestBody QuizCreateDTO quizCreateDTO) {
         logger.info("Creating new quiz with title: " + quizCreateDTO.getTitle());
@@ -58,7 +58,7 @@ public class QuizController {
 
     @Operation(summary = "Fetch all quizzes", description = "Retrieves all available quizzes")
     @ApiResponse(responseCode = "200", description = "Successfully fetched quizzes")
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<QuizDTO>> getAllQuizzes() {
         try {
             List<QuizDTO> quizzes = quizService.getAllQuizzes();
