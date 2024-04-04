@@ -133,19 +133,33 @@ public class QuestionMapper {
             dto.setImageType(question.getImage().getFileType());
             // Normally, imageData is not included here to avoid large payloads
         }
+<<<<<<< HEAD
         dto.setTags(question.getTags().stream()
             .map(Tag::getName)
             .collect(Collectors.toSet()));
 
+=======
+        if (question.getTags() != null) {
+            dto.setTags(question.getTags().stream()
+            .map(Tag::getName) 
+            .collect(Collectors.toSet()));
+        }
+>>>>>>> c765c60 (fix: :bug: Changed the mapping in questionDTO to include answers.)
 
         if (question.getAnswers() != null && !question.getAnswers().isEmpty()) {
             dto.setAnswers(question.getAnswers().stream()
                     .map(answer -> new AnswerCreateDTO(answer.getText(), answer.isCorrect()))
+<<<<<<< HEAD
                     .collect(Collectors.toSet()));
         }
 
     
+=======
+                    .collect(Collectors.toList()));
+        }
+>>>>>>> c765c60 (fix: :bug: Changed the mapping in questionDTO to include answers.)
                 
         return dto;
     }
+    
 }

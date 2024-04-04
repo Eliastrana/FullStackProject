@@ -43,3 +43,7 @@ public class CompleteQuizDTO {
     @Schema(description = "The base64 encoded string of the image data.", example = "data:image/png;base64,iVBORw0KG...")
     private String imageData;
 }
+<<<<<<< HEAD
+=======
+// 1b40d2c6-91d6-4e01-b247-ef2c10a879d4
+>>>>>>> c765c60 (fix: :bug: Changed the mapping in questionDTO to include answers.)
