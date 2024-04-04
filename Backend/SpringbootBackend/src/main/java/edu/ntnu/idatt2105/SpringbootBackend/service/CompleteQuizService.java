@@ -220,7 +220,7 @@ private void updateQuestionDetails(Question question, CompleteQuestionDTO dto) {
     }
 
     // Handle tags: find or create by name
-    Set<Tag> updatedTags = dto.getTags().stream()
+    dto.getTags().stream()
                               .map(tagName -> tagRepository.findByName(tagName)
                                          .orElseGet(() -> {
                                              Tag newTag = new Tag();
@@ -228,19 +228,18 @@ private void updateQuestionDetails(Question question, CompleteQuestionDTO dto) {
                                              return tagRepository.save(newTag);
                                          }))
                               .collect(Collectors.toSet());
-    question.setTags(updatedTags);
-    
-    // Handle answers as before
+
+    // Update answers
     updateAnswers(question, dto.getAnswers());
+    
 }
 
-
-private void updateAnswers(Question question, List<AnswerCreateDTO> dtoAnswers) {
+private void updateAnswers(Question question, Set<AnswerCreateDTO> dtoAnswers) {
     // Map existing answers for easy lookup
     Map<String, Answer> existingAnswers = question.getAnswers().stream()
                                                   .collect(Collectors.toMap(Answer::getText, answer -> answer));
     Set<Answer> updatedAnswers = new HashSet<>();
-    
+
     for (AnswerCreateDTO dtoAnswer : dtoAnswers) {
         Answer answer = existingAnswers.getOrDefault(dtoAnswer.getText(),
                         new Answer()); // Create new if not found by text
@@ -249,7 +248,7 @@ private void updateAnswers(Question question, List<AnswerCreateDTO> dtoAnswers) 
         answer.setQuestion(question);
         updatedAnswers.add(answer);
     }
-    
+
     // Remove answers that are not in the updated list
     question.getAnswers().retainAll(updatedAnswers);
     question.getAnswers().addAll(updatedAnswers);

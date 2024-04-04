@@ -16,7 +16,7 @@ public class CompleteQuestionDTO {
     private QuestionType questionType;
     private String multimediaLink;
     private Set<String> tags;
-    private List<AnswerCreateDTO> answers; 
+    private Set<AnswerCreateDTO> answers; 
     
     // Image fields
     private String imageName;
