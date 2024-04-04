@@ -98,37 +98,34 @@ const uniqueCategories = computed(() => {
 
 .controls-container {
   display: flex;
+  flex-direction: row; /* Standard layout for større skjermer */
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
+
 .quiz-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start; /* Adjust alignment if necessary */
-  gap: 20px; /* Adjust based on your design */
+  justify-content: center; /* Endret til center for å sentrere boksene */
+  gap: 20px; /* Bevarer mellomrommet mellom boksene */
 }
 
 
 
 .quiz-box {
-  flex: 0 0 calc((100% / 3) - 30px); /* Adjust calculation for 3 in a row */
-  /* Explanation for calculation:
-     100% / 3 = 33.33% for each box to take one-third of the container's width.
-     Subtract a bit more space for the gap to ensure they fit.
-     The exact value may need tweaking based on the total gap size and any margins. */
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-left: 12px;
+  margin: 10px; /* Gir en liten margin rundt hver boks */
   border-radius: 8px;
   background-color: #f9f9f9;
-  box-sizing: border-box; /* Includes padding and border in the element's total width/height */
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  height: auto; /* Allows box height to grow with content */
+  flex-basis: calc((100% / 3) - 40px); /* For tre i bredden */
+
 }
 
 .category-badge {
@@ -145,15 +142,12 @@ const uniqueCategories = computed(() => {
 .quiz-box:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
-/* Media query for larger screens */
-@media (max-width: 800px) {
+@media (max-width: 1024px) {
   .quiz-box {
-    flex: 0 0 100%; /* Full width for smaller screens */
-    margin-right: 20px;
-    margin-left: 20px;
+    flex-basis: calc((100% / 2) - 30px); /* Justerer til to i bredden */
   }
 }
+
 
 h2 {
   font-size: 2rem;
@@ -201,11 +195,39 @@ select {
 
 .filters {
   display: flex;
-  gap: 10px; /* Space between filters */
+  gap: 10px;
 }
 
+@media (max-width: 768px) {
+  .controls-container {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
 
+  .search-bar, .filters {
+    width: 90%; /* Tilpasser bredden til mindre skjermer */
+    margin: 0 10px 0 0; /* Legger til litt vertikal margin */
+  }
 
+  select, input[type="text"] {
+    width: 100%; /* Sørger for at inputfelt og select-elementer tar opp hele bredden */
+    box-sizing: border-box; /* Inkluderer padding og border i elementets totalbredde */
+  }
+
+  input[type="text"], select {
+    width: 97%;
+    padding: 15px 10px; /* Øker padding for bedre berøringsområde */
+    font-size: 1.2rem; /* Øker fontstørrelsen for bedre lesbarhet */
+    border: 1px solid #ddd; /* Legger til en grense for å gjøre feltet mer synlig */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Legger til en boks-skygge for å fremheve feltet */
+  }
+}
+@media (max-width: 668px) {
+  .quiz-box {
+    flex-basis: calc((100% / 1) - 20px); /* Justerer til en i bredden */
+  }
+}
 </style>
 
 

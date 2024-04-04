@@ -30,7 +30,7 @@
 
 h1 {
   font-family: 'DM Sans', sans-serif;
-  font-size: 4rem;
+  font-size: clamp(2.5rem, 8vw, 5rem);
   text-align: left;
   margin-top: 20px;
   margin-left: 40px;
@@ -38,7 +38,7 @@ h1 {
 
 h2 {
   font-family: 'DM Sans', sans-serif;
-  font-size: 1.7rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
   text-align: left;
   margin-left: 40px;
   color: #3232ff;
@@ -78,5 +78,24 @@ p {
 .step {
   margin: 0; /* Remove default margin */
 }
+
+@media (max-width: 760px) {
+  .steps-container {
+    flex-direction: column;
+    align-items: center; /* Sentrerer elementene horisontalt */
+  }
+
+  .step-container {
+    text-align: center; /* Sørger for at teksten inni hver container er sentrert */
+    width: 100%; /* Juster bredde etter behov for å gi mer plass */
+  }
+
+  .arrow {
+    transform: rotate(90deg);
+    padding: 10px 0;
+    align-self: center; /* Sentrerer pilene */
+  }
+}
+
 </style>
 

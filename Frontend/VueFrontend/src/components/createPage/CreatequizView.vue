@@ -44,6 +44,13 @@ const navigateToLogin = () => {
 </script>
 
 <style scoped>
+h1 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(1.4rem, 10vw, 5rem); /* Justerer størrelsen basert på skjermens bredde */
+  text-align: left;
+  margin-top: 40px;
+  margin-bottom: -20px;
+}
 .squares-container {
   margin-left: 40px;
   margin-right: 40px;
@@ -165,5 +172,28 @@ const navigateToLogin = () => {
 
 .square p {
   margin: 0; /* Remove default margin */
+}
+@media screen and (max-width: 760px) {
+  .squares-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .squareFill, .squareStudy, .squareMultiple, .squareMixed {
+    min-width: 100%; /* Ta full bredde */
+    min-height: 100px; /* Reduser høyde for å gjøre det mindre høyt */
+    width: auto; /* Tilpasser bredden */
+    padding-top: 20px;
+    height: auto; /* Tilpasser høyden */
+    margin: 10px 0; /* Gir vertikal margin for å separere elementene */
+  }
+
+  .squareFill i, .squareStudy i, .squareMultiple i, .squareMixed i {
+    font-size: 4rem; /* Juster størrelsen på ikonene om nødvendig */
+  }
+
+  .squareFill p, .squareStudy p, .squareMultiple p, .squareMixed p {
+    font-size: 1rem; /* Juster tekststørrelsen for å passe til mindre høyder */
+  }
 }
 </style>
