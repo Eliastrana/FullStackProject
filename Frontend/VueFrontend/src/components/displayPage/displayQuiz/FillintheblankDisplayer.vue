@@ -1,56 +1,45 @@
 <script setup>
 import { ref, defineProps } from 'vue';
 
-// Define props
 const props = defineProps({
-  question: {
-    type: Object,
-    required: true
-  }
+  question: Object
 });
 
 const userAnswer = ref('');
-const isCorrect = ref(null);
-
 const emit = defineEmits(['answered']);
 
-
-const answered = ref(false); // New reactive property to prevent re-answering
+const answered = ref(false); // Prevents re-answering
 
 const checkAnswer = () => {
-  if (answered.value) return; // Prevent checking the answer again if already answered
+  if (answered.value) return; // Check if already answered
 
-  isCorrect.value = userAnswer.value.trim().toLowerCase() === props.question.answer.toLowerCase();
-  emit('answered', isCorrect.value);
+  // Adjusted to support multiple correct answers
+  const isCorrect = props.question.answers.some(answer =>
+    userAnswer.value.trim().toLowerCase() === answer.text.toLowerCase()
+  );
+
+  emit('answered', isCorrect);
   answered.value = true; // Mark as answered
 };
-
-
-
-
 </script>
+
 
 <template>
   <div class="question-container">
-    <div>
-      <img v-if="question.image" :src="question.image" alt="Question Image" class="question-image">
-    </div>
+    <img v-if="question.imageName" :src="question.imageName" alt="Question Image" class="question-image">
     <div class="question">
-      {{ question.questionText }}
+      {{ question.text }}
       <input v-model="userAnswer"
              @keyup.enter="checkAnswer"
-             :class="{ 'correct-answer': isCorrect, 'incorrect-answer': isCorrect === false }"
+             :class="{ 'correct-answer': isCorrect === true, 'incorrect-answer': isCorrect === false }"
              placeholder="Answer here"
              class="blank"
              :disabled="answered">
     </div>
-    <button class="checkAnswerButton" @click="checkAnswer">Check Answer</button>
-<!--    <div v-if="isCorrect !== null" class="feedback">-->
-<!--      <p v-if="isCorrect" class="correct">Correct!</p>-->
-<!--      <p v-else class="incorrect">Incorrect, try again.</p>-->
-<!--    </div>-->
+    <button class="checkAnswerButton" @click="checkAnswer" :disabled="answered">Check Answer</button>
   </div>
 </template>
+
 
 
 <style scoped>
