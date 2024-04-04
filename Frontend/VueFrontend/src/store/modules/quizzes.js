@@ -30,6 +30,13 @@ export default {
     SET_QUIZ_DETAILS(state, details) {
       state.quizDetails = { ...state.quizDetails, ...details };
     },
+    REMOVE_QUESTION(state, uuid) {
+      state.quizDetails.questions = state.quizDetails.questions.filter(question => question.uuid !== uuid);
+    },
+    setQuestionsOrder(state, questions) {
+      state.questions = questions;
+    }
+
   },
   actions: {
     addOrUpdateQuestion({ commit, state, rootGetters }, questionData) {
@@ -46,5 +53,11 @@ export default {
     setQuizDetails({ commit }, details) {
       commit('SET_QUIZ_DETAILS', details);
     },
+    removeQuestion({ commit }, uuid) {
+      commit('REMOVE_QUESTION', uuid);
+    },
+    updateQuestionsOrder({ commit }, questions) {
+      commit('setQuestionsOrder', questions);
+    }
   },
 };
