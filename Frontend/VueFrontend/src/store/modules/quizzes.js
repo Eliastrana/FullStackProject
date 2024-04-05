@@ -58,6 +58,10 @@ export default {
     },
     updateQuestionsOrder({ commit }, questions) {
       commit('setQuestionsOrder', questions);
-    }
+    },
+
+    clearQuizzes({ commit }) {
+      commit('CLEAR_QUIZZES');
+    },
   },
 };
