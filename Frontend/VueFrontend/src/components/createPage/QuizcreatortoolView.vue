@@ -186,6 +186,25 @@ function removeImage() {
 }
 
 
+function moveQuestionUp(index) {
+  if (index > 0) {
+    const questionToMove = questions.value.splice(index, 1)[0];
+    questions.value.splice(index - 1, 0, questionToMove);
+    // Trigger Vuex store update
+    store.dispatch('quizzes/updateQuestionsOrder', questions.value);
+  }
+}
+
+function moveQuestionDown(index) {
+  if (index < questions.value.length - 1) {
+    const questionToMove = questions.value.splice(index, 1)[0];
+    questions.value.splice(index + 1, 0, questionToMove);
+    // Trigger Vuex store update
+    store.dispatch('quizzes/updateQuestionsOrder', questions.value);
+  }
+}
+
+
 
 
 
@@ -208,6 +227,10 @@ function handleDrag(event) {
 
 
 <template>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
   <div class="app-container">
 
 
@@ -255,6 +278,8 @@ function handleDrag(event) {
 
 
     <div class="quiz-container">
+
+
       <div class="quiz-type-selector">
         <h2>Choose question type:</h2>
         <div class="quiz-type-buttons">
@@ -272,40 +297,33 @@ function handleDrag(event) {
 
       <h2>Your Questions:</h2>
 
-<!--      <draggable v-model="items" class="draggable-list" :move="checkMove">-->
-<!--        <template #item="{element, index}">-->
-<!--          <div class="draggable-item" :key="element.id">-->
-<!--          </div>-->
-<!--        </template>-->
-<!--      </draggable>-->
 
 
-      <!-- Container for quiz components with dynamic border color -->
-      <div v-for="question in questions" :key="question.uuid" class="question-editor">
-        <component
-          :is="getComponent(question.questionType)"
-          :uuid="question.uuid"
-          @submitData="handleQuizData"
-          @removeQuestion="removeQuestionFromStore"
-          v-bind="question"
-        />
+
+      <div v-for="(question, index) in questions" :key="question.uuid" class="question-container">
+        <!-- Move Buttons -->
+        <div class="move-buttons">
+
+          <button @click="moveQuestionUp(index)" :disabled="index === 0" class="move-button">
+            <span class="material-icons">arrow_upward</span>
+          </button>
+
+          <button @click="moveQuestionDown(index)" :disabled="index === questions.length - 1" class="move-button">
+            <span class="material-icons">arrow_downward</span>
+          </button>
+
+        </div>
+        <!-- Question Editor -->
+        <div class="question-editor">
+          <component
+            :is="getComponent(question.questionType)"
+            :uuid="question.uuid"
+            @submitData="handleQuizData"
+            @removeQuestion="removeQuestionFromStore"
+            v-bind="question"
+          />
+        </div>
       </div>
-
-
-<!--      <draggable v-model="questions" class="draggable-list" @change="handleDrag">-->
-<!--        <template #item="{element, index}">-->
-<!--          <div class="question-editor" :key="element.uuid">-->
-<!--            <component-->
-<!--              :is="getComponent(element.questionType)"-->
-<!--              :uuid="element.uuid"-->
-<!--              @submitData="handleQuizData"-->
-<!--              @removeQuestion="removeQuestionFromStore"-->
-<!--              v-bind="element"-->
-<!--            />-->
-<!--          </div>-->
-<!--        </template>-->
-<!--      </draggable>-->
-
 
 
 
@@ -542,4 +560,88 @@ textarea {
   width: 24px;
   height: 24px;
 }
+
+
+.move-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.move-buttons button {
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+  border: none;
+}
+
+.move-buttons button:disabled {
+  color: #999;
+  cursor: not-allowed;
+}
+
+
+.question-container {
+  display: flex;
+  align-items: flex-start; /* Align items at the start of the container */
+  gap: 10px; /* Space between move buttons and the question editor */
+}
+
+.move-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center the buttons vertically */
+  align-items: center; /* Align buttons in the middle of the 'move-buttons' container */
+  padding-right: 10px; /* Optional: Adds some space between buttons and question content */
+  border: none;
+
+}
+
+.question-editor {
+  flex-grow: 1; /* Ensure the question editor occupies the remaining space */
+}
+
+
+.move-button {
+  border: none;
+
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 20px;
+}
+
+.material-icons {
+  font-size: 24px; /* Adjust icon size as needed */
+  color: #000; /* Icon color, change as required */
+}
+
+.move-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.move-button:hover {
+  background-color: #a9a9a9;
+}
+
+
+.slide-enter-active, .slide-leave-active {
+  transition: transform 0.5s ease;
+}
+
+/* Enter-to and leave-from styles */
+.slide-enter, .slide-leave-to /* Starting state for enter/ending state for leave */ {
+  transform: translateY(50px);
+  opacity: 0;
+}
+
+
+
+
 </style>

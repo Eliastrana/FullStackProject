@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, defineProps, defineEmits, watch, onMounted } from 'vue'
+import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue';
 
 const props = defineProps({
   uuid: String,
@@ -102,6 +103,10 @@ function removeImage() {
         <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
       </svg>
     </button>
+
+    <CreateTags/>
+
+
   </div>
 
 </template>
@@ -174,6 +179,7 @@ function removeImage() {
 .question-input{
   margin: 10px 0 30px 0;
   font-size: 20px;
+  min-width: 100%;
   border: none;
   padding: 10px;
   border-radius: 10px;
