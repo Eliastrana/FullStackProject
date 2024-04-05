@@ -1,5 +1,6 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
+import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue'
 
 const props = defineProps({
   uuid: String,
@@ -70,6 +71,11 @@ function removeImage() {
     <input class="question-title" v-model="title" placeholder="Question title" />
 
     <input class="answer-text" v-model="answers[0].text" placeholder="Correct answer for the blank" />
+
+    <CreateTags/>
+
+
+
   </div>
 </template>
 

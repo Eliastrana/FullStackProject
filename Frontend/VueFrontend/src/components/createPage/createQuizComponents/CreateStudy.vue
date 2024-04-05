@@ -1,5 +1,6 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
+import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue'
 
 const props = defineProps({
   uuid: String,
@@ -90,6 +91,9 @@ function removeQuestion() {
     </div>
 
     <textarea class="answer-text" v-model="answers[0].text" placeholder="Study card answer"></textarea>
+
+    <CreateTags/>
+
   </div>
 </template>
 
