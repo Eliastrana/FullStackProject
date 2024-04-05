@@ -204,20 +204,22 @@ function removeImage() {
 
 .question-input{
   margin: 10px 0 30px 0;
-  font-size: 20px;
   min-width: 100%;
   border: none;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
+  font-size: 1rem;
+
 }
 
 .question-answer{
   margin: 0 0 15px 0;
   min-width: 70%;
-  font-size: 15px;
   border: none;
+  font-size: 1rem;
+
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .question-checkbox{

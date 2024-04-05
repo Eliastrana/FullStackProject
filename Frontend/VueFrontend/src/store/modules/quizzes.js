@@ -1,4 +1,8 @@
 // store/modules/quizzes.js
+import router from '@/router/index.js'
+import { v4 as uuidv4 } from 'uuid';
+
+
 export default {
   namespaced: true,
   state: () => ({
@@ -63,5 +67,48 @@ export default {
     clearQuizzes({ commit }) {
       commit('CLEAR_QUIZZES');
     },
+
+    addQuestionsByType({ dispatch }, { type, numberOfQuestions = 5 }) {
+      for (let i = 0; i < numberOfQuestions; i++) {
+        let questionTemplate;
+
+        switch (type) {
+          case 'FILL_IN_BLANK':
+            questionTemplate = {
+              uuid: uuidv4(),
+              text: '',
+              questionType: 'FILL_IN_BLANK',
+              tags: [],
+              answers: [{ text: '', correct: true }]
+            };
+            break;
+          case 'MULTIPLE_CHOICE':
+            questionTemplate = {
+              uuid: uuidv4(),
+              text: '',
+              questionType: 'MULTIPLE_CHOICE',
+              tags: [],
+              answers: [{ text: '', correct: false }] // Adjust as needed
+            };
+            break;
+          case 'STUDY':
+            questionTemplate = {
+              uuid: uuidv4(),
+              text: '',
+              questionType: 'STUDY',
+              tags: [],
+              answers: [{ text: '', correct: true }] // Adjust as needed
+            };
+            break;
+          default:
+            console.warn('Unsupported question type:', type);
+            return; // Exit the function if the type is not supported
+        }
+
+        dispatch('addOrUpdateQuestion', questionTemplate);
+      }
+    }
+
+
   },
 };

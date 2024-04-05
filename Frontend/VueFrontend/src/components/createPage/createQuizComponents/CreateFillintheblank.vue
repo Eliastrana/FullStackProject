@@ -11,8 +11,12 @@ import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.
 const props = defineProps({
   uuid: String,
   text: String,
-  answers: Array
+  answers: {
+    type: Array,
+    default: () => [{ text: '' }] // Ensure this structure matches what you expect
+  }
 });
+
 
 /**
  * Emits custom events
@@ -154,8 +158,9 @@ function removeImage() {
 .question-title, .answer-text {
   width: 100%;
   padding: 8px;
+  font-size: 1rem;
   margin-bottom: 10px;
-  border-radius: 4px;
+  border-radius: 8px;
   border: none;
   font-family: 'DM Sans', sans-serif;
   margin-right: 20px;
