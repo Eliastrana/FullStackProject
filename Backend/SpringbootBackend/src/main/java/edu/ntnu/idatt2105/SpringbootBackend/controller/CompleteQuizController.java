@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -109,6 +110,24 @@ public class CompleteQuizController {
         } catch (Exception e) {
             logger.error("Failed to delete complete quiz: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Failed to delete complete quiz", "message", e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Gets a omplete Quiz by its tag", description = "Fetches a complete quiz with questions and answers by its tag.")
+    @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.")
+    @ApiResponse(responseCode = "404", description = "Quiz not found.")
+    @GetMapping("/tag/{tag}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getCompleteQuizByTag(@PathVariable String tag) {
+        try {
+            List<CompleteQuizDTO> completeQuizDTO = completeQuizService.getCompleteQuizzesByTag(tag);
+            return ResponseEntity.ok(completeQuizDTO);
+        } catch (QuizNotFoundException e) {
+            logger.error("Quiz not found: {}", tag, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Quiz not found", "message", e.getMessage()));
+        } catch (Exception e) {
+            logger.error("Failed to fetch complete quiz: {}", tag, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An error occurred while fetching the quiz", "message", e.getMessage()));
         }
     }
 }
