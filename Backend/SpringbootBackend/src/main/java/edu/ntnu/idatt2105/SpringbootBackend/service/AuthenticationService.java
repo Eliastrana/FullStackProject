@@ -2,7 +2,10 @@ package edu.ntnu.idatt2105.SpringbootBackend.service;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserAlreadyExistException;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Role;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
+import edu.ntnu.idatt2105.SpringbootBackend.model.UserRole;
+import edu.ntnu.idatt2105.SpringbootBackend.repository.RoleRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -51,19 +55,32 @@ public class AuthenticationService {
      */
     @Transactional
     public AuthenticationResponse register(UserCreationDTO userCreationDTO) {
+
+        if (userRepository.findByUsername(userCreationDTO.getUsername()).isPresent()) {
+            throw new UserAlreadyExistException("Username already exists");
+        }
         User user = User
                 .builder()
                 .username(userCreationDTO.getUsername())
                 .password(passwordEncoder.encode(userCreationDTO.getPassword()))
                 .email(userCreationDTO.getEmail())
                 .build();
-        if (userRepository.findByUsername(userCreationDTO.getUsername()).isPresent()) {
-            throw new UserAlreadyExistException("Username already exists");
-        }
-        userRepository.save(user);
-        logger.info("User with username: " + user.getUsername() + " has been registered");
 
-        String jwtToken = jwtService.generateToken(user);
+        Role defaultRole = roleRepository.findByRole("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Error: Default role is not found."));
+
+        // Istansiate and set up UserRole
+        UserRole userRole = new UserRole();
+        userRole.setUser(user);
+        userRole.setRole(defaultRole);
+
+        user.getUserRoles().add(userRole);
+
+        User savedUser = userRepository.save(user);
+        logger.info("User " + savedUser.getUsername() + " has been registered");
+
+        // Generate JWT token
+        String jwtToken = jwtService.generateToken(savedUser);
         logger.info("Their JWT is: " + jwtToken);
         return AuthenticationResponse
                 .builder()
