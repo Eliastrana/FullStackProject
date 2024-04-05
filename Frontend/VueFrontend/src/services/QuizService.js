@@ -1,16 +1,10 @@
-import axios from 'axios'
-import store from '@/store/index.js'
+import axios from 'axios';
 
 const COMPLETE_API_URL = 'http://localhost:8080/api/completeQuiz';
 const QUIZ_API_URL = 'http://localhost:8080/api/quiz';
-const token = store.state.user.token;
 
 export const QuizService = {
   async create(quizDetails) {
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
-
     // Clone quizDetails to avoid modifying the original state
     let modifiedQuizDetails = JSON.parse(JSON.stringify(quizDetails));
 
@@ -18,34 +12,29 @@ export const QuizService = {
     modifiedQuizDetails.questions = modifiedQuizDetails.questions.map(question => {
       if (question.questionType === 'STUDY' || question.questionType === 'FILL_IN_BLANK') {
         if (Array.isArray(question.answers) && question.answers.length) {
-          // Assuming the first answer is the correct one as per your UI's logic
-          question.answers = question.answers[0].text;
+          // Wrap the first answer object in an array to maintain the expected structure
+          question.answers = [question.answers[0]];
         } else {
-          // Fallback to an empty string if no answers are present
-          question.answers = '';
+          // If no answers are present, ensure it remains an array, possibly empty
+          question.answers = [];
         }
       }
       return question;
     });
 
-    const response = await axios.post(`${COMPLETE_API_URL}`, modifiedQuizDetails, config);
+    console.log(modifiedQuizDetails)
+    const response = await axios.post(`${COMPLETE_API_URL}`, modifiedQuizDetails);
     return response.data;
   },
 
+
   async getAllQuizzes() {
-    const response = await axios.get(`${QUIZ_API_URL}`, );
-    response.data.forEach(quiz => {
-      console.log(quiz)
-      console.log(quiz.difficulty)
-    });
+    const response = await axios.get(`${QUIZ_API_URL}`);
     return response.data;
   },
 
   async getQuizById(quizId) {
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
-    const response = await axios.get(`${COMPLETE_API_URL}/${quizId}`, config);
+    const response = await axios.get(`${COMPLETE_API_URL}/${quizId}`);
     return response.data;
   }
-}
+};
