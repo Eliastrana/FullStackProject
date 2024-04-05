@@ -2,11 +2,17 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
+/**
+ * User information
+ * @type {import('vue').Ref<Object>}
+ */
 const userInfo = ref(null);
 
+/**
+ * Fetches user information from the API when the component is mounted
+ */
 onMounted(async () => {
   try {
-    // Update the path to where your user.json file is located
     const response = await axios.get('/mockJSON/user/user.json');
     userInfo.value = response.data;
   } catch (error) {
@@ -40,12 +46,13 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
 .user-info-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 90%; /* Allows container to scale but not exceed the screen width */
-  margin: 5% auto; /* Centers the container and maintains margin from the top */
+  max-width: 90%;
+  margin: 5% auto;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -54,9 +61,9 @@ onMounted(async () => {
 
 .basic-info, .level-info, .achievements {
   width: 100%;
-  max-width: 600px; /* Ensures content within these divs doesn't become too wide */
+  max-width: 600px;
   text-align: center;
-  margin: 10px auto; /* Centers content blocks */
+  margin: 10px auto;
 }
 
 h1, h2, .highlight {
@@ -68,8 +75,8 @@ h2 {
 }
 
 .user-photo {
-  width: 100px; /* Consider making this responsive with a percentage or max-width */
-  height: 100px; /* Maintain aspect ratio */
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   margin: 20px 0;
 }
@@ -94,18 +101,18 @@ h2 {
 
 @media (max-width: 768px) {
   .user-info-container {
-    width: auto; /* Allows the container to fill the screen width on smaller devices */
-    margin: 5% 10px; /* Adds a small margin to the sides */
-    padding: 10px; /* Adjusts padding for smaller screens */
+    width: auto;
+    margin: 5% 10px;
+    padding: 10px;
   }
 
   .user-photo {
-    width: 80px; /* Slightly smaller photo for smaller screens */
+    width: 80px;
     height: 80px;
   }
 
   .highlight {
-    font-size: 1em; /* Adjusts font size for smaller screens */
+    font-size: 1em;
   }
 }
 </style>

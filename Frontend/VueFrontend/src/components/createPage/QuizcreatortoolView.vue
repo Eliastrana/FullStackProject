@@ -6,7 +6,6 @@ import CreateMultipleChoice from '@/components/createPage/createQuizComponents/C
 import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
 import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
 import { QuizService } from '@/services/QuizService.js'
-import draggable from 'vuedraggable';
 
 
 const store = useStore();

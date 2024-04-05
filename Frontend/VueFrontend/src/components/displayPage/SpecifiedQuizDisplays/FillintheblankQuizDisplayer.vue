@@ -7,18 +7,36 @@
 </template>
 
 <script setup>
+// Importing necessary modules from Vue
 import { defineProps, ref, defineEmits } from 'vue';
 
+/**
+ * Props for the FillInTheBlankQuizDisplayer component
+ * @property {Object} question - The question object
+ */
 const props = defineProps({
   question: Object,
 });
+
+/**
+ * User's answer
+ * @type {import('vue').Ref<string>}
+ */
 const userAnswer = ref('');
+
+/**
+ * Emits custom events
+ * @type {Function}
+ */
 const emit = defineEmits(['answered']);
 
+/**
+ * Submits the user's answer and checks if it's correct
+ */
 const submitAnswer = () => {
   const isCorrect = userAnswer.value.trim().toLowerCase() === props.question.correctAnswer.trim().toLowerCase();
   emit('answered', { isCorrect, userAnswer: userAnswer.value });
-  userAnswer.value = ''; // Optionally clear input after submission if desired
+  userAnswer.value = '';
 };
 </script>
 

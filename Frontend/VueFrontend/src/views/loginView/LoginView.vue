@@ -26,36 +26,62 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
+/**
+ * Username for login
+ * @type {import('vue').Ref<string>}
+ */
 const username = ref('');
+
+/**
+ * Password for login
+ * @type {import('vue').Ref<string>}
+ */
 const password = ref('');
+
+/**
+ * Error message for login
+ * @type {import('vue').Ref<string>}
+ */
 const errorMessage = ref('');
+
+/**
+ * Vue Router instance
+ * @type {import('vue-router').Router}
+ */
 const router = useRouter();
+
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
 
-
+/**
+ * Login function
+ * Dispatches a login action to the Vuex store
+ * If successful, redirects to the MyAccount route
+ * If unsuccessful, sets the error message
+ */
 const login = async () => {
   try {
-    // Dispatching a Vuex action instead of directly calling the API
     await store.dispatch('user/login', {
       username: username.value,
       password: password.value
     });
-
-    // Navigate to the home view upon successful login
-    router.push({name: 'MyAccount'}); // Make sure the route name matches your routes configuration
+    router.push({name: 'MyAccount'});
   } catch (error) {
     console.error("Login failed:", error);
     errorMessage.value = "Incorrect username or password.";
-
   }
 };
 
+/**
+ * Navigates to the CreateUser route
+ */
 const navigateToCreateUser = () => {
-  router.push({ name: 'CreateUser' }); // Adjust this to match your route configuration
+  router.push({ name: 'CreateUser' });
 };
 </script>
-
-
 
 <style scoped>
 

@@ -1,33 +1,35 @@
 <script setup>
+import FrontpageFlipcard from '@/components/displayPage/displayQuiz/FrontpageFlipcard.vue'
+
+/**
+ * Props for the FlipcardDisplayer component
+ * @property {string} title - The title of the functionality
+ * @property {string} description - The description of the functionality
+ * @property {string} imageUrl - The URL of the image to display
+ * @property {string} [imagePosition='left'] - The position of the image ('left' or 'right')
+ * @property {string} [backgroundColor='#CAE9FF'] - The background color of the component
+ */
 const props = defineProps({
   title: String,
   description: String,
   imageUrl: String,
   imagePosition: {
     type: String,
-    default: 'left', // Default to left if not specified
+    default: 'left',
   },
   backgroundColor: {
     type: String,
-    default: '#CAE9FF', // A default background color
+    default: '#CAE9FF',
   },
 });
-
-import FrontpageFlipcard from '@/components/displayPage/displayQuiz/FrontpageFlipcard.vue'
-
-
 </script>
-
 
 <template>
   <div class="functionality" :style="{ backgroundColor: props.backgroundColor }">
-    <!-- Wrap both the card and text content in a flex container -->
     <div class="content-wrapper">
-      <!-- Card container with explicit width -->
       <div class="card-container">
         <FrontpageFlipcard />
       </div>
-      <!-- Text content -->
       <div class="text-content">
         <h1>{{ props.title }}</h1>
         <p>{{ props.description }}</p>
@@ -35,9 +37,6 @@ import FrontpageFlipcard from '@/components/displayPage/displayQuiz/FrontpageFli
     </div>
   </div>
 </template>
-
-
-
 
 <style scoped>
 .functionality {
@@ -49,75 +48,71 @@ import FrontpageFlipcard from '@/components/displayPage/displayQuiz/FrontpageFli
   text-align: center;
   width: 90%;
   margin-top: 2%;
-  margin-right: auto; /* Sentrerer komponenten horisontalt */
-  margin-left: auto; /* Sentrerer komponenten horisontalt */
+  margin-right: auto;
+  margin-left: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px; /* Legger til mellomrom mellom bildet og teksten */
+  gap: 20px;
 }
 
 .content-wrapper {
   font-size: 1rem;
   display: flex;
-  flex-direction: row; /* Standard layout */
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 20px; /* Legger til mellomrom mellom bildet og teksten */
-  width: 100%; /* Bruker full bredde til å håndtere layout */
+  gap: 20px;
+  width: 100%;
 }
 
 .content-wrapper.image-right {
-  flex-direction: row-reverse; /* Bytter rekkefølge for høyreorientert bilde */
+  flex-direction: row-reverse;
 }
 
 .text-content {
   flex: 1;
   padding: 20px;
-  max-width: 60%; /* Setter en maksbredde for å begrense bildets størrelse */
-  height: auto; /* Beholder bildets aspektforhold */
-  line-height: 1.3; /* Gir bedre lesbarhet */
+  max-width: 60%;
+  height: auto;
+  line-height: 1.3;
 
 }
 
 .functionality-image {
-  flex: 1; /* Gjør bildet fleksibelt innenfor containerens tilgjengelige plass */
-  max-width: 60%; /* Setter en maksbredde for å begrense bildets størrelse */
-  height: auto; /* Beholder bildets aspektforhold */
+  flex: 1;
+  max-width: 60%;
+  height: auto;
   border-radius: 10px;
 }
+
 .text-content h1 {
-  font-size: clamp(0.9rem, 2.6vw, 20rem); /* Juster disse verdiene etter behov */
+  font-size: clamp(0.9rem, 2.6vw, 20rem);
 }
 
 .text-content p {
   font-size: clamp(1.2rem, 1vw, 10rem);
 }
 
-
 .content-wrapper {
   display: flex;
-  flex-direction: row; /* Ensures items are side by side */
+  flex-direction: row;
   align-items: center;
-  justify-content: start; /* Aligns items to the start, putting the card on the left */
+  justify-content: start;
   width: 100%;
-  gap: 20px; /* Adjusts spacing between the card and the text */
+  gap: 20px;
 }
 
 .card-container {
-  flex: 1; /* Allows the card container to grow */
-  max-width: 40%; /* Adjusts the maximum width of the card to prevent it from being too large */
-  /* Set a min-width if the card becomes too small at smaller viewport sizes */
-  min-width: 300px; /* Example min-width */
+  flex: 1;
+  max-width: 40%;
+  min-width: 300px;
 }
 
 .text-content {
-  flex: 2; /* Allows the text content to take up more space */
+  flex: 2;
   padding: 20px;
-  /* Existing text content styles... */
 }
-
-
 
 @media (max-width: 868px) {
   .content-wrapper, .content-wrapper.image-right {
@@ -126,26 +121,23 @@ import FrontpageFlipcard from '@/components/displayPage/displayQuiz/FrontpageFli
   }
   .text-content, .functionality-image {
     max-width: 100%;
-    padding: 10px 0; /* Reduserer padding på mindre skjermer */
+    padding: 10px 0;
     border-radius: 30px;
   }
   .text-content h1 {
-    font-size: clamp(1.7rem, 2.6vw, 20rem); /* Juster disse verdiene etter behov */
+    font-size: clamp(1.7rem, 2.6vw, 20rem);
   }
 
   .text-content p {
     font-size: clamp(1.2rem, 1vw, 10rem);
   }
   .content-wrapper {
-    flex-direction: column; /* Stacks items on top of each other on smaller screens */
+    flex-direction: column;
   }
   .card-container, .text-content {
     max-width: 100%;
-    min-width: auto; /* Resets min-width for smaller screens */
+    min-width: auto;
   }
 }
-
-
-
 
 </style>

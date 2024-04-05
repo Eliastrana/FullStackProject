@@ -2,18 +2,51 @@
 import { ref, defineProps, defineEmits, watch } from 'vue';
 import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue'
 
+/**
+ * Props for the CreateStudy component
+ * @property {String} uuid - The unique identifier for the question
+ * @property {String} text - The text of the question
+ * @property {Array} answers - The array of answers
+ */
 const props = defineProps({
   uuid: String,
   text: String,
   answers: Array
 });
+
+/**
+ * Emits custom events
+ * @type {Function}
+ */
 const emits = defineEmits(['submitData', 'removeQuestion']);
+
+/**
+ * The question text
+ * @type {import('vue').Ref<string>}
+ */
 const question = ref(props.text);
+
+/**
+ * The answers for the question
+ * @type {import('vue').Ref<Array>}
+ */
 const answers = ref(props.answers);
 
+/**
+ * The cover image for the front of the card
+ * @type {import('vue').Ref<string>}
+ */
 const coverImageFront = ref(null);
+
+/**
+ * The cover image for the back of the card
+ * @type {import('vue').Ref<string>}
+ */
 const coverImageBack = ref(null);
 
+/**
+ * Watches for changes in the question and answers and emits the updated data
+ */
 watch([question, answers], () => {
   emits('submitData', {
     uuid: props.uuid,
@@ -23,6 +56,10 @@ watch([question, answers], () => {
   });
 }, { deep: true });
 
+/**
+ * Handles the file upload for the front of the card
+ * @param {Event} event - The file upload event
+ */
 function handleFileUploadFront(event) {
   const file = event.target.files[0];
   if (file) {
@@ -34,6 +71,10 @@ function handleFileUploadFront(event) {
   }
 }
 
+/**
+ * Handles the file upload for the back of the card
+ * @param {Event} event - The file upload event
+ */
 function handleFileUploadBack(event) {
   const file = event.target.files[0];
   if (file) {
@@ -45,14 +86,23 @@ function handleFileUploadBack(event) {
   }
 }
 
+/**
+ * Removes the image for the front of the card
+ */
 function removeImageFront() {
   coverImageFront.value = null;
 }
 
+/**
+ * Removes the image for the back of the card
+ */
 function removeImageBack() {
   coverImageBack.value = null;
 }
 
+/**
+ * Emits the 'removeQuestion' event with the question's uuid
+ */
 function removeQuestion() {
   emits('removeQuestion', props.uuid);
 }
@@ -68,7 +118,6 @@ function removeQuestion() {
           d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41l5.59 5.59L5 17.59 6.41 19l5.59-5.59L17.59 19 19 17.59l-5.59-5.59L19 6.41z" />
       </svg>
     </div>
-    <!-- Front Image Upload and Preview -->
     <div v-if="coverImageFront" class="image-preview">
       <img :src="coverImageFront" alt="Front Image Preview" />
       <div class="remove-image" @click="removeImageFront">X</div>
@@ -77,10 +126,7 @@ function removeQuestion() {
       <input type="file" id="uploadFront" hidden @change="handleFileUploadFront" accept="image/*" />
       <label for="uploadFront" class="uploadimagebutton">Upload Front Image</label>
     </div>
-
     <input class="question-title" v-model="question" placeholder="Study card question" />
-
-    <!-- Back Image Upload and Preview -->
     <div v-if="coverImageBack" class="image-preview">
       <img :src="coverImageBack" alt="Back Image Preview" />
       <div class="remove-image" @click="removeImageBack">X</div>
@@ -89,7 +135,6 @@ function removeQuestion() {
       <input type="file" id="uploadBack" hidden @change="handleFileUploadBack" accept="image/*" />
       <label for="uploadBack" class="uploadimagebutton">Upload Back Image</label>
     </div>
-
     <textarea class="answer-text" v-model="answers[0].text" placeholder="Study card answer"></textarea>
 
     <CreateTags/>
@@ -97,10 +142,7 @@ function removeQuestion() {
   </div>
 </template>
 
-
-
 <style scoped>
-
 
 .remove-icon {
   cursor: pointer;
@@ -110,21 +152,20 @@ function removeQuestion() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px; /* Adjust based on your preference */
-  height: 24px; /* Adjust based on your preference */
+  width: 24px;
+  height: 24px;
   color: #000000;
   z-index: auto;
 }
 
 .remove-icon svg {
-  width: 100%; /* Ensure SVG fills the container */
-  height: 100%; /* Ensure SVG fills the container */
+  width: 100%;
+  height: 100%;
   border-radius: 20px;
 }
 
 .question-container {
-  position: relative; /* Needed for absolute positioning of the remove-icon */
-  /* The rest of your styles */
+  position: relative;
 }
 
 .question-container {
@@ -132,16 +173,15 @@ function removeQuestion() {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  padding-top: 40px; /* Increase top padding to prevent overlap */
+  padding-top: 40px;
   border-radius: 8px;
   border: none;
   min-width: 500px;
   max-width: 500px;
-  background-color: #BEE9E8; /* Or adjust to match across components */
+  background-color: #BEE9E8;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'DM Sans', sans-serif;
 }
-
 
 .question-box {
   margin-bottom: 20px;
@@ -158,14 +198,14 @@ function removeQuestion() {
 }
 
 .answer-text {
-  min-height: 50px; /* Retained for the textarea */
-  resize: none; /* Retained for the textarea */
+  min-height: 50px;
+  resize: none;
 }
 
 
 .uploadimagebutton {
-  display: inline-block; /* Change to inline-block for better control */
-  margin: 20px 0; /* Increase margin to prevent overlap */
+  display: inline-block;
+  margin: 20px 0;
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
@@ -182,15 +222,14 @@ function removeQuestion() {
 
 
 .image-preview img {
-  max-width: 100%; /* Begrense bredden til bildet for forhåndsvisning */
-  max-height: 200px; /* Sett en maksimal høyde for forhåndsvisning */
-  object-fit: cover; /* Sørge for at bildet dekker området proporsjonalt */
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: cover;
 }
 
 .image-preview {
-  position: relative; /* Required for absolute positioning of children */
-  margin: 20px 0; /* Adjust margin as needed */
-  /* Keep existing styles */
+  position: relative;
+  margin: 20px 0;
 }
 
 .remove-image {
@@ -198,11 +237,11 @@ function removeQuestion() {
   position: absolute;
   top: 0;
   right: 0;
-  background-color: rgba(0,0,0,0.6); /* Semi-transparent black */
-  color: white; /* White text color */
+  background-color: rgba(0,0,0,0.6);
+  color: white;
   padding: 0 5px;
   cursor: pointer;
-  border-radius: 0 0 0 10px; /* Rounded corners on the top right */
+  border-radius: 0 0 0 10px;
 }
 
 /* Adjustments for better visibility */

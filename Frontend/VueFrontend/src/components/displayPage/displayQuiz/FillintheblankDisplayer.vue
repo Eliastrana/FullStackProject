@@ -1,25 +1,48 @@
 <script setup>
 import { ref, defineProps } from 'vue';
 
+/**
+ * Props for the FillInTheBlankQuizDisplayer component
+ * @property {Object} question - The question object
+ */
 const props = defineProps({
   question: Object
 });
 
+/**
+ * User's answer
+ * @type {import('vue').Ref<string>}
+ */
 const userAnswer = ref('');
+
+/**
+ * Emits custom events
+ * @type {Function}
+ */
 const emit = defineEmits(['answered']);
 
-const answered = ref(false); // Prevents re-answering
+/**
+ * Boolean value to check if the question has been answered
+ * @type {import('vue').Ref<boolean>}
+ */
+const answered = ref(false);
 
+/**
+ * Checks the user's answer and emits an event with the result
+ */
 const checkAnswer = () => {
-  if (answered.value) return; // Check if already answered
+  // If the question has already been answered, do nothing
+  if (answered.value) return;
 
-  // Adjusted to support multiple correct answers
+  // Check if the user's answer matches any of the correct answers (case insensitive)
   const isCorrect = props.question.answers.some(answer =>
     userAnswer.value.trim().toLowerCase() === answer.text.toLowerCase()
   );
 
+  // Emit the 'answered' event with the result
   emit('answered', isCorrect);
-  answered.value = true; // Mark as answered
+  // Mark the question as answered
+  answered.value = true;
 };
 </script>
 
@@ -49,16 +72,11 @@ const checkAnswer = () => {
   align-items: center;
   padding: 20px;
   border-radius: 20px;
-
   font-family: 'DM Sans', sans-serif;
   font-size: 1rem;
-
-
   background-color: #FFFFFF;
   border: 5px solid #62B6CB;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
-
-  ;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .question {
@@ -78,9 +96,7 @@ const checkAnswer = () => {
   padding: 10px 20px;
   font-family: 'DM Sans', sans-serif;
   font-size: 1rem;
-
   border: none;
-
   background-color: #62B6CB;
   border-radius: 5px;
   cursor: pointer;
@@ -102,26 +118,18 @@ const checkAnswer = () => {
   border-bottom: 2px solid #62B6CB;
 }
 
-
 .feedback {
   margin-top: 20px;
 }
 
-
-
 .correct-answer {
   border-bottom: 5px solid #4CAF50;
-
-
 }
 
 .incorrect-answer {
-
   border-bottom: 5px solid #e17474;
-
 }
 
-/* Styles for icons */
 .correct-answer::after, .incorrect-answer::after {
   content: '';
   position: absolute;
@@ -129,6 +137,5 @@ const checkAnswer = () => {
   top: 50%;
   transform: translateY(-50%);
 }
-
 
 </style>

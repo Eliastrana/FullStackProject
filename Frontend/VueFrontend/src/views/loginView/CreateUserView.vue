@@ -27,20 +27,59 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
+/**
+ * Username for registration
+ * @type {import('vue').Ref<string>}
+ */
 const username = ref('');
+
+/**
+ * Email for registration
+ * @type {import('vue').Ref<string>}
+ */
 const email = ref('');
+
+/**
+ * Password for registration
+ * @type {import('vue').Ref<string>}
+ */
 const password = ref('');
+
+/**
+ * Password confirmation for registration
+ * @type {import('vue').Ref<string>}
+ */
 const passwordConfirmation = ref('');
+
+/**
+ * Error message for registration
+ * @type {import('vue').Ref<string>}
+ */
 const errorMessage = ref('');
+
+/**
+ * Vue Router instance
+ * @type {import('vue-router').Router}
+ */
 const router = useRouter();
+
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
 
+/**
+ * Register user function
+ * Dispatches a register action to the Vuex store
+ * If successful, redirects to the login route
+ * If unsuccessful, sets the error message
+ */
 const registerUser = async () => {
   errorMessage.value = '';
   if (password.value !== passwordConfirmation.value) {
@@ -59,11 +98,10 @@ const registerUser = async () => {
     router.push({ name: 'login' });
   } catch (error) {
     console.error("Registration failed:", error);
-    errorMessage.value = "An error occurred. Please try again."; // Generell feilmelding for andre feil
+    errorMessage.value = "An error occurred. Please try again.";
   }
 };
 </script>
-
 
 <style scoped>
 

@@ -1,11 +1,15 @@
 <script setup>
 import { ref } from 'vue';
 
-// Define props for title and description; we won't need imageUrl and imagePosition anymore.
-
-
+/**
+ * Boolean value to check if the card is flipped
+ * @type {import('vue').Ref<boolean>}
+ */
 const flipped = ref(false);
 
+/**
+ * Toggles the flipped state of the card
+ */
 const toggleFlip = () => {
   flipped.value = !flipped.value;
 };
@@ -17,11 +21,9 @@ const toggleFlip = () => {
       <div class="card-container" @click="toggleFlip">
         <div :class="['card', { flipped: flipped }]">
           <div class="front">
-            <!-- Display hardcoded text for the front -->
             <h5>Implement study cards within your quizzes</h5>
           </div>
           <div class="back">
-            <!-- Display hardcoded text for the back -->
             <h5>Learning can be done even while being quizzed! </h5>
           </div>
         </div>
@@ -34,8 +36,6 @@ const toggleFlip = () => {
 </template>
 
 <style scoped>
-/* Your existing styles for .functionality, .content-wrapper, .text-content, etc. */
-
 
 h5 {
   font-size: 3rem;
@@ -44,13 +44,12 @@ h5 {
 
 .content-wrapper {
   display: flex;
-  flex-direction: row; /* Keep content side-by-side */
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Ensure wrapper takes full width */
-  gap: 20px; /* Space between elements */
+  width: 100%;
+  gap: 20px;
 }
-
 
 .card-container {
   perspective: 1000px;
@@ -61,8 +60,8 @@ h5 {
 }
 
 .card {
-  width: 100%; /* Adjust based on layout needs */
-  height: 80vh; /* Adjust based on layout needs */
+  width: 100%;
+  height: 80vh;
   transform-style: preserve-3d;
   transition: transform 0.6s;
   cursor: pointer;
@@ -93,12 +92,11 @@ h5 {
   background-color: #BEE9E8;
 }
 
-
 .text-content {
-  min-width: 100%; /* Use the full width for text content */
-  padding: 20px; /* Provide some padding */
-  text-align: center; /* Align text to the left */
-  font-size: 1.3rem; /* Adjust font size as needed */
+  min-width: 100%;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.3rem;
   margin-left: 8%;
 }
 
@@ -119,17 +117,16 @@ h5 {
   }
 
   .card {
-    width: 100%; /* Adjust based on layout needs */
-    height: 40vh; /* Adjust based on layout needs */
+    width: 100%;
+    height: 40vh;
     transform-style: preserve-3d;
     transition: transform 0.6s;
     cursor: pointer;
   }
 
-.front, .back {
+  .front, .back {
     font-size: 1rem;
   }
-
 
 }
 </style>

@@ -1,31 +1,19 @@
 //MixedQuizDisplayer.vue
 <template>
   <div class="quiz-container">
-    <!-- Overlay for Quiz Completion -->
     <div v-if="quizCompleted" class="overlay"></div>
-
-    <!-- Quiz Header -->
     <div class="quiz-header">
-      <!-- Randomize Questions Button -->
       <button @click="randomizeQuestions" :disabled="quizStarted" class="icon-button">
         <i class="fas fa-random"></i>
       </button>
-
-      <!-- Quiz Title -->
       <h1>{{ quizTitle }}</h1>
-
-      <!-- Submit/Complete Quiz Button -->
       <button @click="openResults" class="icon-button" aria-label="Submit" :disabled="!quizStarted">
         <i class="fas fa-check"></i>
       </button>
     </div>
-
-    <!-- Score Display -->
     <div class="score-container">
       Score: {{ currentScore }}/{{ totalQuestionsForScore }}
     </div>
-
-    <!-- Navigation Buttons and Progress Bar -->
     <div class="navigation">
       <button class="navigation-button" @click="prevQuestion" :disabled="currentQuestionIndex === 0">← Previous</button>
       <div class="progress-bar-container">
@@ -38,10 +26,8 @@
       </button>
     </div>
 
-    <!-- Questions Display -->
     <div v-if="questions.length > 0">
       <transition name="slide" mode="out-in">
-        <!-- Dynamically display the current question component -->
         <component :is="currentQuizComponent"
                    :key="currentQuestion.id || `fallback-${currentQuestionIndex}`"
                    :question="currentQuestion"
@@ -49,12 +35,10 @@
       </transition>
     </div>
 
-    <!-- Quiz Completion Display -->
     <div v-if="quizCompleted" class="results-window">
       <h2>Quiz Completed!</h2>
       <p>Your score: {{ currentScore }}/{{ totalQuestionsForScore }}</p>
       <ul class="answer-summary">
-        <!-- Display each question's result -->
         <li v-for="(question, index) in questions" :key="index" :class="{'correct': question.correct, 'incorrect': question.answered && !question.correct}">
           Q{{ index + 1 }}: {{ question.text }} - <strong>
           {{ question.questionType === 'STUDY' ? 'Study Note' : (question.correct ? 'Correct' : 'Incorrect') }}
@@ -62,14 +46,12 @@
         </li>
       </ul>
       <div class="buttonbox">
-        <!-- Restart and Profile Navigation Buttons -->
         <button @click="restartQuiz">Try Again</button>
         <button @click="goToProfile">More Quizzes</button>
       </div>
     </div>
   </div>
 </template>
-
 
 <script setup>
 import { ref, computed, watch } from 'vue';
@@ -79,34 +61,89 @@ import MultipleChoiceDisplayer from '@/components/displayPage/displayQuiz/Multip
 import StudyCardDisplayer from '@/components/displayPage/displayQuiz/StudycardDisplayer.vue';
 import router from '@/router/index.js';
 
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
 
+/**
+ * Current question data
+ * @type {import('vue').ComputedRef<Object>}
+ */
 const currentQuestion = computed(() => questions.value[currentQuestionIndex.value] || {});
+
+/**
+ * Quiz data from the Vuex store
+ * @type {import('vue').ComputedRef<Object>}
+ */
 const quizData = computed(() => store.state.quizAttempt.quizData);
+
+/**
+ * Title of the quiz
+ * @type {import('vue').ComputedRef<string>}
+ */
 const quizTitle = computed(() => quizData.value.title);
+
+/**
+ * Array of questions
+ * @type {import('vue').Ref<Array>}
+ */
 const questions = ref([...quizData.value.questions]);
+
+/**
+ * Index of the current question
+ * @type {import('vue').Ref<number>}
+ */
 const currentQuestionIndex = ref(0);
+
+/**
+ * Current score
+ * @type {import('vue').Ref<number>}
+ */
 const currentScore = ref(0);
+
+/**
+ * Boolean value to check if the quiz has started
+ * @type {import('vue').Ref<boolean>}
+ */
 const quizStarted = ref(false);
+
+/**
+ * Boolean value to check if the quiz is completed
+ * @type {import('vue').Ref<boolean>}
+ */
 const quizCompleted = ref(false);
 
-// Maintain a separate ref for the total number of questions for scoring,
-// excluding study cards since they don't count towards the score.
+/**
+ * Total number of questions for score calculation
+ * @type {import('vue').ComputedRef<number>}
+ */
 const totalQuestionsForScore = computed(() =>
   questions.value.filter(q => q.questionType !== "STUDY").length
 );
 
-// Component mapping based on the question type
+/**
+ * Map of quiz components
+ * @type {Object}
+ */
 const quizComponents = {
   STUDY: StudyCardDisplayer,
   MULTIPLE_CHOICE: MultipleChoiceDisplayer,
   FILL_IN_BLANK: FillInTheBlankDisplayer,
 };
 
+/**
+ * Current quiz component based on the question type
+ * @type {import('vue').ComputedRef<Object>}
+ */
 const currentQuizComponent = computed(() =>
   quizComponents[questions.value[currentQuestionIndex.value]?.questionType]
 );
 
+/**
+ * Watcher for quizData changes
+ */
 watch(quizData, (newQuizData) => {
   console.log('new quiz data: ')
   console.log(newQuizData)
@@ -115,22 +152,20 @@ watch(quizData, (newQuizData) => {
   }
 });
 
+/**
+ * Handles the answer selected by the user
+ * @param {boolean} isCorrect - Whether the answer is correct or not
+ */
 const handleAnswered = (isCorrect) => {
   const currentIndex = currentQuestionIndex.value;
   const currentQuestion = questions.value[currentIndex];
 
-  // Check if the question has already been answered to prevent re-processing
   if (!currentQuestion.answered) {
-    // Mark as answered and set correctness
     currentQuestion.answered = true;
     currentQuestion.correct = isCorrect;
-
-    // Update the score if the answer is correct
     if (isCorrect) {
       currentScore.value++;
     }
-
-    // Handle navigation or completion after a brief pause
     if (currentIndex < questions.value.length - 1) {
       setTimeout(() => currentQuestionIndex.value++, 500);
     } else {
@@ -139,13 +174,18 @@ const handleAnswered = (isCorrect) => {
   }
 };
 
-
+/**
+ * Randomizes the order of questions
+ */
 const randomizeQuestions = () => {
   if (!quizStarted.value) {
     questions.value.sort(() => 0.5 - Math.random());
   }
 };
 
+/**
+ * Navigates to the next question
+ */
 const nextQuestion = () => {
   if (currentQuestionIndex.value < questions.value.length - 1) {
     quizStarted.value = true;
@@ -153,6 +193,9 @@ const nextQuestion = () => {
   }
 };
 
+/**
+ * Navigates to the previous question
+ */
 const prevQuestion = () => {
   if (currentQuestionIndex.value > 0) {
     quizStarted.value = true;
@@ -160,6 +203,9 @@ const prevQuestion = () => {
   }
 };
 
+/**
+ * Restarts the quiz
+ */
 const restartQuiz = () => {
   currentQuestionIndex.value = 0;
   currentScore.value = 0;
@@ -172,14 +218,24 @@ const restartQuiz = () => {
   randomizeQuestions();
 };
 
+/**
+ * Navigates to the profile page
+ */
 const goToProfile = () => {
   router.push({ name: 'MyAccount' });
 };
 
+/**
+ * Opens the results of the quiz
+ */
 const openResults = () => {
   quizCompleted.value = true;
 };
 
+/**
+ * Calculates the width of the progress bar
+ * @type {import('vue').ComputedRef<string>}
+ */
 const progressBarWidth = computed(() => {
   return `${(currentQuestionIndex.value + 1) / questions.value.length * 100}%`;
 });
@@ -187,8 +243,6 @@ const progressBarWidth = computed(() => {
 </script>
 
 
-
-<!-- Add styles as needed -->
 <style scoped>
 
 .quiz-container {
@@ -231,7 +285,6 @@ h1 {
   margin-bottom: 20px;
 }
 
-
 .progress-bar-container {
   width: 100%;
   background-color: #f0f0f0;
@@ -256,28 +309,21 @@ h1 {
   margin-bottom: 20px;
 }
 
-
-/* Enter and leave-active transitions */
 .slide-enter-active, .slide-leave-active {
   transition: transform 0.4s ease;
 }
 
-/* When a new question enters, it should come from the right */
 .slide-enter-from {
   transform: translateX(100%);
 }
 
-/* When the current question leaves, it should move to the left */
 .slide-leave-to {
   transform: translateX(-100%);
 }
 
-/* Final state for entering and starting state for leaving (usually centered) */
 .slide-enter-to, .slide-leave-from {
   transform: translateX(0);
 }
-
-
 
 .results-window {
   position: fixed;
@@ -295,7 +341,7 @@ h1 {
 }
 
 body {
-  overflow: hidden; /* Prevent scrolling when results window is open */
+  overflow: hidden;
 }
 
 .results-window h2 {
@@ -316,11 +362,9 @@ body {
   cursor: pointer;
 }
 
-
 .results-window button:hover {
   background-color: #5d9ff3;
 }
-
 
 .answer-summary {
   text-align: left;
@@ -333,13 +377,12 @@ body {
 }
 
 .correct {
-  color: #4CAF50; /* Green for correct answers */
+  color: #4CAF50;
 }
 
 .incorrect {
-  color: #F44336; /* Red for incorrect answers */
+  color: #F44336;
 }
-
 
 .buttonbox {
   display: flex;
@@ -353,10 +396,9 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-  z-index: 100; /* Ensure it's below the results window but above other content */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
 }
-
 
 .quiz-header {
   display: flex;
@@ -367,7 +409,6 @@ body {
 
 .quiz-header h1 {
   margin: 0;
-  /* Adjust the font size as needed to fit your design */
   font-size: 2rem;
 }
 
@@ -390,7 +431,5 @@ body {
   color: #a0a0a0;
   cursor: not-allowed;
 }
-
-
 
 </style>

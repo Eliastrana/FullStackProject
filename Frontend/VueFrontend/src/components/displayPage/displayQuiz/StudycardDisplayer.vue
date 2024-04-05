@@ -7,44 +7,40 @@
         <div>
           <img v-if="question.frontImage" :src="question.frontImage" alt="Question Image" class="question-image">
         </div>
-        <!-- Update to use question.front -->
         <p>{{ question.text }}</p>
-
       </div>
-
       <div class="back">
-        <!-- Update to use question.back -->
         <img v-if="question.backImage" :src="question.backImage" alt="Question Image" class="question-image">
         <p>{{ question.answers[0].text }}</p>
-
       </div>
     </div>
   </div>
 </template>
 
+```vue
 <script setup>
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 
-// Props updated to reflect expected structure more clearly
-const props = defineProps({
-  question: {
-    type: Object,
-    required: true,
-  }
-});
+/**
+ * Props for the StudycardDisplayer component
+ * @property {Object} question - The question object
+ */
 
-// Ref for managing the flip state of the card
+
+/**
+ * Boolean value to check if the card is flipped
+ * @type {import('vue').Ref<boolean>}
+ */
 const flipped = ref(false);
 
-// Function to toggle the card's flip state
+/**
+ * Toggles the flipped state of the card
+ */
 const toggleFlip = () => {
   flipped.value = !flipped.value;
 };
 
 </script>
-
-
-
 
 <style scoped>
 .card-container {
@@ -67,7 +63,6 @@ const toggleFlip = () => {
   transform: rotateY(180deg);
 }
 
-
 .question-image {
   max-width: 100%;
   max-height: 300px;
@@ -80,8 +75,7 @@ const toggleFlip = () => {
 
 .front,
 .back {
-
-  flex-direction: column; /* Stack image and text vertically */
+  flex-direction: column;
   text-align: center;
   position: absolute;
   width: 100%;
@@ -98,14 +92,8 @@ const toggleFlip = () => {
   font-size: 2rem;
 }
 
-.front {
-  /* Front side styling */
-}
-
 .back {
   transform: rotateY(180deg);
   background-color: #BEE9E8;
-
-  /* Back side styling */
 }
 </style>

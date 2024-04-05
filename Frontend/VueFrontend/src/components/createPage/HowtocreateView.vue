@@ -1,7 +1,3 @@
-<script setup>
-
-</script>
-
 <template>
   <div class="container">
     <h1>How to create a quiz</h1>
@@ -57,43 +53,41 @@ p {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.5rem;
   text-align: left;
-
   margin: 20px 40px;
-
 }
 
 .step-container {
-  background-color: #f5f5f5; /* Light gray background */
-  border-radius: 15px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Box shadow */
-  padding: 20px; /* Padding inside each step container */
-  margin: 10px 0; /* Margin around each step container */
+  background-color: #f5f5f5;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 10px 0;
 }
 
 .arrow {
-  font-size: 2rem; /* Arrow size */
-  padding: 0 20px; /* Padding around arrows */
+  font-size: 2rem;
+  padding: 0 20px;
 }
 
 .step {
-  margin: 0; /* Remove default margin */
+  margin: 0;
 }
 
 @media (max-width: 760px) {
   .steps-container {
     flex-direction: column;
-    align-items: center; /* Sentrerer elementene horisontalt */
+    align-items: center;
   }
 
   .step-container {
-    text-align: center; /* Sørger for at teksten inni hver container er sentrert */
-    width: 100%; /* Juster bredde etter behov for å gi mer plass */
+    text-align: center;
+    width: 100%;
   }
 
   .arrow {
     transform: rotate(90deg);
     padding: 10px 0;
-    align-self: center; /* Sentrerer pilene */
+    align-self: center;
   }
 }
 

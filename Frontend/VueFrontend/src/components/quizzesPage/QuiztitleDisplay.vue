@@ -7,41 +7,66 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      fonts: {
-        'History': 'Eagle Lake, sans-serif',
-        'Math': 'Times New Roman',
-        'Science': 'Felipa',
-        'Technology': 'Courier New',
-        'Nature': 'Chicle, serif',
-        'Society': 'Times New Roman'
-      },
-      words: ['History', 'Math', 'Science', 'Technology', 'Nature', 'Society'],
-      selectedWordIndex: 0
-    };
-  },
-  computed: {
-    selectedWord() {
-      return this.words[this.selectedWordIndex];
-    }
-  },
-  methods: {
-    getFont(word) {
-      return this.fonts[word] || 'Arial'; // Default to Arial if font not specified for a word
-    }
-  },
-  mounted() {
-    this.interval = setInterval(() => {
-      this.selectedWordIndex = (this.selectedWordIndex + 1) % this.words.length;
-    }, 1500); // Change every 2 seconds, adjust as needed
-  },
-  beforeUnmount() {
-    clearInterval(this.interval);
-  }
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+
+/**
+ * Fonts for different quiz categories
+ * @type {Object}
+ */
+const fonts = {
+  'History': 'Eagle Lake, sans-serif',
+  'Math': 'Times New Roman',
+  'Science': 'Felipa',
+  'Technology': 'Courier New',
+  'Nature': 'Chicle, serif',
+  'Society': 'Times New Roman'
 };
+
+/**
+ * Quiz categories
+ * @type {Array}
+ */
+const words = ['History', 'Math', 'Science', 'Technology', 'Nature', 'Society'];
+
+/**
+ * Index of the currently selected quiz category
+ * @type {import('vue').Ref<number>}
+ */
+const selectedWordIndex = ref(0);
+
+/**
+ * Currently selected quiz category
+ * @type {import('vue').ComputedRef<string>}
+ */
+const selectedWord = computed(() => words[selectedWordIndex.value]);
+
+/**
+ * Get the font for a given quiz category
+ * @param {string} word - The quiz category
+ * @returns {string} The font for the quiz category
+ */
+function getFont(word) {
+  return fonts[word] || 'Arial';
+}
+
+let interval;
+
+/**
+ * On component mount, start an interval to change the selected quiz category every 1.5 seconds
+ */
+onMounted(() => {
+  interval = setInterval(() => {
+    selectedWordIndex.value = (selectedWordIndex.value + 1) % words.length;
+  }, 1500);
+});
+
+/**
+ * On component unmount, clear the interval
+ */
+onUnmounted(() => {
+  clearInterval(interval);
+});
 </script>
 
 
@@ -54,37 +79,35 @@ export default {
 }
 
 .titleContainer {
-  height: 15vh; /* Use viewport height for better scalability */
+  height: 15vh;
   margin-top: 20vh;
   margin-bottom: 7vh;
   display: flex;
   align-items: center;
-  justify-content: center; /* Center horizontally */
+  justify-content: center;
   padding-bottom: 5%;
 }
 
 p {
-  font-size: 8vw; /* Use viewport width for scalability */
-  margin: 0; /* Adjusted to remove unnecessary top margin */
+  font-size: 8vw;
+  margin: 0;
   text-align: left;
   margin-left: 2%;
   color: #3232ff;
   line-height: 1.2;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .titleContainer {
     font-size: 20vw;
-    margin-top: 5vh; /* Slightly reduced for better appearance on tablets */
+    margin-top: 5vh;
     margin-left: 2%;
   }
 }
 
-/* Additional breakpoints for extra small devices */
 @media (max-width: 480px) {
   .titleContainer {
-    margin-top: 5vh; /* Significantly reduced to minimize the gap on mobile devices */
+    margin-top: 5vh;
     margin-left: 2%;
 
   }

@@ -1,28 +1,23 @@
 <script setup>
-
+/**
+ * Importing necessary components for the admin page
+ */
 import AllQuizzesView from '@/views/adminPage/adminComponents/AllQuizzesView.vue'
 import AllUsersView from '@/views/adminPage/adminComponents/AllUsersView.vue'
 import FlaggedQuizzes from '@/views/adminPage/adminComponents/FlaggedQuizzes.vue'
 import AdminToolbar from '@/views/adminPage/adminComponents/AdminToolbar.vue'
 </script>
 
-  <template>
-
-
-    <h1>Administrator console</h1>
-    <h2>Moderate users and quizzes</h2>
-
-
-    <AdminToolbar />
-
-    <FlaggedQuizzes />
-
-    <div class="admin-container">
-      <AllQuizzesView />
-      <AllUsersView />
-    </div>
-
-  </template>
+<template>
+  <h1>Administrator console</h1>
+  <h2>Moderate users and quizzes</h2>
+  <AdminToolbar />
+  <FlaggedQuizzes />
+  <div class="admin-container">
+    <AllQuizzesView />
+    <AllUsersView />
+  </div>
+</template>
 
 
 <style scoped>
