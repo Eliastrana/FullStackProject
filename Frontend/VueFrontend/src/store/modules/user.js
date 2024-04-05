@@ -31,20 +31,17 @@ const mutations = {
 };
 
 const actions = {
-  async register({ commit }, userDetails) {
+  async register({ commit, dispatch }, userDetails) {
     const response = await UserService.register(userDetails);
     commit('SET_TOKEN', response.token);
-    commit('SET_USER_INFO', response.user); // Assuming `user` is part of the response for registration
-    // No need to dispatch 'fetchUserDetails' if registration already includes necessary user info
+    await dispatch('fetchUserDetails');
   },
   async login({ commit, dispatch }, credentials) {
     const response = await UserService.login(credentials);
     commit('SET_TOKEN', response.token);
-    // Directly setting user info upon login if the API response includes it, otherwise, dispatch 'fetchUserDetails'
     if (response.name) {
       commit('SET_USER_INFO', { name: response.name });
     } else {
-      // Assuming the token is needed to fetch user details separately
       await dispatch('fetchUserDetails');
     }
   },

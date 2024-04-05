@@ -9,8 +9,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue'
 import QuizContainer from '@/components/quizzesPage/QuizContainer.vue';
+import { QuizService } from '@/services/QuizService.js'
 
 const emit = defineEmits(['quiz-selected']);
 const quizzes = ref([]);
@@ -22,6 +23,14 @@ const handleQuizSelect = (quiz) => {
 const updateQuizzes = (newQuizzes) => {
   quizzes.value = newQuizzes;
 };
+
+onMounted(async () => {
+  try {
+    quizzes.value = await QuizService.getAllQuizzes();
+  } catch (error) {
+    console.error('Error while fetching quizzes', error);
+  }
+});
 </script>
 
 <style scoped>

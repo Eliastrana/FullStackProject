@@ -17,15 +17,15 @@
   </div>
 </template>
 
-```vue
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps } from 'vue';
 
-/**
- * Props for the StudycardDisplayer component
- * @property {Object} question - The question object
- */
-
+const props = defineProps({
+  question: {
+    type: Object,
+    required: true,
+  }
+});
 
 /**
  * Boolean value to check if the card is flipped
