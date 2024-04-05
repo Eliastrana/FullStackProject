@@ -1,12 +1,15 @@
 package edu.ntnu.idatt2105.SpringbootBackend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Represents a user in the system with all necessary user details.
@@ -53,10 +56,38 @@ public class User implements UserDetails {
     /**
      * The email address of the user. Must be unique across all users.
      */
-    @Column(name = "email", unique = true, nullable = false)
+    @Email(message = "Email should be valid")
     private String email;
 
-    //TODO: Add  @OneToMany(mappedBy = "user") etc
+    /**
+     * The first name of the user.
+     */
+    @Column(name = "account_non_expired", nullable = false)
+    private boolean accountNonExpired;
+
+    /**
+     * The user's account locking status.
+     */
+
+    @Column(name = "account_non_locked", nullable = false)
+    private boolean accountNonLocked;
+
+    /**
+     * The user's credentials expiration status.
+     */
+
+    @Column(name = "credentials_non_expired", nullable = false)
+    private boolean credentialsNonExpired;
+
+    /**
+     * The user's enabled status.
+     */
+
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<UserRole> userRoles;
 
 
     /**
@@ -66,7 +97,9 @@ public class User implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;  // Placeholder for actual authorities retrieval logic
+        return userRoles.stream()
+                        .map(userRole -> userRole.getRole())
+                        .collect(Collectors.toSet());
     }
 
     /**
@@ -76,7 +109,7 @@ public class User implements UserDetails {
      */
     @Override
     public boolean isAccountNonExpired() {
-        return true; // Placeholder for actual account expiration logic
+        return accountNonExpired; 
     }
 
     /**
@@ -86,7 +119,7 @@ public class User implements UserDetails {
      */
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Placeholder for actual account locking logic
+        return accountNonLocked; // Placeholder for actual account locking logic
     }
 
     /**
@@ -96,7 +129,7 @@ public class User implements UserDetails {
      */
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Placeholder for actual credentials expiration logic
+        return this.credentialsNonExpired;
     }
 
     /**
@@ -106,6 +139,6 @@ public class User implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return true; // Placeholder for actual user enabling/disabling logic
+        return this.enabled;
     }
 }

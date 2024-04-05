@@ -19,29 +19,71 @@
         <input v-model="passwordConfirmation" type="password" id="password-confirmation" placeholder=" " required>
         <label for="password-confirmation">Confirm Password</label>
       </div>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       <div id="button-container">
-        <button id="register-user" type="submit">Register</button>
+        <button id="register-user" type="submit" :disabled="username.trim() === '' || password.trim() === '' || email.trim() === '' || passwordConfirmation.trim() === ''">Register</button>
       </div>
     </form>
   </div>
 </template>
-
 
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
+/**
+ * Username for registration
+ * @type {import('vue').Ref<string>}
+ */
 const username = ref('');
+
+/**
+ * Email for registration
+ * @type {import('vue').Ref<string>}
+ */
 const email = ref('');
+
+/**
+ * Password for registration
+ * @type {import('vue').Ref<string>}
+ */
 const password = ref('');
+
+/**
+ * Password confirmation for registration
+ * @type {import('vue').Ref<string>}
+ */
 const passwordConfirmation = ref('');
+
+/**
+ * Error message for registration
+ * @type {import('vue').Ref<string>}
+ */
+const errorMessage = ref('');
+
+/**
+ * Vue Router instance
+ * @type {import('vue-router').Router}
+ */
 const router = useRouter();
+
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
 
+/**
+ * Register user function
+ * Dispatches a register action to the Vuex store
+ * If successful, redirects to the login route
+ * If unsuccessful, sets the error message
+ */
 const registerUser = async () => {
+  errorMessage.value = '';
   if (password.value !== passwordConfirmation.value) {
-    alert("Passwords do not match.");
+    errorMessage.value = "Passwords do not match.";
     return;
   }
 
@@ -53,16 +95,20 @@ const registerUser = async () => {
     });
 
     console.log("Registration successful");
-    router.push({ name: 'login' });
+    router.push({ name: 'home' });
   } catch (error) {
     console.error("Registration failed:", error);
+    errorMessage.value = "An error occurred. Please try again.";
   }
 };
 </script>
 
-
-
 <style scoped>
+
+.error-message {
+  color: red;
+}
+
 .center-container {
   display: flex;
   justify-content: center;
@@ -130,7 +176,7 @@ label {
   pointer-events: none;
 }
 
-#register-user, #create-user-link {
+#register-user{
   padding: 10px 30px;
   margin-top: 20px;
   border: none;
@@ -138,35 +184,30 @@ label {
   background-color: #0056b3;
   color: #ffffff;
   cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.2s, transform 0.2s;
+  transition: background-color 0.3s, box-shadow 0.2s, transform 0.2s; /* Sørger for jevne overganger */
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   font-size: 20px;
 }
+#register-user:disabled {
+  background-color: #d3d3d3;
+  color: #8c8c8c;
+  cursor: not-allowed;
+}
 
-#register-user:hover, #create-user-link:hover {
+#register-user:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   background-color: #007bff;
 }
 
-#register-user:active, #create-user-link:active {
+#register-user:active{
   background-color: #3232ff;
   transform: translateY(2px);
 }
 
-#create-user-link {
-  background-color: transparent;
-  color: #424242;
-  padding: 0;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 15px;
-  margin-top: 10px;
-}
-
-#create-user-link:hover {
-  color: #0056b3;
-  text-decoration: underline;
+#register-user:disabled, #register-user:disabled:hover {
+  background-color: #d3d3d3;
+  color: #8c8c8c;
+  cursor: not-allowed;
 }
 </style>

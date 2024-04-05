@@ -5,23 +5,21 @@
         <div class="image-container">
           <img :src="quiz.image" alt="Quiz Image" class="quiz-image">
         </div>
-
+        <button class="close-btn" @click.stop="closeQuiz">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
         <button @click.stop="startQuiz" class="start-quiz-btn">Start Quiz</button>
-
         <!-- Header and Button Container -->
         <div class="header-container">
-
           <h1>{{ quiz.title }}</h1>
         </div>
-
         <p class="category-badge">#{{ quiz.category }}</p>
         <p>{{ quiz.description }}</p>
         <h2>Questions</h2>
-
         <!-- Questions Container -->
-        <div v-if="quiz.questions && quiz.questions.length" class="questions-container">
-          <div class="question-card" v-for="(question, index) in quiz.questions" :key="index">
-            <p>{{ question.questionText }}</p>
+        <div v-if="questions.length" class="questions-container">
+          <div class="question-card" v-for="question in questions" :key="question.id">
+            <p>{{ question.text }}</p>
           </div>
         </div>
       </div>
@@ -29,26 +27,50 @@
   </transition>
 </template>
 
+<script setup>
+import { ref, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { QuestionService } from '@/services/QuestionService.js';
+import { QuizService } from '@/services/QuizService.js';
+import { defineProps, defineEmits } from 'vue';
 
+const props = defineProps({
+  quiz: Object,
+});
+const emits = defineEmits(['close']);
+const questions = ref([]);
+const store = useStore(); // Use the store
+const router = useRouter(); // Use router for navigation
 
+watch(() => props.quiz, async (newQuiz, oldQuiz) => {
+  console.log('new quiz: ')
+  console.log(newQuiz.id)
+  console.log('old quiz: ')
+  console.log(oldQuiz)
+  if (newQuiz && (!oldQuiz || newQuiz.id !== oldQuiz.id)) {
+    try {
+      questions.value = await QuestionService.getQuestionsByQuizId(newQuiz.id);
+    } catch (error) {
+      console.error('Failed to fetch questions for the quiz', error);
+    }
+  }
+}, { immediate: true });
 
-
-<script>
-export default {
-  props: {
-    quiz: Object,
-  },
-  methods: {
-    startQuiz() {
-      alert('Quiz started!');
-      // Frontend logic stops here
-    },
-    closeQuiz() {
-      this.$emit('close'); // Emit an event to tell the parent to close the fullscreen view
-    },
-  },
+const closeQuiz = () => {
+  emits('close');
 };
 
+const startQuiz = async () => {
+  try {
+    const quizData = await QuizService.getQuizById(props.quiz.id);
+    // Include the quiz ID in the payload
+    await store.dispatch('quizAttempt/setQuizData', { quizData, quizId: props.quiz.id });
+    await router.push({ name: 'QuizDisplayer' });
+  } catch (error) {
+    console.error('Failed to fetch and store quiz data:', error);
+  }
+};
 </script>
 
 <style scoped>
@@ -67,6 +89,7 @@ export default {
 }
 
 .quiz-content {
+  position: relative; /* Needed for absolute positioning of the close button */
   background-color: white; /* White background */
   color: black; /* Adjust text color for better readability */
   text-align: left;
@@ -79,12 +102,7 @@ export default {
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
-.quiz-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
+
 
 button {
   padding: 10px 20px;
@@ -112,8 +130,8 @@ button:hover {
     object-fit: cover;
     border-radius: 8px;
 
-    min-width: 600px;
-    width: 100%; /* Ensure the image takes up the full width */
+    max-width: 500px;
+    min-width: 500px;
     max-height: 200px; /* Set a max-height   to prevent images from stretching */
 
 
@@ -131,7 +149,7 @@ button {
 
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #5d9ff3;
 }
 
 
@@ -175,14 +193,26 @@ button:hover {
   margin: 0; /* Remove default <p> margin if needed */
 }
 
-
-
-
-.quiz-image {
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 20px; /* Adjust if necessary */
+.close-btn {
+  position: absolute;
+  background-color: #007bff;
+  top: 10px;
+  right: 10px;
+  border: none;
+  cursor: pointer;
+  padding: 5px; /* Adjust as needed */
+  display: flex; /* Helps center the icon if it's not filling the button */
+  align-items: center;
+  justify-content: center;
 }
+
+.close-btn:hover {
+  background-color: rgba(0,0,0,0.1);
+  background-color: #5d9ff3;
+
+}
+
+
 
 @media (max-width: 600px) { /* Example breakpoint */
   .header-container {

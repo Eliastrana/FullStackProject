@@ -2,12 +2,16 @@ package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDetailsDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AuthenticationService;
+import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
+    private final UserService userService;
     private final AuthenticationService authService;
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -90,5 +95,23 @@ public class UserController {
             logger.error("Error logging in user: " + e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @ApiResponse(responseCode = "200", description = "User details fetched successfully")
+    @ApiResponse(responseCode = "404", description = "User not found")
+    @Operation(summary = "Get user details", description = "Fetches the details of the currently authenticated user")
+    @GetMapping("/details")
+    public ResponseEntity<UserDetailsDTO> getUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        logger.info("Fetching user details for user with username: " + username);
+
+        UserDetailsDTO userDetails = userService.getUserDetails(username);
+
+        if (userDetails == null) {
+            logger.error("User not found: " + username);
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userDetails);
     }
 }

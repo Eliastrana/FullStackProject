@@ -2,6 +2,7 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import edu.ntnu.idatt2105.SpringbootBackend.controller.UserController;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
  */
 @Schema(description = "User Creation DTO")
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class UserCreationDTO {
     @Schema(required = true, example = "johnDoe", description = "Username of the new user")
@@ -30,16 +32,4 @@ public class UserCreationDTO {
     @Schema(required = true, example = "john.doe@example.com", description = "Email of the new user")
     private String email;
 
-    /**
-     * Creates a new instance of UserCreationDTO with the specified details.
-     *
-     * @param username the username for the new user.
-     * @param password the password for the new user.
-     * @param email    the email address for the new user.
-     */
-    public UserCreationDTO(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
 }

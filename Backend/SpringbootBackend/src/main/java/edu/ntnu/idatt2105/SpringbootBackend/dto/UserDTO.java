@@ -2,7 +2,9 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import edu.ntnu.idatt2105.SpringbootBackend.controller.UserController;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A Data Transfer Object for user login.
@@ -18,6 +20,8 @@ import lombok.Data;
  */
 @Schema(description = "User DTO for login")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
     @Schema(required = true, example = "johnDoe", description = "Username of the user")
     private String username;
@@ -25,14 +29,4 @@ public class UserDTO {
     @Schema(required = true, example = "Password123", description = "Password of the user")
     private String password;
 
-    /**
-     * Constructs a new UserDTO with the specified username and password for login purposes.
-     *
-     * @param username the username of the user attempting to log in.
-     * @param password the password of the user attempting to log in.
-     */
-    public UserDTO(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
 }

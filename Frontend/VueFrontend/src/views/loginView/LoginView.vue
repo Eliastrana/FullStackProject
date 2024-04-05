@@ -1,3 +1,4 @@
+//LoginView.vue
 <template>
   <div class="center-container"></div>
   <div class="login-container">
@@ -10,9 +11,10 @@
       <div class="input-container">
         <input v-model="password" type="password" id="password" placeholder=" " required>
         <label for="password">Password</label>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       </div>
       <div id="button-container">
-        <button id="sign-in" type="submit">Sign in</button>
+        <button id="sign-in" type="submit" :disabled="username.trim() === '' || password.trim() === '' ">Sign in</button>
         <button id="create-user-link" type="button" @click="navigateToCreateUser">Register</button>
       </div>
     </form>
@@ -24,33 +26,62 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
+/**
+ * Username for login
+ * @type {import('vue').Ref<string>}
+ */
 const username = ref('');
+
+/**
+ * Password for login
+ * @type {import('vue').Ref<string>}
+ */
 const password = ref('');
+
+/**
+ * Error message for login
+ * @type {import('vue').Ref<string>}
+ */
+const errorMessage = ref('');
+
+/**
+ * Vue Router instance
+ * @type {import('vue-router').Router}
+ */
 const router = useRouter();
+
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
 
+/**
+ * Login function
+ * Dispatches a login action to the Vuex store
+ * If successful, redirects to the MyAccount route
+ * If unsuccessful, sets the error message
+ */
 const login = async () => {
   try {
-    // Dispatching a Vuex action instead of directly calling the API
     await store.dispatch('user/login', {
       username: username.value,
       password: password.value
     });
-
-    // Navigate to the home view upon successful login
-    router.push({name: 'home'}); // Make sure the route name matches your routes configuration
+    router.push({name: 'MyAccount'});
   } catch (error) {
     console.error("Login failed:", error);
-    // Handle login failure, such as displaying an error message to the user
+    errorMessage.value = "Incorrect username or password.";
   }
 };
 
+/**
+ * Navigates to the CreateUser route
+ */
 const navigateToCreateUser = () => {
-  router.push({ name: 'CreateUser' }); // Adjust this to match your route configuration
+  router.push({ name: 'CreateUser' });
 };
 </script>
-
-
 
 <style scoped>
 
@@ -135,17 +166,22 @@ label {
 }
 
 #sign-in:hover {
-  transform: translateY(-2px); /* Flytter knappen opp for "sveve" effekt */
+  transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  background-color: #007bff; /* Mørkere farge for å vise aktiv tilstand */
+  background-color: #007bff;
 
 }
 
 #sign-in:active {
-  background-color: #3232ff; /* Mørkere farge for å vise aktiv tilstand */
-  transform: translateY(2px); /* Flytter knappen ned for "presset" effekt */
+  background-color: #3232ff;
+  transform: translateY(2px);
 }
 
+#sign-in:disabled {
+  background-color: #d3d3d3;
+  color: #8c8c8c;
+  cursor: not-allowed;
+}
 
 #create-user-link {
   background-color: transparent;
@@ -161,5 +197,10 @@ label {
 #create-user-link:hover {
   color: #0056b3;
   text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
 </style>

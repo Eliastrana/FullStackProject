@@ -8,4 +8,14 @@ export const SessionToken = {
   clearToken() {
     sessionStorage.removeItem('sessionToken');
   },
+  setUserInfo(userInfo) {
+    sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+  },
+  getUserInfo() {
+    const userInfo = sessionStorage.getItem('userInfo');
+    return userInfo ? JSON.parse(userInfo) : null;
+  },
+  clearUserInfo() {
+    sessionStorage.removeItem('userInfo');
+  },
 };

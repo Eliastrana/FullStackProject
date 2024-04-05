@@ -1,40 +1,89 @@
+// QuizContainer.vue
 <template>
-  <div class="quiz-container">
-    <div v-for="quiz in quizzes" :key="quiz.id" class="quiz-box" @click="handleQuizClick(quiz)">
-      <img :src="quiz.image" alt="Quiz Image">
-      <h2>{{ quiz.title }}</h2>
-      <p>{{ quiz.description }}</p>
-      <p><strong>Category:</strong> {{ quiz.category }}</p>
+  <div>
+
+
+    <div class="controls-container">
+      <div class="search-bar">
+        <input type="text" v-model="searchQuery" placeholder="Search quizzes...">
+      </div>
+      <div class="filters">
+        <select v-model="selectedDifficulty">
+          <option value="">All Difficulties</option>
+          <option v-for="difficulty in uniqueDifficulties" :key="difficulty" :value="difficulty">{{ difficulty }}</option>
+        </select>
+        <select v-model="selectedCategory">
+          <option value="">All Categories</option>
+          <option v-for="category in uniqueCategories" :key="category" :value="category">{{ category }}</option>
+        </select>
+      </div>
+    </div>
+
+
+
+    <div class="quiz-container">
+      <div v-for="quiz in filteredQuizzes" :key="quiz.id" class="quiz-box" @click="handleQuizClick(quiz)">
+        <img :src="quiz.image" alt="Quiz Image">
+        <h2>{{ quiz.title }}</h2>
+        <p>{{ quiz.description }}</p>
+        <p class="category-badge">#{{ quiz.category_id }}</p>
+        <!-- Optionally display difficulty if present in your data -->
+      </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
 
-import { defineEmits } from 'vue';
+<script setup>
+
+import { computed, defineEmits, onMounted, ref } from 'vue'
+import { QuizService } from '@/services/QuizService.js'
+
+const emit = defineEmits(['select-quiz']);
+const quizzes = ref([]);
+const searchQuery = ref('');
+
+const selectedDifficulty = ref('');
+const selectedCategory = ref('');
+
 
 // Assuming QuizContainer directly manages individual quiz items
-const emit = defineEmits(['select-quiz']);
 
 const handleQuizClick = (quiz) => {
+  console.log('Selected quiz:', quiz)
   emit('select-quiz', quiz);
 };
 
-const quizzes = ref([]);
+
+const filteredQuizzes = computed(() => {
+  return quizzes.value.filter((quiz) => {
+    return quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+      (selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value) &&
+      (selectedCategory.value === '' || quiz.category_id === selectedCategory.value);
+  });
+});
+
 
 onMounted(async () => {
   try {
-    const response = await fetch('mockJSON/testdata.json');
-    if (response.ok) {
-      quizzes.value = await response.json();
-    } else {
-      console.error('Failed to load testdata.json', response.status);
-    }
+    quizzes.value = await QuizService.getAllQuizzes();
   } catch (error) {
-    console.error('Error while fetching testdata.json', error);
+    console.error('Error while fetching quizzes', error);
   }
 });
+
+const uniqueDifficulties = computed(() => {
+  const difficulties = quizzes.value.map(quiz => quiz.difficulty);
+  return Array.from(new Set(difficulties)).sort(); // Deduplicate and sort
+});
+
+const uniqueCategories = computed(() => {
+  const categories = quizzes.value.map(quiz => quiz.category);
+  return Array.from(new Set(categories)).sort(); // Deduplicate and sort
+});
+
+
+
 </script>
 
 
@@ -42,39 +91,84 @@ onMounted(async () => {
 
 <style scoped>
 
+.top-container select {
+  padding: 10px;
+  margin: 10px 0;
+  margin-right: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  width: auto; /* Adjusted to fit content */
+}
+
+.top-container select:focus {
+  outline: none; /* Removes default focus outline */
+  box-shadow: 0 0 0 2px #62B6CB; /* Adds a custom focus style */
+}
+
+#bottom-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px; /* Adjust as needed for spacing */
+}
+
+.controls-container {
+  display: flex;
+  flex-direction: row; /* Standard layout for større skjermer */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
 .quiz-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px; /* This creates space between your items */
-  height: auto;
+  justify-content: center; /* Endret til center for å sentrere boksene */
+  gap: 20px; /* Bevarer mellomrommet mellom boksene */
 }
 
 
 
 .quiz-box {
-  flex: 1; /* Flex-grow set to 1 to allow boxes to grow */
-  margin: 10px; /* You can adjust the margin if necessary */
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px; /* Gir en liten margin rundt hver boks */
   border-radius: 8px;
-  min-width: calc(33.33% - 40px); /* Set min-width to work with 3 in a row, considering the gap */
-  max-width: calc(33.33% - 40px); /* Set max-width to ensure consistency */
-  height: 100%; /* Ensure the box takes up the full height */
-  background-color: #f9f9f9; /* Change to the color you desire */
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex-basis: calc((100% / 3) - 40px); /* For tre i bredden */
+
 }
+
+.category-badge {
+  display: inline-block; /* Treat the <p> tag more like an inline element */
+  background-color: #3232ff; /* Example background color */
+  color: #ffffff; /* Text color */
+  padding: 5px 15px; /* Vertical and horizontal padding */
+  border-radius: 20px; /* Rounded corners */
+  font-size: 0.8rem; /* Adjust font size as needed */
+  margin: 0; /* Remove default <p> margin if needed */
+}
+
 
 .quiz-box:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
-/* Media query for larger screens */
-@media (min-width: 1200px) { /* Adjust this breakpoint as needed for when you want 4 columns */
+@media (max-width: 1024px) {
   .quiz-box {
-    min-width: calc(30% - 40px); /* Set min-width to work with 4 in a row */
-    max-width: calc(30% - 40px); /* Set max-width to maintain 4 in a row */
+    flex-basis: calc((100% / 2) - 30px); /* Justerer til to i bredden */
   }
 }
+
 
 h2 {
   font-size: 2rem;
@@ -98,7 +192,74 @@ h2, p {
 }
 
 
+input[type="text"], select {
+  padding: 10px;
+  margin: 10px 0;
+  margin-right: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
+
+select {
+  cursor: pointer;
+}
+
+.search-bar {
+  flex: 1;
+  margin-left: 20px;
+  border: none;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .controls-container {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .search-bar, .filters {
+    width: 90%; /* Tilpasser bredden til mindre skjermer */
+    margin: 0 10px 0 0; /* Legger til litt vertikal margin */
+  }
+
+  select, input[type="text"] {
+    width: 100%; /* Sørger for at inputfelt og select-elementer tar opp hele bredden */
+    box-sizing: border-box; /* Inkluderer padding og border i elementets totalbredde */
+  }
+
+  input[type="text"], select {
+    width: 97%;
+    padding: 15px 10px; /* Øker padding for bedre berøringsområde */
+    font-size: 1.2rem; /* Øker fontstørrelsen for bedre lesbarhet */
+    border: 1px solid #ddd; /* Legger til en grense for å gjøre feltet mer synlig */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Legger til en boks-skygge for å fremheve feltet */
+  }
+
+    #bottom-container {
+      flex-direction: column;
+      align-items: stretch; /* Align items to stretch to full width */
+    }
+
+    .top-container select {
+      width: 100%; /* Full width for smaller screens */
+      margin: 10px 0; /* Adjust margin for vertical stacking */
+    }
+
+}
+@media (max-width: 668px) {
+  .quiz-box {
+    flex-basis: calc((100% / 1) - 20px); /* Justerer til en i bredden */
+  }
+}
 </style>
 
 
