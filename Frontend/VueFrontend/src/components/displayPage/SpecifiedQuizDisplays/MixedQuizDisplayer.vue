@@ -78,11 +78,13 @@ import FillInTheBlankDisplayer from '@/components/displayPage/displayQuiz/Fillin
 import MultipleChoiceDisplayer from '@/components/displayPage/displayQuiz/MultiplechoiceDisplayer.vue';
 import StudyCardDisplayer from '@/components/displayPage/displayQuiz/StudycardDisplayer.vue';
 import router from '@/router/index.js';
+import { AttemptService } from '@/services/AttemptService.js'
 
 const store = useStore();
 
 const currentQuestion = computed(() => questions.value[currentQuestionIndex.value] || {});
 const quizData = computed(() => store.state.quizAttempt.quizData);
+const quizId = computed(() => store.state.quizAttempt.quizId);
 const quizTitle = computed(() => quizData.value.title);
 const questions = ref([...quizData.value.questions]);
 const currentQuestionIndex = ref(0);
@@ -183,6 +185,32 @@ const openResults = () => {
 const progressBarWidth = computed(() => {
   return `${(currentQuestionIndex.value + 1) / questions.value.length * 100}%`;
 });
+
+watch(quizCompleted, async (newValue) => {
+  if (newValue === true) {
+    console.log('Quiz completed, submitting attempt...');
+    await submitAttempt();
+  }
+});
+
+const submitAttempt = async () => {
+  console.log('Submitting attempt...');
+  const attemptDetails = {
+    quizId: quizId.value,
+    userId: store.getters['user/userId'],
+    score: currentScore.value,
+    totalQuestions: questions.value.length,
+    correctAnswers: questions.value.filter(q => q.correct).length,
+  };
+
+  console.log(attemptDetails)
+
+  try {
+    await AttemptService.create(attemptDetails);
+  } catch (error) {
+    console.error('Failed to save quiz attempt:', error);
+  }
+};
 
 </script>
 
