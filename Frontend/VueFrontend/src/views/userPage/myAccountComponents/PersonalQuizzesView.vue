@@ -1,40 +1,55 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import user from '@/store/modules/user.js'
 
-/**
- * Quizzes data
- * @type {import('vue').Ref<Array>}
- */
-const quizzes = ref([]);
+const allQuizzes = ref([]); // Stores all quizzes
+const displayLimit = ref(3); // Initial display limit
+const displayedQuizzes = ref([]); // Quizzes to be displayed
 
-/**
- * Edits a quiz with a given ID
- * @param {number} id - The ID of the quiz to edit
- */
-const editQuiz = (id) => {
-  alert(`Edit quiz with ID: ${id}`);
-};
-
-/**
- * Fetches quizzes data from the API when the component is mounted
- */
+// Fetch quizzes data from the API when the component is mounted
 onMounted(async () => {
   try {
     const response = await axios.get('/mockJSON/testdata.json');
-    quizzes.value = response.data;
+    allQuizzes.value = response.data;
+    updateDisplayedQuizzes();
   } catch (error) {
     console.error('Failed to load quizzes:', error);
   }
 });
+
+// Update the displayed quizzes based on the display limit
+function updateDisplayedQuizzes() {
+  displayedQuizzes.value = allQuizzes.value.slice(0, displayLimit.value);
+}
+
+// Function to load more quizzes
+const loadMoreQuizzes = () => {
+  displayLimit.value += 5; // Increase the limit
+  updateDisplayedQuizzes(); // Update displayed quizzes
+};
+
+// Edit quiz function
+const editQuiz = (id) => {
+  alert(`Edit quiz with ID: ${id}`);
+};
+
+// Delete user function
+const deleteUser = (userId) => {
+  alert(`Delete user with ID: ${userId}`);
+};
 </script>
 
+
 <template>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   <div class="quizzes-container">
     <h1>Private Quizzes</h1>
     <h2>These are your personal quizzes</h2>
     <div class="quizzes">
-      <div class="quiz" v-for="(quiz, index) in quizzes" :key="quiz.id">
+      <div class="quiz" v-for="(quiz, index) in displayedQuizzes" :key="quiz.id">
         <div class="quiz-info">
           <img :src="quiz.image" :alt="quiz.title" class="quiz-image"/>
           <div class="quiz-text">
@@ -43,11 +58,24 @@ onMounted(async () => {
             <p>Category: <strong>{{ quiz.category }}</strong></p>
             <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>
           </div>
-          <svg class="edit-icon" @click="editQuiz(quiz.id)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828zM3 17a2 2 0 002 2h12v-2H5v-2H3v2z"/>
-          </svg>
+
+          <div class="action-icons">
+            <div @click="editQuiz(quiz.id)" class="delete-icon">
+              <span class="material-icons">edit</span>
+            </div>
+
+            <div @click="deleteUser(user.userId)" class="delete-icon">
+              <span class="material-icons">delete</span>
+            </div>
+
+
+
+            </div>
+
         </div>
       </div>
+      <button v-if="displayedQuizzes.length < allQuizzes.length" @click="loadMoreQuizzes" class="view-more-button">View More</button>
+
     </div>
   </div>
 </template>
@@ -118,6 +146,27 @@ onMounted(async () => {
   position: relative;
 }
 
+
+.action-icons {
+  display: flex;
+  align-items: center; /* Center items vertically within the container */
+  gap: 8px; /* Adjust the gap between icons */
+  position: absolute;
+  top: 10px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+}
+
+/* If icons appear too small or too large, adjust here */
+.material-icons {
+  font-size: 24px; /* Adjust icon size as necessary */
+  cursor: pointer;
+}
+
+/* Optional: Add hover effect for better user interaction */
+.material-icons:hover {
+  color: #666; /* Change as per your theme */
+}
+
 .quiz:hover {
   transform: translateY(-5px);
   background-color: #f0f0f0;
@@ -132,6 +181,32 @@ h2 {
   color: #3232ff;
   margin-bottom: 20px;
 }
+
+.action-icons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px; /* Adjust gap between icons */
+}
+
+.view-more-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  max-width: 20%;
+
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.view-more-button:hover {
+  background-color: #0056b3;
+}
+
 
 @media (max-width: 768px) {
   .quiz-info {
