@@ -22,14 +22,18 @@ const toggleFlip = () => {
         <div :class="['card', { flipped: flipped }]">
           <div class="front">
             <h5>Implement study cards within your quizzes</h5>
+            <!-- Display hardcoded text for the front -->
+            <h5 id="CardText">Implement study cards within your quizzes</h5>
           </div>
           <div class="back">
             <h5>Learning can be done even while being quizzed! </h5>
+            <!-- Display hardcoded text for the back -->
+            <h5 id="CardText">Learning can be done even while being quizzed! </h5>
           </div>
         </div>
       </div>
       <div class="text-content">
-        <h1>A quiz can be built up with many different types of questions</h1>
+        <h1 id="flip-explained" >A quiz can be built up with many different types of questions</h1>
         <p>Create a mix of Multiple Choice, Fill in the Blank and Study Cards!</p>
       </div>
     </div>
@@ -38,8 +42,8 @@ const toggleFlip = () => {
 <style scoped>
 
 h5 {
-  font-size: 3rem;
   font-weight: normal;
+  font-size: clamp(1.9rem, 5.6vw, 4rem);
 }
 
 .content-wrapper {
@@ -53,22 +57,29 @@ h5 {
 
 .card-container {
   perspective: 1000px;
-  min-width: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 20px 0;
 }
 
 .card {
-  width: 100%;
-  height: 80vh;
+  width: clamp(40vh, 50vw, 70vh);
+  height: clamp(40vh, 45vw, 70vh);
   transform-style: preserve-3d;
-  transition: transform 0.6s;
+  transition: transform 0.6s, box-shadow 0.3s; /* Oppdaterer til å inkludere box-shadow i overgangen */
   cursor: pointer;
+  position: relative;
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
 .card.flipped {
   transform: rotateY(180deg);
+}
+.card:not(.flipped):hover {
+  transform: rotateY(5deg);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.2);
 }
 
 .front, .back {
@@ -93,11 +104,16 @@ h5 {
 }
 
 .text-content {
-  min-width: 100%;
-  padding: 20px;
-  text-align: center;
-  font-size: 1.3rem;
-  margin-left: 8%;
+  min-width: 100%; /* Use the full width for text content */
+  padding: 20px; /* Provide some padding */
+  text-align: center; /* Align text to the left */
+  font-size: 1.3rem; /* Adjust font size as needed */
+}
+#CardText{
+  font-size: clamp(0.5rem, 3.6vw, 3rem);
+}
+#flip-explained{
+  font-size: clamp(1.7rem, 3.2vw, 5rem);
 }
 
 @media (max-width: 868px) {
