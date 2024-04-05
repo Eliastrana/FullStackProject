@@ -9,10 +9,12 @@ import edu.ntnu.idatt2105.SpringbootBackend.repository.QuizRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserQuizAttemptRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.UserQuizAttemptMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -49,6 +51,7 @@ public class UserQuizAttemptService {
         UserQuizAttempt userQuizAttempt = userQuizAttemptMapper.toEntity(userQuizAttemptDTO);
         userQuizAttempt.setUser(user);
         userQuizAttempt.setQuiz(quiz);
+        userQuizAttempt.setTime(LocalDateTime.now());
 
         userQuizAttempt = userQuizAttemptRepository.save(userQuizAttempt);
         return userQuizAttemptMapper.toDto(userQuizAttempt);

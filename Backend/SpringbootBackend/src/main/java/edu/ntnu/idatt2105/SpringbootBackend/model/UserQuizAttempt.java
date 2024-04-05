@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_quiz_attempt")
@@ -30,4 +31,7 @@ public class UserQuizAttempt {
 
     @Column(nullable = false)
     private int score;
+
+    @Column(nullable = false)
+    private LocalDateTime time;
 }
