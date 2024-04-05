@@ -105,6 +105,7 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
             quiz.setCreator(creator);
             quiz.setCategory(category);
             quiz.setDifficulty(completeQuizDTO.getDifficulty());
+            quiz.setPublic(completeQuizDTO.isPublic());
 
     
     Image image = processImage(completeQuizDTO.getImageName(), completeQuizDTO.getImageType(), completeQuizDTO.getImageData());
@@ -158,6 +159,7 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
         quiz.setTitle(completeQuizDTO.getTitle());
         quiz.setDescription(completeQuizDTO.getDescription());
         quiz.setCategory(categoryRepository.findByCategoryName(completeQuizDTO.getCategoryName()).orElse(null));
+        quiz.setDifficulty(completeQuizDTO.getDifficulty());
 
         if (completeQuizDTO.getImageData() != null && !completeQuizDTO.getImageData().isEmpty()) {
             byte[] decodedImg = Base64.getDecoder().decode(completeQuizDTO.getImageData());
