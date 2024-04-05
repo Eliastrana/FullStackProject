@@ -64,7 +64,8 @@ const closeQuiz = () => {
 const startQuiz = async () => {
   try {
     const quizData = await QuizService.getQuizById(props.quiz.id);
-    await store.dispatch('quizAttempt/setQuizData', quizData);
+    // Include the quiz ID in the payload
+    await store.dispatch('quizAttempt/setQuizData', { quizData, quizId: props.quiz.id });
     await router.push({ name: 'QuizDisplayer' });
   } catch (error) {
     console.error('Failed to fetch and store quiz data:', error);
