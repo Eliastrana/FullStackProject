@@ -1,0 +1,123 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+/**
+ * Achievements data
+ * @type {import('vue').Ref<Array>}
+ */
+const achievements = ref([]);
+
+/**
+ * Fetches achievements data from the API when the component is mounted
+ */
+onMounted(async () => {
+  try {
+    const response = await axios.get('/mockJSON/statistics/achievements/achievements.json');
+    achievements.value = response.data;
+  } catch (error) {
+    console.error('Failed to load achievements:', error);
+  }
+});
+</script>
+
+<template>
+  <div class="achievements-container">
+    <h1>Your statistics</h1>
+    <h2>Keep working hard!</h2>
+    <div class="tiles">
+      <div class="tile" v-for="(achievement, index) in achievements" :key="index"
+           :class="{'gold-background': achievement.progress === 100}">
+        <h3>{{ achievement.title }}</h3>
+        <p>{{ achievement.description }}</p>
+        <div class="progress-bar-container">
+          <div class="progress-bar" :style="{ width: achievement.progress + '%' }"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+
+<style scoped>
+h1, h2 {
+  font-family: 'DM Sans', sans-serif;
+  text-align: center;
+}
+
+h2 {
+  color: #3232ff;
+  margin-top: -20px;
+}
+
+.achievements-container {
+  background-color: #ececec;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  margin-top: 5%;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.tile {
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.tile:hover {
+  transform: translateY(-5px);
+  background-color: #f0f0f0;
+}
+
+.progress-bar-container {
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.progress-bar {
+  background-color: #4caf50;
+  height: 10px;
+  border-radius: 20px;
+}
+
+.gold-background {
+  background-color: gold !important;
+  border: 4px solid goldenrod;
+}
+
+.gold-background:hover {
+  background-color: goldenrod !important;
+}
+
+@media (max-width: 480px) {
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+
+  h1, h2 {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+</style>

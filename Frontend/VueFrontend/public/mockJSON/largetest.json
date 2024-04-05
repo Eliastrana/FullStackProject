@@ -1,0 +1,84 @@
+{
+  "title": "Comprehensive Mixed Quiz",
+  "image": "/Path_To_Image",
+  "quizzes": [
+    {
+      "id": 1,
+      "type": "Study Card",
+      "title": "History Quiz",
+      "description": "Test your knowledge of historical events.",
+      "category": "History",
+      "image": "/images/quizImages/history-quiz.jpg",
+      "questions": [
+        {
+          "type": "Study Card",
+          "front": "Who was the first President of the United States?",
+          "back": "George Washington",
+          "tag": "History, USA"
+        },
+        {
+          "type": "Study Card",
+          "front": "The Declaration of Independence was signed in what year?",
+          "back": "1776"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "Multiple Choice",
+      "title": "Science Quiz",
+      "description": "Explore the wonders of science.",
+      "category": "Science",
+      "image": "/images/quizImages/science-quiz.jpg",
+      "questions": [
+        {
+          "type": "Multiple Choice",
+          "questionText": "What is the chemical symbol for water?",
+          "options": [
+            "Gold",
+            "Oxygen",
+            "Silver",
+            "Helium"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "Multiple Choice",
+      "title": "Geography Quiz",
+      "description": "Discover fascinating facts about the world.",
+      "category": "Geography",
+      "image": "/images/quizImages/geography-quiz.jpg",
+      "questions": [
+        {
+          "type": "Multiple Choice",
+          "questionText": "What is the largest continent on Earth?",
+          "options": [
+            "Gold",
+            "Oxygen",
+            "Silver",
+            "Helium"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "Fill in the Blank",
+      "title": "Math Quiz",
+      "description": "Test your mathematical skills.",
+      "category": "Math",
+      "image": "/images/quizImages/math-quiz.jpg",
+      "questions": [
+        {
+          "type": "Fill in the Blank",
+          "questionText": "What is the value of Pi to two decimal places?",
+          "answer": "3.14"
+        }
+      ]
+    }
+  ]
+}

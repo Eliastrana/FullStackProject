@@ -1,0 +1,42 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [ main, dev ]
+    paths:
+      - 'Frontend/VueFrontend/**'
+  pull_request:
+    branches: [ main, dev ]
+    paths:
+      - 'Frontend/VueFrontend/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install --prefix Frontend/VueFrontend
+
+      - name: Lint
+        run: npm run lint --prefix Frontend/VueFrontend
+
+      - name: Build
+        run: npm run build --prefix Frontend/VueFrontend
+
+      - name: Run Vitest
+        run: npm run test:unit --prefix Frontend/VueFrontend
+
+      - name: Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          start: npm run serve --prefix Frontend/VueFrontend
+          wait-on: 'http://localhost:8080'
+          config: baseUrl=http://localhost:8080
