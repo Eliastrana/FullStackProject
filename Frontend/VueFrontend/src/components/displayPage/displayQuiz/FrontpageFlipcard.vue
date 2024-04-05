@@ -1,15 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 
-/**
- * Boolean value to check if the card is flipped
- * @type {import('vue').Ref<boolean>}
- */
 const flipped = ref(false);
 
-/**
- * Toggles the flipped state of the card
- */
 const toggleFlip = () => {
   flipped.value = !flipped.value;
 };
@@ -21,12 +14,10 @@ const toggleFlip = () => {
       <div class="card-container" @click="toggleFlip">
         <div :class="['card', { flipped: flipped }]">
           <div class="front">
-            <h5>Implement study cards within your quizzes</h5>
             <!-- Display hardcoded text for the front -->
             <h5 id="CardText">Implement study cards within your quizzes</h5>
           </div>
           <div class="back">
-            <h5>Learning can be done even while being quizzed! </h5>
             <!-- Display hardcoded text for the back -->
             <h5 id="CardText">Learning can be done even while being quizzed! </h5>
           </div>
@@ -40,6 +31,8 @@ const toggleFlip = () => {
 </template>
 
 <style scoped>
+/* Your existing styles for .functionality, .content-wrapper, .text-content, etc. */
+
 
 h5 {
   font-weight: normal;
@@ -48,12 +41,13 @@ h5 {
 
 .content-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: row; /* Keep content side-by-side */
   justify-content: center;
   align-items: center;
-  width: 100%;
-  gap: 20px;
+  width: 100%; /* Ensure wrapper takes full width */
+  gap: 20px; /* Space between elements */
 }
+
 
 .card-container {
   perspective: 1000px;
@@ -133,14 +127,14 @@ h5 {
   }
 
   .card {
-    width: 100%;
-    height: 40vh;
+    width: 100%; /* Adjust based on layout needs */
+    height: 40vh; /* Adjust based on layout needs */
     transform-style: preserve-3d;
     transition: transform 0.6s;
     cursor: pointer;
   }
 
-  .front, .back {
+.front, .back {
     font-size: 1rem;
   }
 
