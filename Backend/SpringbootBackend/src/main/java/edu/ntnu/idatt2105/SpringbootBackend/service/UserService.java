@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDetailsDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
@@ -53,5 +54,18 @@ public class UserService{
     public User loadUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found, username: " + username));
+    }
+
+    /**
+     * Retrieves the user details based on the provided username.
+     * This method is used for loading user details for authentication and authorization purposes.
+     * It returns a {@link UserDetailsDTO} object containing the user's identification details.
+     * @param username The username of the user to retrieve details for.
+     * @return A {@link UserDetailsDTO} object containing the user's identification details.
+     */
+    public UserDetailsDTO getUserDetails(String username) {
+        return userRepository.findByUsername(username)
+                             .map(userMapper::toUserDetails)
+                             .orElse(null); // Or handle the absence of the user differently
     }
 }
