@@ -2,22 +2,22 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <div class="squares-container">
 
-    <div class="squareMultiple" @click="navigateToLogin">
+    <div class="squareMultiple" @click="navigateToQuizCreator('MULTIPLE_CHOICE')">
       <i class="fas fa-question-circle"></i>
       <p>Multiple Choice</p>
     </div>
 
-    <div class="squareFill" @click="navigateToLogin">
+    <div class="squareFill" @click="navigateToQuizCreator('FILL_IN_BLANK')">
       <i class="fas fa-pencil-alt"></i>
       <p>Fill in the Blank</p>
     </div>
 
-    <div class="squareStudy" @click="navigateToLogin">
+    <div class="squareStudy" @click="navigateToQuizCreator('STUDY')">
       <i class="fas fa-book"></i>
       <p>Study Cards</p>
     </div>
 
-    <div class="squareMixed" @click="navigateToLogin">
+    <div class="squareMixed" @click="navigateToQuizCreator">
       <i class="fas fa-brush"></i>
       <p>Mixed</p>
     </div>
@@ -28,16 +28,34 @@
 <script setup>
 // Importing router from Vue Router
 import router from '@/router/index.js'
+import store from '@/store/index.js'
 
 /**
  * Navigates to the QuizcreatorTool route
  * This function is currently set to navigate to the QuizcreatorTool route when invoked.
  * It should be updated to navigate to the login route when the backend is ready.
  */
-const navigateToLogin = () => {
-  router.push({ name: 'QuizcreatorTool' });
-  // Navigate this to login maybe
+
+const navigateToQuizCreator = (type) => {
+
+  store.dispatch('quizzes/clearQuizzes');
+
+  // Call the modified action with the specific question type
+  store.dispatch('quizzes/addQuestionsByType', { type });
+
+  // Navigate to the Quiz Creator page
+  router.push({ name: 'Quizcreator' });
 };
+
+/**
+ * Generates pre-filled questions based on the type
+ * This function should be updated to generate pre-filled questions based on the type selected.
+ * For example, for 'multipleChoice', generate multiple choice questions.
+ * @param {string} type - The type of questions to generate
+ * @param {number} count - The number of questions to generate
+ * @returns {Array} - An array of pre-filled questions
+ */
+
 </script>
 
 <style scoped>

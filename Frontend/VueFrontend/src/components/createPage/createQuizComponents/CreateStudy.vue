@@ -192,7 +192,9 @@ function removeQuestion() {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
-  border-radius: 4px;
+  font-size: 1rem;
+
+  border-radius: 8px;
   border: none;
   font-family: 'DM Sans', sans-serif;
 }

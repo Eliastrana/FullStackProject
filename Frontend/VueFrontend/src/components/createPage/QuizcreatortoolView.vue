@@ -39,14 +39,6 @@ const difficulties = ref([
   { value: 'HARD', text: 'Hard' },
 ]);
 
-// async function createQuiz(quizData) {
-//   try {
-//     const response = await axios.post('https://api/completeQuiz', quizData);
-//     console.log('Quiz opprettet:', response.data);
-//   } catch (error) {
-//     console.error('Feil ved oppretting av quiz:', error);
-//   }
-// }
 
 function scrollToBottom() {
   nextTick(() => {
@@ -63,8 +55,6 @@ function scrollToTop() {
     behavior: 'smooth',
   });
 }
-
-
 
 function addQuestionType(type) {
   console.log('Adding question type:', type);
@@ -153,19 +143,6 @@ function removeQuestionFromStore(uuid) {
   // Or use store.commit if directly committing a mutation
 }
 
-// async function compileQuizToJson() {
-//   // Assuming store dispatch or commit has already been done to update quizDetails
-//   const quizData = store.state.quizzes.quizDetails; // Adjust path as necessary
-//
-//   try {
-//     const response = await QuizService.create(quizData);
-//     console.log('Quiz created successfully', response);
-//   } catch (error) {
-//     console.error('Error creating quiz', error);
-//   }
-// }
-
-
 function handleFileUpload(event) {
   const file = event.target.files[0]; // Get the uploaded file
 
@@ -202,26 +179,6 @@ function moveQuestionDown(index) {
     store.dispatch('quizzes/updateQuestionsOrder', questions.value);
   }
 }
-
-
-
-
-
-function handleDrag(event) {
-  // Example of additional logic: validation
-  if (event.moved.newIndex === 0) {
-    console.log('Item moved to the first position');
-  }
-
-  // Update Vuex store
-  this.$store.dispatch('updateQuestionsOrder', this.questions);
-
-  // Emit an event to parent
-  this.$emit('orderChanged', this.questions);
-}
-
-
-
 </script>
 
 
