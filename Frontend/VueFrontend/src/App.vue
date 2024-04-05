@@ -11,20 +11,12 @@
       </button>
       <nav :class="{ 'open': isNavbarOpen, 'closing': isNavbarClosing }">
         <div class="close-icon" @click="toggleNavbar" v-if="isNavbarOpen">✕</div>
-
         <div class="nav-links" v-show="isNavbarOpen || screenWidth > 768">
-
           <div @click="navigateAfterClose('/Quizzes')" class="alternativeRouter">Quizzes</div>
           <div @click="navigateAfterClose('/Create')" class="alternativeRouter">Create</div>
           <div @click="navigateAfterClose('/Login')" class="alternativeRouter" v-if="!isAuthenticated">Sign in</div>
-
-<!--          <RouterLink to="/Quizzes" active-class="active-link" @click="closeNavbar()" v-if="isAuthenticated">Quizzes</RouterLink>-->
-<!--          <RouterLink to="/Create" active-class="active-link" @click.stop="closeNavbar()">Create</RouterLink>-->
-<!--          <RouterLink to="/Login" active-class="active-link" @click.stop="closeNavbar()" v-if="!isAuthenticated">Sign in</RouterLink>-->
-
           <template v-if="isAuthenticated">
             <div v-if="screenWidth <= 768 && isNavbarOpen" @click.stop="toggleNavbar" class="smallermenu">
-              <!-- Fullscreen Mobile Navbar Links -->
               <RouterLink to="/MyAccount" active-class="active-link">{{ userName }}</RouterLink>
               <div class="undermenu">
               <RouterLink to="/Admin" active-class="active-link">Admin</RouterLink>
@@ -32,13 +24,9 @@
               <a href="#" @click.prevent="logout">Logout</a>
                 </div>
             </div>
-            <!-- Desktop View Dropdown -->
             <UserMenuDropdown v-else @closeNavbar="closeNavbar()" :userName="userName" activeRoute="/MyAccount" />
           </template>
         </div>
-
-
-
       </nav>
     </header>
     <div class="content">
@@ -48,68 +36,116 @@
 </template>
 
 
-
-
-
-
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import UserMenuDropdown from '@/components/userDropdown/UserMenuDropdown.vue'
 import router from '@/router/index.js'
 
+/**
+ * Vuex store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
+
+/**
+ * State of the navigation bar
+ * @type {import('vue').Ref<boolean>}
+ */
 const isNavbarOpen = ref(false);
+
+/**
+ * Screen width
+ * @type {import('vue').Ref<number>}
+ */
 const screenWidth = ref(window.innerWidth);
 
+/**
+ * User authentication status
+ * @type {import('vue').ComputedRef<boolean>}
+ */
+const isAuthenticated = computed(() => store.getters['user/isAuthenticated']);
 
+/**
+ * Current user's name
+ * @type {import('vue').ComputedRef<string>}
+ */
+const userName = computed(() => store.state.user.userInfo ? store.state.user.userInfo.username : '');
 
-const navigateAfterClose = (path) => {
-  router.push(path); // Navigate after the animation duration
-  isNavbarClosing.value = true; // Trigger the closing animation
-  setTimeout(() => {
-    isNavbarClosing.value = false; // Reset the state
-    isNavbarOpen.value = false; // Ensure the navbar is closed
-  }, 500); // This duration should match your CSS animation
-};
-
-
+/**
+ * State of the navigation bar closing
+ * @type {import('vue').Ref<boolean>}
+ */
 const isNavbarClosing = ref(false);
 
+/**
+ * Emits a custom event
+ * @type {import('vue').EmitFn}
+ */
+const emit = defineEmits(['closeNavbar']);
+
+/**
+ * Navigates to a specified path after closing the navigation bar
+ * @param {string} path - The path to navigate to
+ */
+const navigateAfterClose = (path) => {
+  router.push(path);
+  isNavbarClosing.value = true;
+  setTimeout(() => {
+    isNavbarClosing.value = false;
+    isNavbarOpen.value = false;
+  }, 500);
+};
+
+/**
+ * Toggles the state of the navigation bar
+ */
 const toggleNavbar = () => {
   if (isNavbarOpen.value) {
     isNavbarClosing.value = true;
     setTimeout(() => {
       isNavbarClosing.value = false;
       isNavbarOpen.value = !isNavbarOpen.value;
-    }, 500); // Assuming the closing animation also takes 0.5s
+    }, 500);
   } else {
     isNavbarOpen.value = !isNavbarOpen.value;
   }
 };
 
+/**
+ * Closes the navigation bar
+ */
 const closeNavbar = () => {
   isNavbarOpen.value = false;
 };
 
-
-const emit = defineEmits(['closeNavbar']);
-
+/**
+ * Logs out the user
+ */
 const logout = () => {
   store.dispatch('user/logout').then(() => {
-    emit('closeNavbar'); // Emit the event right before redirecting
+    emit('closeNavbar');
     router.push({ name: 'home' }).catch(err => {
       console.error(err);
     });
   }).catch(error => {
     console.error('Logout failed:', error);
-    // Handle the error, maybe show a message to the user
   });
 };
 
-
+/**
+ * Updates the screen width
+ */
 const updateScreenWidth = () => {
   screenWidth.value = window.innerWidth;
+};
+
+/**
+ * Updates the screen width and closes the navigation bar if the screen width is greater than 768
+ */
+const updateWidth = () => {
+  screenWidth.value = window.innerWidth;
+  if (screenWidth.value > 768) isNavbarOpen.value = false;
 };
 
 onMounted(() => {
@@ -120,13 +156,6 @@ onUnmounted(() => {
   window.removeEventListener('resize', updateScreenWidth);
 });
 
-
-
-const updateWidth = () => {
-  screenWidth.value = window.innerWidth;
-  if (screenWidth.value > 768) isNavbarOpen.value = false; // Close navbar on screen resize if > 768px
-};
-
 onMounted(() => {
   window.addEventListener('resize', updateWidth);
 });
@@ -135,17 +164,12 @@ onUnmounted(() => {
   window.removeEventListener('resize', updateWidth);
 });
 
-const isAuthenticated = computed(() => store.getters['user/isAuthenticated']);
-const userName = computed(() => store.state.user.userInfo ? store.state.user.userInfo.username : '');
 </script>
-
 
 
 <style>
 
-/* Include the Roboto font */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
 
 @keyframes slideDownBackground {
   from {
@@ -155,7 +179,6 @@ const userName = computed(() => store.state.user.userInfo ? store.state.user.use
     transform: translateY(0);
   }
 }
-
 
 @keyframes slideUpBackground {
   from {
@@ -174,22 +197,18 @@ header {
   justify-content: space-between;
   padding: 10px 20px;
   margin-bottom: 200px;
-
-    width: 100%;
-    position: fixed; /* Keeps the header at the top */
-    top: 0; /* Aligns it to the top of the viewport */
-    background-color: #3232ff; /* Ensure the background is not transparent */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-    z-index: 1000; /* High z-index to ensure it stays on top of other content */
-
-
-
+  width: 100%;
+  position: fixed;
+  top: 0;
+  background-color: #3232ff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .hamburger {
   position: absolute;
   right: 20px;
-  top: 15px; /* Decrease this value to push the icon higher */
+  top: 15px;
   font-size: 24px;
   background: none;
   border: none;
@@ -212,82 +231,66 @@ header {
   z-index: 20;
 }
 
-/* Ensure the icon inherits the color and size from the button */
-
 .hamburger .material-icons, .close-icon .material-icons {
   font-size: 30px;
-  color: inherit; /* Should inherit white color from .hamburger or .close-icon */
+  color: inherit;
 }
 
-
-
-   /* Reset CSS for body */
- body {
+body {
    margin: 0;
    padding: 0;
-
    margin-top: 5%;
- }
+}
 
 * {
   box-sizing: border-box;
 }
 
-
-/* Adjust the #app to ensure it takes full viewport width */
 #app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%; /* Make sure app container is full viewport width */
+  width: 100%;
 }
-
-
 
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%; /* Ensure nav takes up full width of its parent */
+  width: 100%;
   gap: 20px;
-
 }
-
 
 .undermenu {
   display: flex;
   flex-direction: column;
   text-align: center  ;
-  align-items: flex-start; /* Aligns items to the start (left) */
+  align-items: flex-start;
   gap: 20px;
   padding-left: 40px;
   font-family: 'DM Sans', sans-serif;
-
 }
 
-
-/* Remaining styles unchanged */
-
 nav a {
-  font-size: 40px; /* Larger font size */
+  font-size: 40px;
   text-decoration: none;
-  color: #fffffa; /* Adjust color based on your preference */
+  color: #fffffa;
 }
 
 
 .alternativeRouter {
-  font-size: 40px; /* Larger font size */
+  font-size: 40px;
   text-decoration: none;
-  color: #fffffa; /* Adjust color based on your preference */
+  color: #fffffa;
 }
 
 .alternativeRouter:hover {
-  color: #ffffaa; /* Adjust hover color based on your preference */
+  color: #ffffaa;
   cursor: pointer;
 }
 
 nav a:hover {
-  color: #ffffaa; /* Adjust hover color based on your preference */
+  color: #ffffaa;
 
 }
 
@@ -295,77 +298,71 @@ nav a:hover {
 
 .brand-name{
 
-  font-size: 40px; /* Larger font size */
+  font-size: 40px;
   text-decoration: none;
-  color: #fffffa; /* Adjust color based on your preference */
+  color: #fffffa;
 }
 
 .brand-name:hover {
-  color: #ffffaa; /* Adjust hover color based on your preference */
+  color: #ffffaa;
 }
 
 nav a:hover {
-  color: #ffffaa; /* Adjust hover color based on your preference */
+  color: #ffffaa;
 
 }
-
 
 .nav-center h1 {
-  margin: 0 10px; /* Add some horizontal spacing */
-  font-size: 24px; /* Adjust the font size as needed */
+  margin: 0 10px;
+  font-size: 24px;
 }
-
 
 .nav-links {
   display: flex;
-  gap: 20px; /* Adds space between each link */
-  justify-content: flex-end; /* Aligns nav-links to the right */
+  gap: 20px;
+  justify-content: flex-end;
   flex: 1;
 }
 
 .active-link {
   font-weight: bold;
-  color: #FFD700; /* Feel free to adjust the color to fit your design */
+  color: #FFD700;
 }
 
 .hamburger {
-  display: none; /* Hidden by default */
+  display: none;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.8);
-
-
-  /* Additional styling */
 }
 
 .close-icon {
-  display: none; /* Hidden by default */
+  display: none;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.8);
-  /* Additional styling */
 }
 
 nav.open .close-icon {
-  display: block; /* Show close icon when menu is open */
+  display: block;
 }
 
 @media (max-width: 768px) {
 
   .content {
-    padding-top: 80px; /* Increase if navbar height increases in mobile view */
+    padding-top: 80px;
   }
 
   header {
-    height: 60px; /* Or whatever height you prefer */
+    height: 60px;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     display: flex;
-    align-items: center; /* Ensures content (e.g., hamburger icon) is vertically centered */
-    justify-content: space-between; /* Keeps items spaced out */
-    padding: 0 20px; /* Adjust as needed */
-    z-index: 1000; /* Ensures header is above other content */
-    background-color: #3232ff; /* Your preferred background color */
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+    background-color: #3232ff;
     margin-bottom: 200px;
   }
 
@@ -374,7 +371,7 @@ nav.open .close-icon {
     display: flex;
     flex-direction: column;
     text-align: center  ;
-    align-items: flex-start; /* Aligns items to the start (left) */
+    align-items: flex-start;
     padding-left: 40px;
     font-family: 'DM Sans', sans-serif;
   }
@@ -382,44 +379,44 @@ nav.open .close-icon {
 
   .hamburger, .close-icon {
     display: block;
-    position: fixed; /* Fixed position to keep it visible */
+    position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 1000; /* Above the nav */
+    z-index: 1000;
   }
 
   .nav-links {
     display: flex;
-    flex-direction: column; /* Stack the links vertically */
-    align-items: flex-start; /* Aligns items to the start (left) */
-    gap: 20px; /* Space between each link */
-    width: 100%; /* Full width to center align easier */
-    padding-left: 20px; /* Adds padding to align left but keep centered */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+    padding-left: 20px;
   }
 
   .nav-links a, .nav-links router-link {
     font-family: 'DM Sans', sans-serif;
-    font-size: 40px; /* Larger font size for easy reading */
-    padding: 10px; /* Padding for larger tap targets */
-    color: #ffffff; /* Color for better contrast */
+    font-size: 40px;
+    padding: 10px;
+    color: #ffffff;
     text-align: center;
   }
 
   .nav-links a:hover, .nav-links router-link:hover {
-    color: #ffffaa; /* Adjust hover color based on your preference */
+    color: #ffffaa;
   }
 
 
   router-link:focus {
-    color: #f3dc5e; /* Adjust hover color based on your preference */
+    color: #f3dc5e;
   }
 
 
   nav {
-    display: none; /* Initially hide the nav menu */
+    display: none;
     flex-direction: column;
     position: absolute;
-    top: 60px; /* Adjust based on header height */
+    top: 60px;
     left: 0;
     width: 100%;
     background-color: #3232ff;
@@ -429,21 +426,19 @@ nav.open .close-icon {
 
   }
 
-
-
   nav.open {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centers items vertically */
-    align-items: center; /* Centers items horizontally */
-    position: fixed; /* Use fixed to cover the entire screen */
+    justify-content: center;
+    align-items: center;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh; /* Full viewport height */
-    background-color: #3232ff; /* Adjust background color as needed */
-    animation: slideDownBackground 0.5s ease forwards; /* Apply the animation */
-    z-index: 999; /* Ensure nav is above other content */
+    height: 100vh;
+    background-color: #3232ff;
+    animation: slideDownBackground 0.5s ease forwards;
+    z-index: 999;
   }
 
   nav.open {
@@ -454,12 +449,7 @@ nav.open .close-icon {
     animation: slideUpBackground 0.5s ease forwards;
   }
 
-
 }
-
-
-
-
 
 </style>
 

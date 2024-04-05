@@ -30,35 +30,57 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
+/**
+ * Username for contact form
+ * @type {import('vue').Ref<string>}
+ */
 const username = ref('');
+
+/**
+ * Email for contact form
+ * @type {import('vue').Ref<string>}
+ */
 const email = ref('');
-const password = ref('');
-const passwordConfirmation = ref('');
+
+/**
+ * Message for contact form
+ * @type {import('vue').Ref<string>}
+ */
+const message = ref('');
+
+/**
+ * Vue Router instance
+ * @type {import('vue-router').Router}
+ */
 const router = useRouter();
+
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
 
+/**
+ * Send contact form function
+ * Dispatches a register action to the Vuex store
+ * If successful, redirects to the login route
+ * If unsuccessful, logs the error
+ */
 const registerUser = async () => {
-  if (password.value !== passwordConfirmation.value) {
-    alert("Passwords do not match.");
-    return;
-  }
-
   try {
     await store.dispatch('user/register', {
       username: username.value,
       email: email.value,
-      password: password.value,
+      message: message.value,
     });
 
-    console.log("Registration successful");
+    console.log("Message sent successfully");
     router.push({ name: 'login' });
   } catch (error) {
-    console.error("Registration failed:", error);
+    console.error("Message sending failed:", error);
   }
 };
 </script>
-
-
 
 <style scoped>
 .center-container {
@@ -168,7 +190,6 @@ label {
   text-decoration: underline;
 }
 
-
 input::placeholder, textarea::placeholder {
   color: transparent;
 }
@@ -184,7 +205,6 @@ input:not(:placeholder-shown) + label, textarea:not(:placeholder-shown) + label 
   color: #000000;
 }
 
-/* Adjustments for textarea to ensure consistent styling */
 textarea {
   width: 100%;
   height: 100px;
@@ -193,7 +213,7 @@ textarea {
   border-bottom: 2px solid #343434;
   background-color: transparent;
   color: #343434;
-  resize: vertical; /* Allows the user to resize the textarea vertically */
+  resize: vertical;
 }
 
 </style>

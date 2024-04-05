@@ -1,9 +1,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios'; // Assuming you're using Axios for HTTP requests
+import axios from 'axios';
 
+/**
+ * Achievements data
+ * @type {import('vue').Ref<Array>}
+ */
 const achievements = ref([]);
 
+/**
+ * Fetches achievements data from the API when the component is mounted
+ */
 onMounted(async () => {
   try {
     const response = await axios.get('/mockJSON/statistics/achievements/achievements.json');
@@ -18,10 +25,7 @@ onMounted(async () => {
   <div class="achievements-container">
     <h1>Your statistics</h1>
     <h2>Keep working hard!</h2>
-
-    <!-- Tiles Container -->
     <div class="tiles">
-      <!-- Dynamically rendered Achievement Tiles -->
       <div class="tile" v-for="(achievement, index) in achievements" :key="index"
            :class="{'gold-background': achievement.progress === 100}">
         <h3>{{ achievement.title }}</h3>
@@ -38,7 +42,7 @@ onMounted(async () => {
 <style scoped>
 h1, h2 {
   font-family: 'DM Sans', sans-serif;
-  text-align: center; /* Center titles for better mobile aesthetics */
+  text-align: center;
 }
 
 h2 {
@@ -52,22 +56,22 @@ h2 {
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  width: 100%; /* Use 100% width for better scalability */
-  max-width: 800px; /* Max width to prevent it from becoming too wide on large screens */
+  width: 100%;
+  max-width: 800px;
   padding: 20px;
   margin-top: 5%;
-  margin-left: auto; /* Center the container */
-  margin-right: auto; /* Center the container */
+  margin-left: auto;
+  margin-right: auto;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* This already provides good scalability */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   width: 100%;
-  padding: 0 20px; /* Add padding to prevent content from touching the sides */
+  padding: 0 20px;
 }
 
 .tile {
@@ -75,7 +79,7 @@ h2 {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  transition: transform 0.3s, background-color 0.3s; /* Smooth transition for hover effect */
+  transition: transform 0.3s, background-color 0.3s;
 }
 
 .tile:hover {
@@ -87,7 +91,7 @@ h2 {
   background-color: #e0e0e0;
   border-radius: 10px;
   overflow: hidden;
-  width: 100%; /* Ensure progress bar container takes full width */
+  width: 100%;
 }
 
 .progress-bar {
@@ -105,10 +109,9 @@ h2 {
   background-color: goldenrod !important;
 }
 
-/* Additional Media Query for very small devices */
 @media (max-width: 480px) {
   .tiles {
-    grid-template-columns: 1fr; /* Stack tiles on very small screens */
+    grid-template-columns: 1fr;
   }
 
   h1, h2 {
@@ -116,4 +119,5 @@ h2 {
     margin-right: 10px;
   }
 }
+
 </style>

@@ -10,7 +10,6 @@ import FlipcardDisplayer from '@/components/displayPage/FlipcardDisplayer.vue'
 
   <div class="display-page-container">
 
-
   <WelcomeIntro />
 
   <FunctionalityDisplayer
@@ -27,7 +26,6 @@ import FlipcardDisplayer from '@/components/displayPage/FlipcardDisplayer.vue'
     imagePosition="right"
     backgroundColor="#BEE9E8" />
 
-
     <FlipcardDisplayer />
 
   </div>
@@ -35,14 +33,14 @@ import FlipcardDisplayer from '@/components/displayPage/FlipcardDisplayer.vue'
 </template>
 
 <style scoped>
-/* Use a Flexbox layout to center the content vertically and horizontally */
+
 .display-page-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px; /* Adjust based on your spacing preference */
-  padding: 20px; /* Add some padding around the content */
+  gap: 20px;
+  padding: 20px;
 }
 
 @media (max-width: 768px) {
@@ -51,18 +49,15 @@ import FlipcardDisplayer from '@/components/displayPage/FlipcardDisplayer.vue'
   }
 }
 
-/* Inside FunctionalityDisplayer.vue */
 .functionality-image {
-  width: 100%; /* Make the image responsive */
-  max-width: 400px; /* Prevent it from becoming too large */
-  height: auto; /* Maintain aspect ratio */
+  width: 100%;
+  max-width: 400px;
+  height: auto;
 }
 
-
 @media (max-width: 768px) {
-  /* Adjust styles for smaller screens */
   .functionality-displayer-title {
-    font-size: 18px; /* Smaller font size on small devices */
+    font-size: 18px;
   }
 }
 

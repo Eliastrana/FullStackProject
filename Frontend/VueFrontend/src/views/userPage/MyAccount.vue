@@ -6,23 +6,32 @@ import PersonalInfoView from '@/views/userPage/myAccountComponents/PersonalInfoV
 import PersonalQuizzesView from '@/views/userPage/myAccountComponents/PersonalQuizzesView.vue'
 import store from '@/store/index.js'
 
+/**
+ * Current user's name
+ * @type {import('vue').ComputedRef<string>}
+ */
 const userName = computed(() => store.state.user.userInfo ? store.state.user.userInfo.username : '');
 
-
-// Example user state
+/**
+ * User data
+ * @type {import('vue').Ref<Object>}
+ */
 const user = ref({
-  name: 'Loading...', // Default name, can be changed based on your initial state
+  name: 'Loading...',
 });
 
+/**
+ * Fetches user data from the API when the component is mounted
+ */
 onMounted(async () => {
   try {
-    // Example: Fetch user information from an API
     const response = await axios.get('/api/user');
-    user.value = response.data; // Assuming response.data contains user object with a name property
+    user.value = response.data;
   } catch (error) {
     console.error('Failed to load user info:', error);
   }
 });
+
 </script>
 
 <template>
@@ -34,8 +43,6 @@ onMounted(async () => {
     <PersonalInfoView class="personal-info"/>
   </div>
 </template>
-
-
 
 <style scoped>
 
@@ -58,31 +65,28 @@ h2 {
 .container {
   margin-top: -5%;
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap as needed */
-  justify-content: space-around; /* Distributes space around items */
-  align-items: flex-start; /* Aligns items at the top */
-  gap: 20px; /* Space between items */
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 20px;
 }
 
-/* Targets PersonalStatisticsView and PersonalInfoView components */
 .personal-statistics, .personal-info {
-  flex-basis: calc(47% - 20px); /* Adjusts width to sit side-by-side, accounting for gap */
-  max-width: calc(47% - 20px); /* Ensures components do not exceed half the container's width */
+  flex-basis: calc(47% - 20px);
+  max-width: calc(47% - 20px);
 
 }
 
-/* Targets PersonalQuizzesView component */
 .personal-quizzes {
-  flex-basis: 100%; /* Allows this component to take the full width */
-  max-width: 100%; /* Ensures the component spans the entire container widt h */
+  flex-basis: 100%;
+  max-width: 100%;
   margin-bottom: -3%;
 }
 
-/* Adjustments for smaller screens */
 @media (max-width: 768px) {
   .personal-statistics, .personal-info, .personal-quizzes {
-    flex-basis: 100%; /* Stacks all children vertically on smaller screens */
-    max-width: 100%; /* Each child takes up the full width of the container */
+    flex-basis: 100%;
+    max-width: 100%;
   }
 }
 </style>

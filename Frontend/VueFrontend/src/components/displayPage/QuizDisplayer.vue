@@ -3,26 +3,39 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import MixedQuizDisplayer from '@/components/displayPage/SpecifiedQuizDisplays/MixedQuizDisplayer.vue';
 import { useRouter } from 'vue-router';
 
-// Access the Vuex store
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
+
+/**
+ * Vue Router instance
+ * @type {import('vue-router').Router}
+ */
 const router = useRouter();
 
-// Computed property to get quizData from the Vuex store
+/**
+ * Quiz data from the Vuex store
+ * @type {import('vue').ComputedRef<Object>}
+ */
 const quizData = computed(() => store.state.quizAttempt.quizData);
 
-// Use onMounted lifecycle hook from Vue 3 for setup script
-import { onMounted } from 'vue';
-
 onMounted(() => {
+  /**
+   * On component mount, check if quiz data is available
+   * If not, navigate back to the QuizSelection route
+   */
   if (!quizData.value) {
     console.warn("No quiz data available, navigating back to quiz selection.");
-    // Navigate back or fetch the quiz again based on your app's flow
     router.push({ name: 'QuizSelection' });
   }
 });
 </script>
+
+

@@ -39,7 +39,7 @@
 }
 
 .highlight {
-  color: #FFDD00; /* This sets the color of 'Qand't' to yellow. Adjust the color code as needed. */
+  color: #FFDD00;
   font-size: 3rem;
 }
 

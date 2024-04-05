@@ -1,15 +1,19 @@
 <script setup>
-
+/**
+ * Function to export all quizzes
+ * Alerts the user that all quizzes are being exported
+ */
 const exportAllQuizzes = () => {
   alert('Exporting all quizzes...');
-  // Implementation for exporting all quizzes goes here
 };
 
+/**
+ * Function to import a quiz
+ * Alerts the user that a quiz is being imported
+ */
 const importQuiz = () => {
   alert('Importing quiz...');
-  // Implementation for importing a quiz goes here
 };
-
 
 </script>
 
@@ -18,13 +22,11 @@ const importQuiz = () => {
     <div class="admin-toolbar__button" @click="importQuiz">
       + Import Quiz
     </div>
-
     <div class="admin-toolbar__button" @click="exportAllQuizzes">
       Export All Quizzes
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .admin-toolbar {
@@ -52,19 +54,20 @@ const importQuiz = () => {
   background-color: #e0e0e0;
 }
 
-/* Media query for mobile devices */
 @media (max-width: 600px) {
+
   .admin-toolbar {
-    flex-direction: column; /* Stack buttons vertically */
-    align-items: stretch; /* Stretch buttons to full width */
-    margin-left: 0; /* Adjust margins for smaller screens */
-    gap: 10px; /* Reduce gap for a tighter layout */
+    flex-direction: column;
+    align-items: stretch;
+    margin-left: 0;
+    gap: 10px;
   }
 
   .admin-toolbar__button {
-    min-width: auto; /* Remove minimum width constraint */
-    font-size: 1.5rem; /* Adjust font size for smaller screens */
-    padding: 8px 16px; /* Adjust padding for smaller buttons */
+    min-width: auto;
+    font-size: 1.5rem;
+    padding: 8px 16px;
   }
 }
+
 </style>

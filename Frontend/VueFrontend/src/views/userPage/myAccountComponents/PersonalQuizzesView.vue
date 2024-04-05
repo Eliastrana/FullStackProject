@@ -2,14 +2,23 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
+/**
+ * Quizzes data
+ * @type {import('vue').Ref<Array>}
+ */
 const quizzes = ref([]);
 
-// Dummy function for editing quizzes
+/**
+ * Edits a quiz with a given ID
+ * @param {number} id - The ID of the quiz to edit
+ */
 const editQuiz = (id) => {
   alert(`Edit quiz with ID: ${id}`);
-  // Implementation for editing a quiz goes here
 };
 
+/**
+ * Fetches quizzes data from the API when the component is mounted
+ */
 onMounted(async () => {
   try {
     const response = await axios.get('/mockJSON/testdata.json');
@@ -44,14 +53,15 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
 .quizzes-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%; /* Ensures full width usage, better for responsiveness */
-  max-width: 800px; /* Limits the maximum width for large screens */
+  width: 100%;
+  max-width: 800px;
   padding: 20px;
-  margin: 5% auto; /* Centers the container horizontally */
+  margin: 5% auto;
   margin-right: 2%;
   margin-left: 2%;
 
@@ -83,20 +93,20 @@ onMounted(async () => {
 
 .quiz-info {
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+  flex-wrap: wrap;
   align-items: center;
   gap: 20px;
 }
 
 .quiz-image {
-  width: 100px; /* Consider using max-width for scalability */
-  height: auto; /* Maintain aspect ratio */
+  width: 100px;
+  height: auto;
   border-radius: 8px;
 }
 
 .quiz-text {
   flex: 1;
-  min-width: 50%; /* Ensures text doesn't become too narrow on small screens */
+  min-width: 50%;
 }
 
 .quiz {
@@ -113,26 +123,27 @@ onMounted(async () => {
   background-color: #f0f0f0;
 }
 
-@media (max-width: 768px) {
-  .quiz-info {
-    flex-direction: column; /* Stacks image and text vertically on smaller screens */
-  }
-
-  .quiz-image {
-    width: 80%; /* Larger images for narrower screens */
-    max-width: 200px; /* Prevents the image from becoming too large */
-    margin: 0 auto; /* Centers the image */
-  }
-}
-
 h1, h2 {
   font-family: 'DM Sans', sans-serif;
-  text-align: center; /* Centers the titles */
+  text-align: center;
 }
 
 h2 {
   color: #3232ff;
-  margin-bottom: 20px; /* Adds space between the title and content */
+  margin-bottom: 20px;
 }
+
+@media (max-width: 768px) {
+  .quiz-info {
+    flex-direction: column;
+  }
+
+  .quiz-image {
+    width: 80%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+
 </style>
 
