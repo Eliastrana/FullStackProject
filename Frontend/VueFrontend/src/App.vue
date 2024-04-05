@@ -124,14 +124,16 @@ const closeNavbar = () => {
  */
 const logout = () => {
   store.dispatch('user/logout').then(() => {
-    emit('closeNavbar');
-    router.push({ name: 'home' }).catch(err => {
-      console.error(err);
-    });
+    emit('closeNavbar'); // Assuming emit is received in the setup function
+    // router.push({ name: 'home' }).catch(err => {
+    //   console.error(err);
+    // });
   }).catch(error => {
     console.error('Logout failed:', error);
   });
 };
+
+
 
 /**
  * Updates the screen width

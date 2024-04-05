@@ -95,7 +95,7 @@ const registerUser = async () => {
     });
 
     console.log("Registration successful");
-    router.push({ name: 'login' });
+    router.push({ name: 'home' });
   } catch (error) {
     console.error("Registration failed:", error);
     errorMessage.value = "An error occurred. Please try again.";

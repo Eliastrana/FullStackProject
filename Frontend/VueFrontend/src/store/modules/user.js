@@ -1,6 +1,7 @@
 // store/modules/user.js
 import { SessionToken } from '@/features/SessionToken.js';
 import { UserService } from '@/services/UserService.js';
+import router from '@/router/index.js'
 
 const state = () => ({
   token: SessionToken.getToken(),
@@ -50,11 +51,32 @@ const actions = {
     const userDetails = await UserService.getUserDetails();
     commit('SET_USER_INFO', userDetails);
   },
-  logout({ commit }) {
-    UserService.logout(); // Handle server-side logout if needed
-    commit('CLEAR_USER');
-    // Assuming 'quizzes/CLEAR_QUIZZES' is managed in another module, keep this action to clear quizzes upon logout
+
+  clearQuizzes({ commit }) {
+    commit('CLEAR_QUIZZES');
   },
+
+
+// The logout action
+  logout({ commit, dispatch }) {
+    return new Promise((resolve, reject) => {
+      try {
+        commit('CLEAR_USER');
+        dispatch('quizzes/clearQuizzes', null, { root: true }); // Adjusted to dispatch to an action
+        resolve();
+      } catch (error) {
+        console.error('Logout failed:', error);
+        reject(error);
+      }
+    }).then(() => {
+      router.push({ name: 'home' });
+    }).catch(error => {
+      console.error('Logout failed:', error);
+    });
+  },
+
+
+
 };
 
 export default {
