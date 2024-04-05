@@ -33,6 +33,9 @@ public class Quiz {
     @Column(length = 1000)
     private String description;
 
+    @Column
+    private boolean isPublic;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Difficulty difficulty;
