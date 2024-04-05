@@ -9,6 +9,7 @@ import edu.ntnu.idatt2105.SpringbootBackend.exception.CreatorNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.TagNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuestionNotFoundException;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.TagNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Answer;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Category;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Image;
@@ -281,4 +282,24 @@ public void deleteCompleteQuiz(UUID quizId) throws QuizNotFoundException {
         }
         return null;
     }
+
+    public List<CompleteQuizDTO> getCompleteQuizzesByTag(String tag) throws TagNotFoundException {
+        Tag tagEntity = tagRepository.findByName(tag)
+                .orElseThrow(() -> new TagNotFoundException(tag));
+    
+        // Stream over the questions, map each question to its quiz, and collect unique quizzes
+        Set<Quiz> quizzes = tagEntity.getQuestions().stream()
+                .map(Question::getQuiz)
+                .collect(Collectors.toSet());
+    
+        if (quizzes.isEmpty()) {
+            throw new QuizNotFoundException("No quizzes found with tag: " + tag);
+        }
+    
+        // Map each quiz to CompleteQuizDTO
+        return quizzes.stream()
+                .map(quizMapper::toCompleteQuizDTO)
+                .collect(Collectors.toList());
+    }
+
 }
