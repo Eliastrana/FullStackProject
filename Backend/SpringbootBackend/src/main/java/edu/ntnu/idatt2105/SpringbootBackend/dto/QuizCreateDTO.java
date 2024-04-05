@@ -34,11 +34,18 @@ public class QuizCreateDTO {
     @Schema(required = true, example = "EASY", description = "Difficulty of the new quiz")
     private Difficulty difficulty;
 
+    @NotBlank(message = "isPublic is required")
+    @Schema(required = true, example = "true", description = "Boolean value indicating whether the new quiz is public or private")
+    private boolean isPublic;
+
+    @NotBlank(message = "CreatorId is required")
     @Schema(required = true, example = "123e4567-e89b-12d3-a456-426614174000", description = "Unique identifier of the quiz creator")
     private UUID creatorId;
 
-    @Schema(description = "CategoryId of the quiz")
+    @NotBlank(message = "CategoryId is required")
+    @Schema(description = "CategoryId of the quiz", example = "23e4567-e89b-12d3-a456-426614174000")
     private UUID categoryId;
+
 
     @Schema(description = "List of questions for the new quiz")
     private List<QuestionCreateDTO> questions;
