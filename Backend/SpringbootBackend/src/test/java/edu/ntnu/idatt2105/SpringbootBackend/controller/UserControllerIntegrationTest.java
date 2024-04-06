@@ -23,7 +23,7 @@
 
   @SpringBootTest
   @AutoConfigureMockMvc
-  @ActiveProfiles("test")
+  //@ActiveProfiles("test")
   class UserControllerIntegrationTest {
 
     @Autowired
@@ -43,7 +43,7 @@
     @Test
     @WithMockUser
     void registerUser_Success() throws Exception {
-      UserCreationDTO userCreationDTO = new UserCreationDTO("testuser6", "testpassword", "test6@example.com");
+      UserCreationDTO userCreationDTO = new UserCreationDTO("testuser7", "testpassword", "test6@exampe.com");
 
       mockMvc.perform(post("/api/user/register")
                       .contentType(MediaType.APPLICATION_JSON)
@@ -57,14 +57,14 @@
     @WithMockUser
     void loginUser_Success() throws Exception {
       // First, ensure a user is registered in the system
-      UserCreationDTO userCreationDTO = new UserCreationDTO("loginTestUser4", "loginTestPassword", "logintest4@example.com");
+      UserCreationDTO userCreationDTO = new UserCreationDTO("loginTestUser8", "loginTestPassword", "logintst4@example.com");
       mockMvc.perform(post("/api/user/register")
               .contentType(MediaType.APPLICATION_JSON)
               .content(objectMapper.writeValueAsString(userCreationDTO))
               .with(csrf()));
 
       // Construct login request body directly
-      String loginRequestBody = "{\"username\":\"loginTestUser4\",\"password\":\"loginTestPassword\"}";
+      String loginRequestBody = "{\"username\":\"loginTestUser8\",\"password\":\"loginTestPassword\"}";
 
       mockMvc.perform(post("/api/user/login")
                       .contentType(MediaType.APPLICATION_JSON)
