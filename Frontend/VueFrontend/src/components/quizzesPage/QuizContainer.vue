@@ -23,7 +23,7 @@
 
     <div class="quiz-container">
       <div v-for="quiz in filteredQuizzes" :key="quiz.id" class="quiz-box" @click="handleQuizClick(quiz)">
-        <img :src="quiz.image" alt="Quiz Image">
+        <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image">
         <h2>{{ quiz.title }}</h2>
         <p>{{ quiz.description }}</p>
         <p class="category-badge">#{{ quiz.category_id }}</p>
@@ -35,56 +35,46 @@
 
 
 <script setup>
+import { defineEmits, onMounted, ref, computed } from 'vue';
+import { useStore } from 'vuex';
 
-import { computed, defineEmits, onMounted, ref } from 'vue'
-import { QuizService } from '@/services/QuizService.js'
-
+const store = useStore();
 const emit = defineEmits(['select-quiz']);
-const quizzes = ref([]);
 const searchQuery = ref('');
 
 const selectedDifficulty = ref('');
 const selectedCategory = ref('');
 
+onMounted(async () => {
+  await store.dispatch('quizzes/fetchAllQuizzes');
+  await store.dispatch('quizzes/fetchQuizImages');
+});
 
-// Assuming QuizContainer directly manages individual quiz items
-
-const handleQuizClick = (quiz) => {
-  console.log('Selected quiz:', quiz)
-  emit('select-quiz', quiz);
-};
-
+const quizzes = computed(() => store.state.quizzes.quizzes);
 
 const filteredQuizzes = computed(() => {
   return quizzes.value.filter((quiz) => {
     return quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
       (selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value) &&
-      (selectedCategory.value === '' || quiz.category_id === selectedCategory.value);
+      (selectedCategory.value === '' || quiz.category === selectedCategory.value);
   });
 });
 
-
-onMounted(async () => {
-  try {
-    quizzes.value = await QuizService.getAllQuizzes();
-  } catch (error) {
-    console.error('Error while fetching quizzes', error);
-  }
-});
-
 const uniqueDifficulties = computed(() => {
-  const difficulties = quizzes.value.map(quiz => quiz.difficulty);
-  return Array.from(new Set(difficulties)).sort(); // Deduplicate and sort
+  const difficulties = quizzes.value.map(quiz => quiz.difficulty).filter(Boolean);
+  return Array.from(new Set(difficulties)).sort();
 });
 
 const uniqueCategories = computed(() => {
-  const categories = quizzes.value.map(quiz => quiz.category);
-  return Array.from(new Set(categories)).sort(); // Deduplicate and sort
+  const categories = quizzes.value.map(quiz => quiz.category).filter(Boolean);
+  return Array.from(new Set(categories)).sort();
 });
 
-
-
+function handleQuizClick(quiz) {
+  emit('select-quiz', quiz);
+}
 </script>
+
 
 
 

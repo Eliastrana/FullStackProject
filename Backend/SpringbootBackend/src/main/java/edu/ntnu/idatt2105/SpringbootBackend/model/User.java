@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(exclude = "userRoles")
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @Entity
@@ -87,7 +88,7 @@ public class User implements UserDetails {
     private boolean enabled;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<UserRole> userRoles;
+    private Set<UserRole> userRoles = new HashSet<>();
 
 
     /**

@@ -47,12 +47,14 @@ const coverImageBack = ref(null);
 /**
  * Watches for changes in the question and answers and emits the updated data
  */
-watch([question, answers], () => {
+watch([question, answers, coverImageFront, coverImageBack], () => {
   emits('submitData', {
     uuid: props.uuid,
     text: question.value,
     questionType: 'STUDY',
-    answers: answers.value.map(answer => ({ text: answer.text, correct: answer.correct }))
+    answers: answers.value.map(answer => ({ text: answer.text, correct: answer.correct })),
+    imageFront: coverImageFront.value,
+    imageBack: coverImageBack.value
   });
 }, { deep: true });
 
