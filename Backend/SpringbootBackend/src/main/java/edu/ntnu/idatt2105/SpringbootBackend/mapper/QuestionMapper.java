@@ -18,6 +18,23 @@ import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
+/**
+ * The {@code QuestionMapper} class is responsible for mapping between {@link Question} entities
+ * and their corresponding DTOs ({@link QuestionDTO}, {@link CompleteQuestionDTO}, and {@link QuestionCreateDTO}).
+ * It provides methods to convert entities to DTOs for data transfer, and vice versa, to assist
+ * with data manipulation and presentation logic.
+ *
+ * @author vegard johnsen
+ * @version 1.0
+ * @since 1.0
+ * @see Question
+ * @see QuestionDTO
+ * @see CompleteQuestionDTO
+ * @see QuestionCreateDTO
+ * @see AnswerMapper
+ * @see TagRepository
+ */
 @Component
 public class QuestionMapper {
 
@@ -27,6 +44,14 @@ public class QuestionMapper {
     @Autowired
     private TagRepository tagRepository;
 
+    /**
+     * Converts a {@link Question} entity to a {@link QuestionDTO}.
+     * This method maps all relevant fields from the {@link Question} entity to the {@link QuestionDTO}.
+     * If the {@code question} is null, it returns null.
+     *
+     * @param question the {@link Question} entity to convert
+     * @return the converted {@link QuestionDTO}, or null if the input is null
+     */
     public QuestionDTO toQuestionDTO(Question question) {
         if (question == null) {
             return null;
@@ -45,6 +70,15 @@ public class QuestionMapper {
         return dto;
     }
 
+    /**
+     * Converts a {@link QuestionCreateDTO} to a {@link Question} entity and associates it with a given {@link Quiz}.
+     * This method is used when creating a new question from client data. It sets the provided details
+     * onto a new {@link Question} entity. The question's creation date is set to the current date and time.
+     *
+     * @param dto the {@link QuestionCreateDTO} containing the new question's details
+     * @param quiz the {@link Quiz} to associate the new question with
+     * @return the created {@link Question} entity, or null if the input DTO is null
+     */
     public Question toQuestion(QuestionCreateDTO dto, Quiz quiz) {
         if (dto == null) {
             return null;
@@ -60,6 +94,15 @@ public class QuestionMapper {
         return question;
     }
 
+    /**
+     * Updates an existing {@link Question} entity with data from a {@link QuestionDTO}.
+     * This method applies changes from the DTO to the existing entity, such as text and multimedia link.
+     * It is used to modify an existing question based on updated data provided by the client.
+     *
+     * @param dto the {@link QuestionDTO} containing the updated details
+     * @param question the existing {@link Question} entity to update
+     * @return the updated {@link Question} entity, or null if any input is null
+     */
     public Question updateQuestionFromDTO(QuestionDTO dto, Question question) {
         if (dto == null || question == null) {
             return null;
@@ -73,6 +116,15 @@ public class QuestionMapper {
         return question;
     }
 
+    /**
+     * Converts a {@link CompleteQuestionDTO} to a {@link Question} entity and associates it with a given {@link Quiz}.
+     * This method sets detailed information onto a new {@link Question} entity, including associated tags
+     * and answers, making it suitable for creating questions with a complete set of details at once.
+     *
+     * @param dto the {@link CompleteQuestionDTO} containing the complete question details
+     * @param quiz the {@link Quiz} to associate the new question with
+     * @return the created {@link Question} entity, or null if the input DTO is null
+     */
     public Question toEntity(CompleteQuestionDTO dto, Quiz quiz) {
         if (dto == null) {
             return null;
@@ -118,6 +170,14 @@ public class QuestionMapper {
         return question;
     }
 
+    /**
+     * Converts a {@link Question} entity to a {@link CompleteQuestionDTO}.
+     * This method maps detailed information from the {@link Question} entity, including tags and answers,
+     * to a {@link CompleteQuestionDTO}, suitable for transferring a complete question's data to the client.
+     *
+     * @param question the {@link Question} entity to convert
+     * @return the converted {@link CompleteQuestionDTO}, or null if the input is null
+     */
     public CompleteQuestionDTO toCompleteQuestionDTO(Question question) {
         if (question == null) {
             return null;
