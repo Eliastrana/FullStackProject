@@ -12,7 +12,7 @@ import AdminToolbar from '@/views/adminPage/adminComponents/AdminToolbar.vue'
   <h1>Administrator console</h1>
   <h2>Moderate users and quizzes</h2>
   <AdminToolbar />
-  <FlaggedQuizzes />
+<!--  <FlaggedQuizzes />--> <!-- This is possible for a further implementation of a flagging system. -->
   <div class="admin-container">
     <AllQuizzesView />
     <AllUsersView />

@@ -35,5 +35,15 @@ export const AttemptService = {
       console.error('Error fetching attempt by ID:', error);
       throw error;
     }
+  },
+
+  async getAttemptByUserId(userId) {
+    try {
+      const response = await axios.get(`${ATTEMPT_API_URL}/user/${userId}`);
+      return response.data; // An array of all attempts for the user
+    } catch (error) {
+      console.error('Error fetching attempts by user ID:', error);
+      throw error;
+    }
   }
 };

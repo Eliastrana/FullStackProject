@@ -1,18 +1,34 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import user from '@/store/modules/user.js'
+import { QuizService } from '@/services/QuizService.js'; // Import QuizService
+import { UserService } from '@/services/UserService.js';
+import user from '@/store/modules/user.js';
+import ConfirmationModal from '@/components/util/ConfirmationModal.vue'
 
 const allQuizzes = ref([]); // Stores all quizzes
 const displayLimit = ref(3); // Initial display limit
 const displayedQuizzes = ref([]); // Quizzes to be displayed
 
 // Fetch quizzes data from the API when the component is mounted
+
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/testdata.json');
-    allQuizzes.value = response.data;
-    updateDisplayedQuizzes();
+    // Fetch user details to get the userId
+    const userDetails = await UserService.getUserDetails();
+    const userId = userDetails.id; // Adjust based on the actual structure of userDetails
+
+    // Fetch all quizzes
+    const quizzesData = await QuizService.getAllQuizzes();
+
+    console.log('Quizzes data loaded:', quizzesData)
+
+    // Filter quizzes based on the userId
+    allQuizzes.value = quizzesData.filter(quiz => quiz.creatorId === userId);
+
+    console.log('Filtered quizzes:', allQuizzes.value)
+
+    // Initially display all (or a subset of) filtered quizzes
+    displayedQuizzes.value = allQuizzes.value; // You can also implement pagination or a "View More" button
   } catch (error) {
     console.error('Failed to load quizzes:', error);
   }
@@ -29,16 +45,52 @@ const loadMoreQuizzes = () => {
   updateDisplayedQuizzes(); // Update displayed quizzes
 };
 
-// Edit quiz function
-const editQuiz = (id) => {
-  alert(`Edit quiz with ID: ${id}`);
+const showConfirmationModal = ref(false);
+const pendingDeleteQuizId = ref(null);
+
+const askDeleteQuiz = (quizId) => {
+  pendingDeleteQuizId.value = quizId;
+  showConfirmationModal.value = true;
 };
 
-// Delete user function
-const deleteUser = (userId) => {
-  alert(`Delete user with ID: ${userId}`);
+const confirmDelete = () => {
+  deleteQuiz(pendingDeleteQuizId.value);
+  showConfirmationModal.value = false;
 };
+
+const cancelDelete = () => {
+  showConfirmationModal.value = false;
+};
+
+
+// Edit quiz function
+const editQuiz = (id) => {
+  alert(`Edit quiz with ID: ${id} `);
+
+};
+
+const deleteQuiz = async (quizId) => {
+  // Display the confirmation dialog
+  const isConfirmed = confirm('Are you sure you want to delete this quiz?');
+
+  // Check if the user clicked 'OK'
+  if (isConfirmed) {
+    try {
+      console.log('Deleting quiz with ID:', quizId);
+      await QuizService.deleteQuiz(quizId);
+      // Remove the quiz from the displayed quizzes after successful deletion
+      allQuizzes.value = allQuizzes.value.filter(quiz => quiz.id !== quizId);
+      updateDisplayedQuizzes();
+    } catch (error) {
+      console.error('Failed to delete quiz:', error);
+      alert('Error deleting the quiz. Please try again.');
+    }
+  }
+};
+
+
 </script>
+
 
 
 <template>
@@ -46,7 +98,8 @@ const deleteUser = (userId) => {
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <div class="quizzes-container">
-    <h1>Private Quizzes</h1>
+    <h1>
+      Personal Quizzes</h1>
     <h2>These are your personal quizzes</h2>
     <div class="quizzes">
       <div class="quiz" v-for="(quiz, index) in displayedQuizzes" :key="quiz.id">
@@ -56,7 +109,7 @@ const deleteUser = (userId) => {
             <h3>{{ quiz.title }}</h3>
             <p>{{ quiz.description }}</p>
             <p>Category: <strong>{{ quiz.category }}</strong></p>
-            <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>
+<!--            <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>-->
           </div>
 
           <div class="action-icons">
@@ -64,7 +117,7 @@ const deleteUser = (userId) => {
               <span class="material-icons">edit</span>
             </div>
 
-            <div @click="deleteUser(user.userId)" class="delete-icon">
+            <div @click="askDeleteQuiz(quiz.id)" class="delete-icon">
               <span class="material-icons">delete</span>
             </div>
 
@@ -75,6 +128,16 @@ const deleteUser = (userId) => {
         </div>
       </div>
       <button v-if="displayedQuizzes.length < allQuizzes.length" @click="loadMoreQuizzes" class="view-more-button">View More</button>
+
+
+      <ConfirmationModal
+        :isVisible="showConfirmationModal"
+        message="Are you sure you want to delete this quiz?"
+        @confirm="confirmDelete"
+        @cancel="cancelDelete"
+      />
+
+
 
     </div>
   </div>
