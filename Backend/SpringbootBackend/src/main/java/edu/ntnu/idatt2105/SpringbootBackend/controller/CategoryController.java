@@ -24,6 +24,16 @@ public class CategoryController {
     this.categoryService = categoryService;
   }
 
+  /**
+   * Creates a new category with the provided details.
+   * This method accepts a {@link CategoryDTO} object containing the category details,
+   * processes it through the {@link CategoryService}, and saves the new category.
+   *
+   * @param categoryDTO The {@link CategoryDTO} object containing the new category's details.
+   * @return A {@link ResponseEntity<CategoryDTO>} containing the created {@link CategoryDTO}
+   * and the HTTP status {@link HttpStatus#CREATED} if the creation is successful;
+   * otherwise, returns a response entity with an appropriate error status.
+   */
   @Operation(summary = "Create a new category", description = "Creates a new category with the provided details")
   @ApiResponse(responseCode = "201", description = "Category created successfully")
   @ApiResponse(responseCode = "400", description = "Bad request when the category details are invalid")
@@ -33,6 +43,15 @@ public class CategoryController {
     return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
   }
 
+  /**
+   * Retrieves all categories from the system.
+   * This method calls the {@link CategoryService} to fetch all existing categories
+   * and returns them in a list. It does not require any specific identifier since it aims
+   * to return all categories available in the system.
+   *
+   * @return A {@link ResponseEntity} containing a list of {@link CategoryDTO} objects
+   * representing all categories and the HTTP status {@link HttpStatus#OK}.
+   */
   @Operation(summary = "Get all categories", description = "Retrieves all the categories")
   @ApiResponse(responseCode = "200", description = "Categories fetched successfully")
   @GetMapping("/")
@@ -41,6 +60,14 @@ public class CategoryController {
     return new ResponseEntity<>(categories, HttpStatus.OK);
   }
 
+  /**
+   * Retrieves a specific category by its unique identifier (ID).
+   * This method uses the {@link CategoryService} to find a category by its ID.
+   *
+   * @param id The unique identifier (UUID) of the category to retrieve.
+   * @return A {@link ResponseEntity<CategoryDTO>} containing the found {@link CategoryDTO}
+   * if the category exists; otherwise, returns HTTP status {@link HttpStatus#NOT_FOUND}.
+   */
   @Operation(summary = "Get a category by ID", description = "Retrieves a category by its unique identifier")
   @ApiResponse(responseCode = "200", description = "Category fetched successfully")
   @ApiResponse(responseCode = "404", description = "Category not found")
@@ -50,6 +77,17 @@ public class CategoryController {
     return ResponseEntity.ok(categoryDTO);
   }
 
+  /**
+   * Updates an existing category identified by its ID with new details.
+   * This method takes a {@link CategoryDTO} with updated category details and an ID,
+   * processes the update through the {@link CategoryService}, and returns the updated category.
+   *
+   * @param id The UUID of the category to update.
+   * @param categoryDTO The {@link CategoryDTO} containing updated category details.
+   * @return A {@link ResponseEntity<CategoryDTO>} containing the updated {@link CategoryDTO}
+   * and HTTP status {@link HttpStatus#OK} if the update is successful; otherwise,
+   * returns HTTP status {@link HttpStatus#NOT_FOUND} if the category is not found.
+   */
   @Operation(summary = "Update a category", description = "Updates a category with the given ID and details")
   @ApiResponse(responseCode = "200", description = "Category updated successfully")
   @ApiResponse(responseCode = "404", description = "Category not found")
@@ -59,6 +97,15 @@ public class CategoryController {
     return ResponseEntity.ok(updatedCategory);
   }
 
+  /**
+   * Deletes a category by its unique identifier (ID).
+   * This method calls the {@link CategoryService} to delete a category based on its ID.
+   *
+   * @param id The UUID of the category to delete.
+   * @return A {@link ResponseEntity<Void>} with HTTP status {@link HttpStatus#NO_CONTENT}
+   * if the category is successfully deleted; otherwise, returns HTTP status {@link HttpStatus#NOT_FOUND}
+   * if the category is not found.
+   */
   @Operation(summary = "Delete a category", description = "Deletes a category with the given ID")
   @ApiResponse(responseCode = "204", description = "Category deleted successfully")
   @ApiResponse(responseCode = "404", description = "Category not found")
