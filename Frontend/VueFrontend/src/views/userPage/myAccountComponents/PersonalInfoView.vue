@@ -74,7 +74,8 @@ const updatePassword = () => {
   flex-direction: column;
   align-items: center;
   max-width: 90%;
-  margin: 5% auto;
+  min-height: 83vh;
+  margin:  auto;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);

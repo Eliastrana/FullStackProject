@@ -21,7 +21,7 @@
       <h1>{{ quizTitle }}</h1>
 
       <!-- Submit/Complete Quiz Button -->
-      <button @click="openResults" class="icon-button" aria-label="Submit" :disabled="!quizStarted">
+      <button @click="openResults" class="icon-button" aria-label="Submit">
         <i class="fas fa-check"></i>
       </button>
     </div>
@@ -56,6 +56,8 @@
       </transition>
     </div>
 
+
+
     <!-- Quiz Completion Display -->
     <div v-if="quizCompleted" class="results-window">
       <h2>Quiz Completed!</h2>
@@ -64,16 +66,21 @@
         <!-- Display each question's result -->
         <li v-for="(question, index) in questions" :key="index" :class="{'correct': question.correct, 'incorrect': question.answered && !question.correct}">
           Q{{ index + 1 }}: {{ question.text }} - <strong>
-          {{ question.questionType === 'STUDY' ? 'Study Note' : (question.correct ? 'Correct' : 'Incorrect') }}
+          {{ question.questionType === 'STUDY' ? 'Study Note' : (question.correct ? 'Correct' : 'Incorrect')}}
+
         </strong>
         </li>
       </ul>
       <div class="buttonbox">
         <!-- Restart and Profile Navigation Buttons -->
         <button @click="restartQuiz">Try Again</button>
-        <button @click="goToProfile">More Quizzes</button>
+        <button @click="goToProfile">Your profile</button>
       </div>
     </div>
+
+
+
+
   </div>
 </template>
 
@@ -218,6 +225,15 @@ const submitAttempt = async () => {
     console.error('Failed to save quiz attempt:', error);
   }
 };
+
+import { onMounted } from 'vue';
+// Import other dependencies and setup code...
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+
+  // Your existing onMounted logic...
+});
 
 </script>
 
