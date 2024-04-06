@@ -12,8 +12,6 @@ import lombok.Data;
  * It encapsulates the user details
  * required for getting details of a user, including username and email.
  * This DTO is used as the response body in the get user details endpoint of {@link UserController}.
- *
- * @see UserController#getUserDetails(UUID)
  * @since 0.1
  * @version 0.1
  */
