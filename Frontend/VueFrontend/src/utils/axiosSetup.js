@@ -10,7 +10,7 @@ axios.interceptors.request.use(config => {
     "/v3/api-docs/", "/swagger-resources/", "/webjars/", "/error",
     "/home", "/login", "/api/user/register", "/api/user/login",
     "/api/difficulties/", "/api/quiz/", "/api/questions/quiz/",
-    "/api/quizzes/"
+    "/api/quizzes/", "/api/images/"
   ];
 
   // Check if the request's URL ends with any of the open paths
@@ -31,7 +31,7 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(
   response => response,
   error => {
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 401 || error.response.status === 403) {
       SessionToken.clearToken();
       router.push('/login');
     }

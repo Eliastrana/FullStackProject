@@ -1,79 +1,96 @@
 // store/modules/quizzes.js
 import router from '@/router/index.js'
 import { v4 as uuidv4 } from 'uuid';
-import * as Vue from 'lodash-es'
+import { QuizService } from '@/services/QuizService.js'
 
 
 export default {
   namespaced: true,
   state: () => ({
-    questions: [], // Retain for storing question data
+    questions: [],
     quizDetails: {
       title: '',
       description: '',
       creatorId: '',
       categoryName: '',
       questions: [],
+      coverImage: null,
+      imageName: '',
+      imageType: '',
     },
+    quizzes: [],
   }),
   mutations: {
     ADD_QUESTION(state, question) {
-      console.log('ADD_QUESTION', question)
-      state.quizDetails.questions.push(question);
-      console.log(state.quizDetails.questions)
+      state.quizDetails.questions.push(question); // Now handles all types of questions including Study with front/back images
     },
-    UPDATE_QUESTION(state, payload) {
-      const index = state.quizDetails.questions.findIndex(q => q.uuid === payload.uuid);
+    UPDATE_QUESTION(state, updatedQuestion) {
+      const index = state.quizDetails.questions.findIndex(q => q.uuid === updatedQuestion.uuid);
       if (index !== -1) {
-        // Check if the update is for an image and handle accordingly
-        if (payload.imageType) {
-          // Assuming 'imageFront' and 'imageBack' are properties on the question
-          // Adjust according to your actual data structure
-          if (payload.imageType === 'front') {
-            state.quizDetails.questions[index].imageFront = payload.image;
-          } else if (payload.imageType === 'back') {
-            state.quizDetails.questions[index].imageBack = payload.image;
-          }
-        } else {
-          // Handle general question updates
-          state.quizDetails.questions[index] = { ...state.quizDetails.questions[index], ...payload };
-        }
+        state.quizDetails.questions[index] = updatedQuestion;
       }
     },
 
     CLEAR_QUIZZES(state) {
       state.questions = [];
-      state.quizDetails = { title: '', description: '', creatorId: '', categoryName: '', questions: [] };
+      state.quizDetails = {
+        title: '',
+        description: '',
+        creatorId: '',
+        categoryName: '',
+        questions: [],
+        coverImage: null,
+        imageName: '',
+        imageType: '',
+      };
     },
     SET_QUIZ_DETAILS(state, details) {
       state.quizDetails = { ...state.quizDetails, ...details };
     },
     REMOVE_QUESTION(state, uuid) {
-      state.quizDetails.questions = state.quizDetails.questions.filter(question => question.uuid !== uuid);
+      const index = state.quizDetails.questions.findIndex(q => q.uuid === uuid);
+      if (index !== -1) {
+        state.quizDetails.questions.splice(index, 1);
+      }
     },
     UPDATE_QUESTION_IMAGE(state, { uuid, imageData }) {
       const questionIndex = state.quizDetails.questions.findIndex(question => question.uuid === uuid);
       if (questionIndex !== -1) {
-        // Directly assign the image data to the question object
         state.quizDetails.questions[questionIndex].image = imageData;
       }
     },
-
-    setQuestionsOrder(state, questions) {
+    SET_QUESTION_ORDER(state, questions) {
       state.questions = questions;
-    }
+    },
+    SET_QUIZZES(state, quizzes) {
+      state.quizDetails.questions = quizzes;
+    },
+    SET_QUIZ_ARRAY(state, quizzes) {
+      state.quizzes = quizzes;
+    },
+    SET_QUIZ_IMAGE(state, { quizId, imageData }) {
+      const quizIndex = state.quizzes.findIndex(quiz => quiz.id === quizId);
+      if (quizIndex !== -1) {
+        state.quizzes[quizIndex].imageData = imageData;
+      }
+    },
 
   },
   actions: {
     addOrUpdateQuestion({ commit, state, rootGetters }, questionData) {
-      console.log('addOrUpdateQuestion', questionData)
       state.quizDetails.creatorId = rootGetters['user/userId'];
       const existingIndex = state.quizDetails.questions.findIndex(q => q.uuid === questionData.uuid);
       if (existingIndex !== -1) {
         commit('UPDATE_QUESTION', questionData);
       } else {
-        console.log('addOrUpdateQuestion2', questionData)
         commit('ADD_QUESTION', questionData);
+      }
+      if (questionData.coverImage) {
+        commit('SET_QUIZ_COVER_IMAGE', {
+          imageName: questionData.imageName,
+          imageType: questionData.imageType,
+          coverImage: questionData.coverImage
+        });
       }
     },
     setQuizDetails({ commit }, details) {
@@ -83,23 +100,42 @@ export default {
       commit('REMOVE_QUESTION', uuid);
     },
     updateQuestionsOrder({ commit }, questions) {
-      commit('setQuestionsOrder', questions);
+      commit('SET_QUESTION_ORDER', questions);
     },
-
     clearQuizzes({ commit }) {
       commit('CLEAR_QUIZZES');
     },
-
     updateQuestionImage({ commit }, { uuid, image, imageType }) {
       // Find the question by UUID and update its image
        commit('UPDATE_QUESTION_IMAGE', { uuid, image, imageType });
     },
-
-
-
+    async fetchAllQuizzes({ commit }) {
+      try {
+        const quizzesData = await QuizService.getAllQuizzes();
+        commit('SET_QUIZ_ARRAY', quizzesData);
+      } catch (error) {
+        console.error('Error fetching all quizzes:', error);
+      }
+    },
+    async fetchQuizImages({ commit, state }) {
+      for (let quiz of state.quizzes) {
+        console.log(quiz)
+        if (quiz.imageId) {
+          try {
+            const imageData = await QuizService.getImageById(quiz.imageId);
+            commit('SET_QUIZ_IMAGE', { quizId: quiz.id, imageData });
+            console.log(imageData)
+          } catch (error) {
+            console.error('Error fetching image for quiz', quiz.id, error);
+          }
+        }
+      }
+    },
     addQuestionsByType({ dispatch }, { type, numberOfQuestions = 5 }) {
       for (let i = 0; i < numberOfQuestions; i++) {
         let questionTemplate;
+
+        console.log(type)
 
         switch (type) {
           case 'FILL_IN_BLANK':
@@ -108,7 +144,8 @@ export default {
               text: '',
               questionType: 'FILL_IN_BLANK',
               tags: [],
-              answers: [{ text: '', correct: true }]
+              answers: [{ text: '', correct: true }],
+              image: null,
             };
             break;
           case 'MULTIPLE_CHOICE':
@@ -117,7 +154,8 @@ export default {
               text: '',
               questionType: 'MULTIPLE_CHOICE',
               tags: [],
-              answers: [{ text: '', correct: false }] // Adjust as needed
+              answers: [{ text: '', correct: false }],
+              image: null,
             };
             break;
           case 'STUDY':
@@ -126,18 +164,17 @@ export default {
               text: '',
               questionType: 'STUDY',
               tags: [],
-              answers: [{ text: '', correct: true }] // Adjust as needed
+              answers: [{ text: '', correct: true }],
+              imageFront: null,
+              imageBack: null,
             };
             break;
           default:
             console.warn('Unsupported question type:', type);
-            return; // Exit the function if the type is not supported
+            return;
         }
-
         dispatch('addOrUpdateQuestion', questionTemplate);
       }
     }
-
-
   },
 };
