@@ -3,7 +3,11 @@
     <div class="modal-content">
       <h2>Create Category</h2>
       <input v-model="categoryName" placeholder="Category Name" />
-      <textarea v-model="description" placeholder="Description"></textarea>
+      <input
+        v-model="description"
+        placeholder="Description"
+        @keyup.enter="submitForm"
+      />
       <button @click="submitForm">Submit</button>
       <button @click="close">Cancel</button>
     </div>
@@ -116,7 +120,6 @@ const props = defineProps({
 .modal-content button:last-child:hover {
   background-color: #7a7a7a; /* Darker color on hover */
 }
-
 
 
 </style>

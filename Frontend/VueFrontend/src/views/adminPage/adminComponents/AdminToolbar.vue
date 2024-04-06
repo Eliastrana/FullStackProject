@@ -1,3 +1,4 @@
+//AdminToolbar.vue
 <script setup>
 import { QuizService } from '@/services/QuizService.js';
 import { ref } from 'vue'
@@ -96,21 +97,21 @@ const importQuiz = async (event) => {
 };
 
 
-const createCategory = async () => {
-  const categoryName = prompt("Enter category name", "New Category");
-  if (!categoryName) return; // Exit if no input
-
-  const description = prompt("Enter category description", "This is a new category");
-  if (!description) return; // Exit if no input
-
-  try {
-    const category = { categoryName, description };
-    await CategoryService.createCategory(category);
-  } catch (error) {
-    console.error('Error creating category:', error);
-    alert('Failed to create category. Please check the console for details.');
-  }
-};
+// const createCategory = async () => {
+//   const categoryName = prompt("Enter category name", "New Category");
+//   if (!categoryName) return; // Exit if no input
+//
+//   const description = prompt("Enter category description", "This is a new category");
+//   if (!description) return; // Exit if no input
+//
+//   try {
+//     const category = { categoryName, description };
+//     await CategoryService.createCategory(category);
+//   } catch (error) {
+//     console.error('Error creating category:', error);
+//     alert('Failed to create category. Please check the console for details.');
+//   }
+// };
 
 
 const showModal = ref(false);
@@ -144,8 +145,7 @@ const onCategoryCreated = async (categoryName, description) => {
       Create Category
     </div>
 
-    <!-- ModalComponentInput is controlled by showModal for its visibility -->
-    <ModalComponentInput :isVisible="showModal" @close="showModal = false" @created="onCategoryCreated"/>
+      <ModalComponentInput :isVisible="showModal" @close="showModal = false" @created="onCategoryCreated"/>
 
   </div>
 </template>
