@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
 import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue'
+import store from '@/store/index.js'
 
 /**
  * Props for the CreateStudy component
@@ -60,31 +61,19 @@ watch([question, answers], () => {
  * Handles the file upload for the front of the card
  * @param {Event} event - The file upload event
  */
-function handleFileUploadFront(event) {
+// Example of adjusted handleFileUploadFront method
+function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      coverImageFront.value = e.target.result;
+      // Emit an event with the UUID of the question and the image data
+      emit('updateImage', { uuid: props.uuid, imageData: e.target.result });
     };
     reader.readAsDataURL(file);
   }
 }
 
-/**
- * Handles the file upload for the back of the card
- * @param {Event} event - The file upload event
- */
-function handleFileUploadBack(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      coverImageBack.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-}
 
 /**
  * Removes the image for the front of the card
@@ -118,21 +107,30 @@ function removeQuestion() {
           d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41l5.59 5.59L5 17.59 6.41 19l5.59-5.59L17.59 19 19 17.59l-5.59-5.59L19 6.41z" />
       </svg>
     </div>
+
     <div v-if="coverImageFront" class="image-preview">
       <img :src="coverImageFront" alt="Front Image Preview" />
       <div class="remove-image" @click="removeImageFront">X</div>
     </div>
+
+
+    <!-- Example of adjusted file input and label for the front image -->
     <div v-if="!coverImageFront">
-      <input type="file" id="uploadFront" hidden @change="handleFileUploadFront" accept="image/*" />
-      <label for="uploadFront" class="uploadimagebutton">Upload Front Image</label>
+      <input type="file" :id="'uploadFront' + uuid" hidden @change="event => handleFileUpload(event)" accept="image/*" />
+      <label :for="'uploadFront' + uuid" class="uploadimagebutton">Upload Front Image</label>
     </div>
+
+
+
     <input class="question-title" v-model="question" placeholder="Study card question" />
     <div v-if="coverImageBack" class="image-preview">
       <img :src="coverImageBack" alt="Back Image Preview" />
       <div class="remove-image" @click="removeImageBack">X</div>
     </div>
+
+
     <div v-if="!coverImageBack">
-      <input type="file" id="uploadBack" hidden @change="handleFileUploadBack" accept="image/*" />
+      <input type="file" id="uploadBack" hidden @change="handleFileUpload" accept="image/*" />
       <label for="uploadBack" class="uploadimagebutton">Upload Back Image</label>
     </div>
     <textarea class="answer-text" v-model="answers[0].text" placeholder="Study card answer"></textarea>

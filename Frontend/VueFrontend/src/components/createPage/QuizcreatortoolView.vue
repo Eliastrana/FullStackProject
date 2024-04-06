@@ -1,3 +1,4 @@
+//QuiacreatortoolView.vue
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 import { computed, onMounted, ref, nextTick } from 'vue'
@@ -51,7 +52,7 @@ function scrollToBottom() {
 
 function scrollToTop() {
   window.scrollTo({
-    top: 700,
+    top: 0,
     behavior: 'smooth',
   });
 }
@@ -179,6 +180,14 @@ function moveQuestionDown(index) {
     store.dispatch('quizzes/updateQuestionsOrder', questions.value);
   }
 }
+
+function handleUpdateImage({ uuid, imageData }) {
+  // Find the question in your Vuex store and update it with the new image data
+  store.dispatch('quizzes/updateQuestionImage', { uuid, imageData });
+}
+
+
+
 </script>
 
 
@@ -236,21 +245,6 @@ function moveQuestionDown(index) {
     <div class="quiz-container">
 
 
-      <div class="quiz-type-selector">
-        <h2>Choose question type:</h2>
-        <div class="quiz-type-buttons">
-          <button
-            v-for="quizType in quizTypes"
-            :key="quizType.id"
-            @click="addQuestionType(quizType.id)"
-            :style="{ backgroundColor: quizType.color }"
-            class="quiz-type-button"
-          >
-            + {{ quizType.name }}
-          </button>
-        </div>
-      </div>
-
       <h2>Your Questions:</h2>
 
 
@@ -276,11 +270,27 @@ function moveQuestionDown(index) {
             :uuid="question.uuid"
             @submitData="handleQuizData"
             @removeQuestion="removeQuestionFromStore"
+            @updateImage="handleUpdateImage"
             v-bind="question"
           />
         </div>
       </div>
 
+
+      <div class="quiz-type-selector">
+        <h2>Choose question type:</h2>
+        <div class="quiz-type-buttons">
+          <button
+            v-for="quizType in quizTypes"
+            :key="quizType.id"
+            @click="addQuestionType(quizType.id)"
+            :style="{ backgroundColor: quizType.color }"
+            class="quiz-type-button"
+          >
+            + {{ quizType.name }}
+          </button>
+        </div>
+      </div>
 
 
       <!--      <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>-->
