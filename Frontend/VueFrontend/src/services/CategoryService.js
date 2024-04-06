@@ -16,5 +16,15 @@ export const CategoryService = {
   async createCategory(categoryDetails) {
     const response = await axios.post(`${API_URL}`, categoryDetails)
     return response.data
-  }
+  },
+
+  async getCategoryById(categoryId) {
+    try {
+      const response = await axios.get(`${API_URL}/${categoryId}`)
+      return response.data
+    } catch (error) {
+      console.error('Error fetching category by ID:', error)
+      throw error
+    }
+  },
 }

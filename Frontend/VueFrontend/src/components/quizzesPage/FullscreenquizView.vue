@@ -13,7 +13,10 @@
         <div class="header-container">
           <h1>{{ quiz.title }}</h1>
         </div>
-        <p class="category-badge">#{{ quiz.category }}</p>
+        <!-- Displaying Category -->
+        <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
+        <!-- Displaying Difficulty -->
+        <p class="difficulty-badge">{{ quiz.difficulty }}</p>
         <p>{{ quiz.description }}</p>
         <h2>Questions</h2>
         <!-- Questions Container -->
@@ -27,13 +30,15 @@
   </transition>
 </template>
 
+
 <script setup>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { QuestionService } from '@/services/QuestionService.js';
 import { QuizService } from '@/services/QuizService.js';
 import { defineProps, defineEmits } from 'vue';
+import { CategoryService } from '@/services/CategoryService.js'
 
 const props = defineProps({
   quiz: Object,
@@ -42,12 +47,9 @@ const emits = defineEmits(['close']);
 const questions = ref([]);
 const store = useStore(); // Use the store
 const router = useRouter(); // Use router for navigation
+const categories = ref({});
 
 watch(() => props.quiz, async (newQuiz, oldQuiz) => {
-  console.log('new quiz: ')
-  console.log(newQuiz.id)
-  console.log('old quiz: ')
-  console.log(oldQuiz)
   if (newQuiz && (!oldQuiz || newQuiz.id !== oldQuiz.id)) {
     try {
       questions.value = await QuestionService.getQuestionsByQuizId(newQuiz.id);
@@ -56,6 +58,14 @@ watch(() => props.quiz, async (newQuiz, oldQuiz) => {
     }
   }
 }, { immediate: true });
+
+onMounted(async () => {
+  const allCategories = await CategoryService.getAllCategories();
+  categories.value = allCategories.reduce((acc, current) => {
+    acc[current.id] = current.categoryName;
+    return acc;
+  }, {});
+})
 
 const closeQuiz = () => {
   emits('close');
@@ -136,6 +146,17 @@ button:hover {
 
 
 }
+
+.difficulty-badge {
+  display: inline-block;
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+
 
 button {
   padding: 10px 20px;
