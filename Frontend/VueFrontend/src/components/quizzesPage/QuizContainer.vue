@@ -10,15 +10,14 @@
       <div class="filters">
         <select v-model="selectedDifficulty">
           <option value="">All Difficulties</option>
-          <option v-for="difficulty in uniqueDifficulties" :key="difficulty" :value="difficulty">{{ difficulty }}</option>
+          <option v-for="difficulty in difficulties" :key="difficulty" :value="difficulty">{{ difficulty }}</option>
         </select>
         <select v-model="selectedCategory">
           <option value="">All Categories</option>
-          <option v-for="category in uniqueCategories" :key="category" :value="category">{{ category }}</option>
+          <option v-for="(categoryName, id) in categories" :key="id" :value="id">{{ categoryName }}</option>
         </select>
       </div>
     </div>
-
 
 
     <div class="quiz-container">
@@ -26,8 +25,8 @@
         <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image">
         <h2>{{ quiz.title }}</h2>
         <p>{{ quiz.description }}</p>
-        <p class="category-badge">#{{ quiz.category_id }}</p>
-        <!-- Optionally display difficulty if present in your data -->
+        <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
+        <p class="category-badge">{{ quiz.difficulty }}</p>
       </div>
     </div>
   </div>
@@ -35,8 +34,10 @@
 
 
 <script setup>
-import { defineEmits, onMounted, ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { computed, defineEmits, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import { CategoryService } from '@/services/CategoryService.js'
+import { DifficultyService } from '@/services/DifficultyService.js'
 
 const store = useStore();
 const emit = defineEmits(['select-quiz']);
@@ -44,11 +45,21 @@ const searchQuery = ref('');
 
 const selectedDifficulty = ref('');
 const selectedCategory = ref('');
+const categories = ref({});
+const difficulties = ref([]);
 
 onMounted(async () => {
   await store.dispatch('quizzes/fetchAllQuizzes');
   await store.dispatch('quizzes/fetchQuizImages');
+  const allCategories = await CategoryService.getAllCategories();
+  categories.value = allCategories.reduce((acc, current) => {
+    acc[current.id] = current.categoryName;
+    return acc;
+  }, {});
+
+  difficulties.value = await DifficultyService.getAllDifficulties();
 });
+
 
 const quizzes = computed(() => store.state.quizzes.quizzes);
 
@@ -56,19 +67,16 @@ const filteredQuizzes = computed(() => {
   return quizzes.value.filter((quiz) => {
     return quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
       (selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value) &&
-      (selectedCategory.value === '' || quiz.category === selectedCategory.value);
+      (selectedCategory.value === '' || quiz.categoryId === selectedCategory.value);
   });
 });
 
-const uniqueDifficulties = computed(() => {
+computed(() => {
   const difficulties = quizzes.value.map(quiz => quiz.difficulty).filter(Boolean);
   return Array.from(new Set(difficulties)).sort();
-});
+})
 
-const uniqueCategories = computed(() => {
-  const categories = quizzes.value.map(quiz => quiz.category).filter(Boolean);
-  return Array.from(new Set(categories)).sort();
-});
+computed(() => Object.values(categories.value).sort())
 
 function handleQuizClick(quiz) {
   emit('select-quiz', quiz);
