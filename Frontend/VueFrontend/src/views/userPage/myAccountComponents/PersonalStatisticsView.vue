@@ -60,6 +60,7 @@ onMounted(async () => {
 
 
 <template>
+  <div class="achievements-container">
   <div class="attempts-container">
     <h1>Your Quiz Attempts</h1>
     <h2>Review your progress</h2>
@@ -77,8 +78,9 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-</template>
 
+</div>
+</template>
 
 
 <style scoped>
@@ -95,25 +97,21 @@ h2 {
 .achievements-container {
   background-color: #ececec;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
-  max-width: 800px;
+  flex-direction: column; /* Align children vertically */
+  align-items: stretch; /* Stretch items to fill the horizontal space */
+  min-width: 96%;
+  margin-top: -2%;
   padding: 20px;
-  margin-top: 5%;
-  margin-left: auto;
-  margin-right: auto;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust based on content */
   gap: 20px;
-  width: 100%;
-  padding: 0 20px;
+  width: 100%; /* Fill the width of its parent */
+  margin: 0; /* Remove any default margins */
 }
 
 .tile {
@@ -142,24 +140,15 @@ h2 {
   border-radius: 20px;
 }
 
-.gold-background {
-  background-color: gold !important;
-  border: 4px solid goldenrod;
-}
-
-.gold-background:hover {
-  background-color: goldenrod !important;
-}
-
 @media (max-width: 480px) {
   .tiles {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Ensure single column layout on smaller screens */
   }
 
   h1, h2 {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 10px; /* Adjust margins for smaller screens */
   }
 }
-
 </style>
+
+
