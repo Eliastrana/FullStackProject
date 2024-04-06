@@ -29,4 +29,8 @@ export const UserService = {
     const response = await axios.get(`${API_URL}/details`);
     return response.data;
   },
+
+
+
+
 };
