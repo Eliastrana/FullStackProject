@@ -18,21 +18,29 @@ onMounted(async () => {
     const userId = userDetails.id; // Adjust based on the actual structure of userDetails
 
     // Fetch all quizzes
-    const quizzesData = await QuizService.getAllQuizzes();
-
-    console.log('Quizzes data loaded:', quizzesData)
+    let quizzesData = await QuizService.getAllQuizzes();
 
     // Filter quizzes based on the userId
-    allQuizzes.value = quizzesData.filter(quiz => quiz.creatorId === userId);
+    quizzesData = quizzesData.filter(quiz => quiz.creatorId === userId);
 
-    console.log('Filtered quizzes:', allQuizzes.value)
+    // Load image data for each quiz
+    const quizzesWithImages = await Promise.all(quizzesData.map(async (quiz) => {
+      if (quiz.imageId) {
+        quiz.imageData = await loadImageData(quiz.imageId);
+      } else {
+        quiz.imageData = ''; // Fallback or default image
+      }
+      return quiz;
+    }));
 
+    allQuizzes.value = quizzesWithImages;
     // Initially display all (or a subset of) filtered quizzes
-    displayedQuizzes.value = allQuizzes.value; // You can also implement pagination or a "View More" button
+    displayedQuizzes.value = allQuizzes.value.slice(0, displayLimit.value);
   } catch (error) {
     console.error('Failed to load quizzes:', error);
   }
 });
+
 
 // Update the displayed quizzes based on the display limit
 function updateDisplayedQuizzes() {
@@ -89,8 +97,18 @@ const deleteQuiz = async (quizId) => {
 };
 
 
-</script>
+const loadImageData = async (imageId) => {
+  try {
+    const imageData = await QuizService.getImageById(imageId);
+    return imageData; // This could be a URL or base64-encoded data
+  } catch (error) {
+    console.error('Failed to load image:', error);
+    return ''; // Return a fallback or empty string if the image fails to load
+  }
+};
 
+
+</script>
 
 
 <template>
@@ -104,7 +122,9 @@ const deleteQuiz = async (quizId) => {
     <div class="quizzes">
       <div class="quiz" v-for="(quiz, index) in displayedQuizzes" :key="quiz.id">
         <div class="quiz-info">
-          <img :src="quiz.image" :alt="quiz.title" class="quiz-image"/>
+          <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image" class="quiz-image"/>
+
+<!--          <img :src="quiz.image" :alt="quiz.title" class="quiz-image"/>-->
           <div class="quiz-text">
             <h3>{{ quiz.title }}</h3>
             <p>{{ quiz.description }}</p>
