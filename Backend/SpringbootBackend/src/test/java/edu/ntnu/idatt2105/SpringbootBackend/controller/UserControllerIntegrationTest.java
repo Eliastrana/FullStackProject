@@ -2,7 +2,9 @@
 
   import com.fasterxml.jackson.databind.ObjectMapper;
   import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
-  import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
+import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
   import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
   import org.junit.jupiter.api.BeforeEach;
   import org.junit.jupiter.api.Test;
@@ -11,19 +13,23 @@
   import org.springframework.boot.test.context.SpringBootTest;
   import org.springframework.http.MediaType;
   import org.springframework.security.test.context.support.WithMockUser;
-  import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
   import org.springframework.test.web.servlet.MockMvc;
 
   import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
   import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
   import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
   import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-  import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
   import static org.hamcrest.Matchers.notNullValue;
 
   @SpringBootTest
   @AutoConfigureMockMvc
-  //@ActiveProfiles("test")
+  @ActiveProfiles("test")
   class UserControllerIntegrationTest {
 
     @Autowired
@@ -31,6 +37,9 @@
 
     @Autowired
     private UserService userService; // If you need to set up users before tests
+
+    @Autowired
+    private UserRepository userRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -42,8 +51,13 @@
 
     @Test
     @WithMockUser
+    @DirtiesContext
     void registerUser_Success() throws Exception {
-      UserCreationDTO userCreationDTO = new UserCreationDTO("testuser7", "testpassword", "test6@exampe.com");
+      UUID username = UUID.randomUUID();
+      String usernameString = username.toString();
+      UUID email = UUID.randomUUID();
+      String emailString = email.toString();
+      UserCreationDTO userCreationDTO = new UserCreationDTO(usernameString, "testpassword", "sffr@example.com");
 
       mockMvc.perform(post("/api/user/register")
                       .contentType(MediaType.APPLICATION_JSON)
@@ -56,23 +70,36 @@
     @Test
     @WithMockUser
     void loginUser_Success() throws Exception {
-      // First, ensure a user is registered in the system
-      UserCreationDTO userCreationDTO = new UserCreationDTO("loginTestUser8", "loginTestPassword", "logintst4@example.com");
-      mockMvc.perform(post("/api/user/register")
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(objectMapper.writeValueAsString(userCreationDTO))
-              .with(csrf()));
 
-      // Construct login request body directly
-      String loginRequestBody = "{\"username\":\"loginTestUser8\",\"password\":\"loginTestPassword\"}";
-
+      UserDTO userDTO = new UserDTO("testUser", "password");
       mockMvc.perform(post("/api/user/login")
                       .contentType(MediaType.APPLICATION_JSON)
-                      .content(loginRequestBody)
+                      .content(objectMapper.writeValueAsString(userDTO))
                       .with(csrf()))
               .andExpect(status().isOk())
               .andExpect(jsonPath("$.token", notNullValue())); // Verifies that a token is returned in the response
     }
 
+    @Test
+    @DirtiesContext
+    void registerUser_WithExistingUsername_Failure() throws Exception {
+    // Assuming "testuser7" already exists
+    UserCreationDTO userCreationDTO = new UserCreationDTO("testuser", "password", "newemail@example.com");
 
+    mockMvc.perform(post("/api/user/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(userCreationDTO))
+            .with(csrf()))
+            .andExpect(status().isBadRequest());
+}
+@Test
+@DirtiesContext
+void registerUser_WithNullUsername_Failure() throws Exception {
+    UserCreationDTO userCreationDTO = new UserCreationDTO(null, "somepassword", "email@example.com");
+    mockMvc.perform(post("/api/user/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(userCreationDTO))
+                    .with(csrf()))
+            .andExpect(status().isBadRequest());
   }
+}
