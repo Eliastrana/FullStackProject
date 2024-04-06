@@ -1,3 +1,4 @@
+//QuiacreatortoolView.vue
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 import { computed, onMounted, ref, nextTick } from 'vue'
@@ -7,6 +8,7 @@ import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/C
 import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
 import { QuizService } from '@/services/QuizService.js'
 import router from '@/router/index.js'
+import { CategoryService } from '@/services/CategoryService.js'
 
 
 const store = useStore();
@@ -16,18 +18,26 @@ const quizDescription = ref('');
 const quizCategory = ref('');
 const quizDifficulty = ref('');
 const coverImage = ref(null);
+const categories = ref([]);
 
 const questions = computed(() => store.state.quizzes.quizDetails.questions);
 
-onMounted(() => {
-  const quizDetails = store.state.quizzes.quizDetails;
-  quizTitle.value = quizDetails.title;
-  quizDescription.value = quizDetails.description;
-  quizCategory.value = quizDetails.category;
-  quizDifficulty.value = quizDetails.difficulty;
-  if (quizDetails.coverImage) {
-    coverImage.value = `data:image/${quizDetails.imageType};base64,${quizDetails.imageData}`;
+onMounted(async () => {
+  try {
+    const quizDetails = store.state.quizzes.quizDetails;
+    quizTitle.value = quizDetails.title;
+    quizDescription.value = quizDetails.description;
+    quizCategory.value = quizDetails.categoryId;
+    quizDifficulty.value = quizDetails.difficulty;
+    if (quizDetails.coverImage) {
+      coverImage.value = `data:image/${quizDetails.imageType};base64,${quizDetails.imageData}`;
+    }
+    categories.value = await CategoryService.getAllCategories();
+    console.log('Categories:', categories.value);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
   }
+
 });
 
 const quizTypes = ref([
@@ -54,7 +64,7 @@ function scrollToBottom() {
 
 function scrollToTop() {
   window.scrollTo({
-    top: 700,
+    top: 0,
     behavior: 'smooth',
   });
 }
@@ -125,7 +135,7 @@ function updateQuizDetails() {
   store.commit('quizzes/SET_QUIZ_DETAILS', {
     title: quizTitle.value,
     description: quizDescription.value,
-    categoryName: quizCategory.value,
+    categoryId: quizCategory.value,
     difficulty: quizDifficulty.value,
     coverImage: coverImage.value,
   });
@@ -133,7 +143,6 @@ function updateQuizDetails() {
 
 async function createQuiz() {
   const quizDetails = store.state.quizzes.quizDetails;
-  // Assuming other quiz details are correctly set up in Vuex store
   try {
     const response = await QuizService.create(quizDetails);
     store.commit('quizzes/CLEAR_QUIZZES');
@@ -169,7 +178,6 @@ function handleFileUpload(event) {
     reader.readAsDataURL(file);
   }
 }
-
 
 function removeImage() {
   coverImage.value = null; // Clears the image, effectively removing it
@@ -224,8 +232,8 @@ function moveQuestionDown(index) {
         <!-- Quiz Category Dropdown -->
         <select v-model="quizCategory" @change="updateQuizDetails">
           <option disabled value="">Choose category</option>
-          <option v-for="category in categories" :key="category.value" :value="category.value">
-            {{ category.text }}
+          <option v-for="category in categories" :key="category.id" :value="category.id">
+            {{ category.categoryName }}
           </option>
         </select>
 

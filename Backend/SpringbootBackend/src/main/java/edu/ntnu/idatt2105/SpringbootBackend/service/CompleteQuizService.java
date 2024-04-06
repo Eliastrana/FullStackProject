@@ -95,12 +95,11 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
             .orElseThrow(() -> new CreatorNotFoundException("Creator with ID: " + completeQuizDTO.getCreatorId() + " not found."));
 
     Category category = null;
-    if (completeQuizDTO.getCategoryName() != null && !completeQuizDTO.getCategoryName().isEmpty()) {
-        category = categoryRepository.findByCategoryName(completeQuizDTO.getCategoryName())
-                .orElseThrow(() -> new CategoryNotFoundException(completeQuizDTO.getCategoryName()));
-    }
-    
-            Quiz quiz = new Quiz();
+    category = categoryRepository.findById(completeQuizDTO.getCategoryId())
+            .orElseThrow(() -> new CategoryNotFoundException("Category with ID: " + completeQuizDTO.getCategoryId() + " not found."));
+
+
+    Quiz quiz = new Quiz();
             quiz.setTitle(completeQuizDTO.getTitle());
             quiz.setDescription(completeQuizDTO.getDescription());
             quiz.setCreator(creator);
@@ -159,7 +158,7 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
         // Update quiz details
         quiz.setTitle(completeQuizDTO.getTitle());
         quiz.setDescription(completeQuizDTO.getDescription());
-        quiz.setCategory(categoryRepository.findByCategoryName(completeQuizDTO.getCategoryName()).orElse(null));
+        quiz.setCategory(categoryRepository.findById(completeQuizDTO.getCategoryId()).orElse(null));
         quiz.setDifficulty(completeQuizDTO.getDifficulty());
 
         if (completeQuizDTO.getImageData() != null && !completeQuizDTO.getImageData().isEmpty()) {

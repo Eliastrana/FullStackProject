@@ -1,27 +1,30 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { UserService } from '@/services/UserService.js'; // Ensure this path matches your file structure
 
-// Change user to users and initialize as an empty array
 const users = ref([]);
 
 const deleteUser = (userId) => {
   alert(`Delete user with ID: ${userId}`);
   // Implement deletion logic here
-  // This could involve filtering out the deleted user from the users array
-  // Or making an API call to delete the user on the server
+
+
 };
 
+// Change `users` to a single user object
+const user = ref(null);
 
 onMounted(async () => {
   try {
-    // Adjust the endpoint if needed. Assuming this endpoint returns the JSON structure you provided
-    const response = await axios.get('/mockJSON/user/profile.json');
-    users.value = response.data.users; // Update based on your actual data structure
+    // Fetch single user details and assign
+    const userDetails = await UserService.getUserDetails();
+    user.value = userDetails; // Assigning directly since it's a single object
+    console.log('User data loaded:', user.value);
   } catch (error) {
     console.error('Failed to load user data:', error);
   }
 });
+
 </script>
 
 
@@ -29,34 +32,31 @@ onMounted(async () => {
 <template>
   <div class="user-container">
     <div class="headings">
-
-    <h1>All User Information</h1>
+      <h1>All User Information</h1>
       <h2>View all users</h2>
-
     </div>
-    <!-- Iterating over users array to display each user -->
-    <div v-for="user in users" :key="user.userId" class="profile">
-      <h2>User ID: {{ user.userId }}</h2>
+    <!-- Display single user -->
+    <div v-if="user" class="profile">
       <h3>Username: {{ user.username }}</h3>
+      <p>User ID: {{ user.id }}</p> <!-- Adjust according to your object's structure -->
       <h4>Email: {{ user.email }}</h4>
-      <h4>Quizzes: {{user.quizzes}} </h4>
 
 
-
+      <!-- Assuming quizzes is part of your user object and properly handled -->
+<!--      <h4>Quizzes: {{ user.quizzes.length }}</h4>-->
 
       <div class="action-icons">
-        <div @click="deleteUser(user.userId)" class="delete-icon">
+        <div @click="deleteUser(user.id)" class="delete-icon">
           <span class="material-symbols-outlined">delete</span>
         </div>
-        <div @click="deleteUser(user.userId)" class="block-icon">
+        <div @click="deleteUser(user.id)" class="block-icon">
           <span class="material-symbols-outlined">do_not_disturb</span>
         </div>
       </div>
-
-
     </div>
   </div>
 </template>
+
 
 
 
