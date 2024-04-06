@@ -1,6 +1,8 @@
 <script setup>
 import { QuizService } from '@/services/QuizService.js';
-import { ref } from 'vue' // Ensure this path is correct
+import { ref } from 'vue'
+import { CategoryService } from '@/services/CategoryService.js' // Ensure this path is correct
+import ModalComponentInput from '@/components/util/ModalComponentInput.vue' // Ensure this path is correct
 
 const exportAllQuizzes = async () => {
   try {
@@ -94,26 +96,61 @@ const importQuiz = async (event) => {
 };
 
 
+const createCategory = async () => {
+  const categoryName = prompt("Enter category name", "New Category");
+  if (!categoryName) return; // Exit if no input
+
+  const description = prompt("Enter category description", "This is a new category");
+  if (!description) return; // Exit if no input
+
+  try {
+    const category = { categoryName, description };
+    await CategoryService.createCategory(category);
+  } catch (error) {
+    console.error('Error creating category:', error);
+    alert('Failed to create category. Please check the console for details.');
+  }
+};
+
+
+const showModal = ref(false);
+
+// You might already have this or something similar for handling form submission from the modal
+const onCategoryCreated = async (categoryName, description) => {
+  try {
+    const category = { categoryName, description };
+    await CategoryService.createCategory(category);
+    showModal.value = false; // Close modal after successful creation
+  } catch (error) {
+    console.error('Error creating category:', error);
+    alert('Failed to create category. Please check the console for details.');
+  }
+};
 
 </script>
 
 
 <template>
   <div class="admin-toolbar">
-    <!-- Hidden file input -->
     <input type="file" ref="fileInputRef" @change="importQuiz" hidden>
-
-    <!-- Triggers the hidden file input -->
     <div class="admin-toolbar__button" @click="triggerFileInput">
       + Import Quiz
     </div>
-
-    <!-- Export all quizzes -->
     <div class="admin-toolbar__button" @click="exportAllQuizzes">
       Export All Quizzes
     </div>
+    <!-- When this button is clicked, showModal becomes true, triggering the modal to open -->
+    <div class="admin-toolbar__button" @click="showModal = true">
+      Create Category
+    </div>
+
+    <!-- ModalComponentInput is controlled by showModal for its visibility -->
+    <ModalComponentInput :isVisible="showModal" @close="showModal = false" @created="onCategoryCreated"/>
+
   </div>
 </template>
+
+
 
 <style scoped>
 .admin-toolbar {
