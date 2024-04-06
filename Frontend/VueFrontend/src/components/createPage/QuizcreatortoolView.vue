@@ -21,6 +21,7 @@ const coverImage = ref(null);
 const categories = ref([]);
 
 const questions = computed(() => store.state.quizzes.quizDetails.questions);
+console.log('Questions:', questions.value);
 
 onMounted(async () => {
   try {

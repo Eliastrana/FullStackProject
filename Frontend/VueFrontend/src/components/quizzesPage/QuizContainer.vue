@@ -40,10 +40,12 @@
 
 
 <script setup>
-import { computed, defineEmits, onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
+import { computed, defineEmits, onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 import { CategoryService } from '@/services/CategoryService.js'
 import { DifficultyService } from '@/services/DifficultyService.js'
+import { TagService } from '@/services/TagService.js'
+import { QuestionService } from '@/services/QuestionService.js' // Adjust import paths as needed
 
 const store = useStore();
 const emit = defineEmits(['select-quiz']);
@@ -53,10 +55,14 @@ const selectedDifficulty = ref('');
 const selectedCategory = ref('');
 const categories = ref({});
 const difficulties = ref([]);
+const allTags = ref([]);
+const quizToTagsMap = ref({});
 
 onMounted(async () => {
   await store.dispatch('quizzes/fetchAllQuizzes');
   await store.dispatch('quizzes/fetchQuizImages');
+  allTags.value = await TagService.getAllTags();
+
   const allCategories = await CategoryService.getAllCategories();
   categories.value = allCategories.reduce((acc, current) => {
     acc[current.id] = current.categoryName;
@@ -64,25 +70,30 @@ onMounted(async () => {
   }, {});
 
   difficulties.value = await DifficultyService.getAllDifficulties();
-});
 
+  // Assuming each quiz is uniquely identified by its id
+  for (const quiz of store.state.quizzes.quizzes) {
+    const questions = await QuestionService.getQuestionsByQuizId(quiz.id);
+    const tagsForQuiz = allTags.value.filter(tag =>
+      tag.questionIds.some(id => questions.map(q => q.id).includes(id))
+    );
+    quizToTagsMap.value[quiz.id] = tagsForQuiz.map(t => t.name);
+  }
+});
 
 const quizzes = computed(() => store.state.quizzes.quizzes);
 
 const filteredQuizzes = computed(() => {
-  return quizzes.value.filter((quiz) => {
-    return quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
-      (selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value) &&
-      (selectedCategory.value === '' || quiz.categoryId === selectedCategory.value);
+  const searchLower = searchQuery.value.toLowerCase();
+  return quizzes.value.filter(quiz => {
+    const titleMatch = quiz.title.toLowerCase().includes(searchLower);
+    const tagMatch = quizToTagsMap.value[quiz.id]?.some(tagName => tagName.toLowerCase().includes(searchLower));
+    const difficultyMatch = selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value;
+    const categoryMatch = selectedCategory.value === '' || quiz.categoryId === selectedCategory.value;
+
+    return (titleMatch || tagMatch) && difficultyMatch && categoryMatch;
   });
 });
-
-computed(() => {
-  const difficulties = quizzes.value.map(quiz => quiz.difficulty).filter(Boolean);
-  return Array.from(new Set(difficulties)).sort();
-})
-
-computed(() => Object.values(categories.value).sort())
 
 function handleQuizClick(quiz) {
   emit('select-quiz', quiz);
@@ -100,8 +111,6 @@ function difficultyClass(difficulty) {
       return '';
   }
 }
-
-
 </script>
 
 

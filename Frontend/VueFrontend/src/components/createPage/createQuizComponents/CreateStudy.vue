@@ -1,6 +1,6 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
-import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue'
+import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue';
 import store from '@/store/index.js'
 
 /**
@@ -12,7 +12,8 @@ import store from '@/store/index.js'
 const props = defineProps({
   uuid: String,
   text: String,
-  answers: Array
+  answers: Array,
+  tags: Array
 });
 
 /**
@@ -32,64 +33,28 @@ const question = ref(props.text);
  * @type {import('vue').Ref<Array>}
  */
 const answers = ref(props.answers);
+const tags = ref(props.tags || []);
 
-/**
- * The cover image for the front of the card
- * @type {import('vue').Ref<string>}
- */
-const coverImageFront = ref(null);
+function handleTagUpdate(newTags) {
+  store.dispatch('quizzes/updateQuestionTags', {
+    uuid: props.uuid,
+    newTags
+  });
+}
 
-/**
- * The cover image for the back of the card
- * @type {import('vue').Ref<string>}
- */
-const coverImageBack = ref(null);
 
 /**
  * Watches for changes in the question and answers and emits the updated data
  */
-watch([question, answers, coverImageFront, coverImageBack], () => {
+watch([question, answers], () => {
   emits('submitData', {
     uuid: props.uuid,
     text: question.value,
     questionType: 'STUDY',
     answers: answers.value.map(answer => ({ text: answer.text, correct: answer.correct })),
-    imageFront: coverImageFront.value,
-    imageBack: coverImageBack.value
+    tags: tags.value,
   });
 }, { deep: true });
-
-/**
- * Handles the file upload for the front of the card
- * @param {Event} event - The file upload event
- */
-// Example of adjusted handleFileUploadFront method
-function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      // Emit an event with the UUID of the question and the image data
-      emit('updateImage', { uuid: props.uuid, imageData: e.target.result });
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-
-/**
- * Removes the image for the front of the card
- */
-function removeImageFront() {
-  coverImageFront.value = null;
-}
-
-/**
- * Removes the image for the back of the card
- */
-function removeImageBack() {
-  coverImageBack.value = null;
-}
 
 /**
  * Emits the 'removeQuestion' event with the question's uuid
@@ -109,35 +74,10 @@ function removeQuestion() {
           d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41l5.59 5.59L5 17.59 6.41 19l5.59-5.59L17.59 19 19 17.59l-5.59-5.59L19 6.41z" />
       </svg>
     </div>
-
-    <div v-if="coverImageFront" class="image-preview">
-      <img :src="coverImageFront" alt="Front Image Preview" />
-      <div class="remove-image" @click="removeImageFront">X</div>
-    </div>
-
-
-    <!-- Example of adjusted file input and label for the front image -->
-    <div v-if="!coverImageFront">
-      <input type="file" :id="'uploadFront' + uuid" hidden @change="event => handleFileUpload(event)" accept="image/*" />
-      <label :for="'uploadFront' + uuid" class="uploadimagebutton">Upload Front Image</label>
-    </div>
-
-
-
     <input class="question-title" v-model="question" placeholder="Study card question" />
-    <div v-if="coverImageBack" class="image-preview">
-      <img :src="coverImageBack" alt="Back Image Preview" />
-      <div class="remove-image" @click="removeImageBack">X</div>
-    </div>
-
-
-    <div v-if="!coverImageBack">
-      <input type="file" id="uploadBack" hidden @change="handleFileUpload" accept="image/*" />
-      <label for="uploadBack" class="uploadimagebutton">Upload Back Image</label>
-    </div>
     <textarea class="answer-text" v-model="answers[0].text" placeholder="Study card answer"></textarea>
 
-    <CreateTags/>
+    <CreateTags :initialTags="tags" @update-tags="handleTagUpdate" />
 
   </div>
 </template>
