@@ -45,15 +45,15 @@ const coverImage = ref(null);
 /**
  * Watches for changes in the title and answers and emits the updated data
  */
-watch([title, answers], () => {
-  console.log('Submitting data for fill in the blank question');
+watch(() => ({ title: title.value, answers: answers.value, coverImage: coverImage.value }), (newVal) => {
   emits('submitData', {
     uuid: props.uuid,
-    text: title.value,
+    text: newVal.title,
     questionType: 'FILL_IN_BLANK',
-    answers: [{ text: answers.value, correct: true }]
+    answers: newVal.answers,
+    image: newVal.coverImage
   });
-}, { deep: true });
+}, { deep: true, immediate: true });
 
 /**
  * Emits the 'removeQuestion' event with the question's uuid

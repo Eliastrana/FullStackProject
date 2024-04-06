@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const COMPLETE_API_URL = 'http://localhost:8080/api/completeQuiz';
 const QUIZ_API_URL = 'http://localhost:8080/api/quiz';
+const IMAGE_API_URL = 'http://localhost:8080/api/images';
 
 export const QuizService = {
   async create(quizDetails) {
@@ -35,5 +36,14 @@ export const QuizService = {
   async getQuizById(quizId) {
     const response = await axios.get(`${COMPLETE_API_URL}/${quizId}`);
     return response.data;
+  },
+
+  async getImageById(imageId) {
+    console.log(imageId)
+    const response = await axios.get(`${IMAGE_API_URL}/${imageId}`, { responseType: 'arraybuffer' });
+    const base64 = btoa(
+      new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+    return `data:${response.headers['content-type']};base64,${base64}`;
   }
 };
