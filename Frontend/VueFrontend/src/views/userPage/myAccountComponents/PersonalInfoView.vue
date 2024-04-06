@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import router from '@/router/index.js'
 
 /**
  * User information
@@ -19,6 +20,18 @@ onMounted(async () => {
     console.error('Failed to load user info:', error);
   }
 });
+
+
+const updateUsername = () => {
+
+
+
+};
+
+const updatePassword = () => {
+
+}
+
 </script>
 
 <template>
@@ -30,6 +43,22 @@ onMounted(async () => {
       <p><strong>Name:</strong> {{ userInfo.name }}</p>
       <p><strong>Email:</strong> {{ userInfo.email }}</p>
     </div>
+
+    <div class="updateinfo">
+
+      <button class="updateusername" @click="updateUsername">
+        <i class="fas fa-user-edit"></i>
+        <p>Update Info</p>
+      </button>
+
+      <button class="updatepassword" @click="updatePassword">
+        <i class="fas fa-user-edit"></i>
+        <p>Update Info</p>
+      </button>
+
+    </div>
+
+
     <div class="level-info">
       <p><strong>Level:</strong> <span class="highlight">{{ userInfo.level }}</span></p>
       <p><strong>Total Quizzes Done:</strong> <span class="highlight">{{ userInfo.totalQuizzesDone }}</span></p>
@@ -57,6 +86,36 @@ onMounted(async () => {
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   background-color: #ececec;
+}
+
+.updateinfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  margin: 10px auto;
+}
+
+.updateusername, .updatepassword {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  max-width: 30%;
+  max-height: 30px;
+  margin: 10px ;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  background-color: #ececec;
+  border: none;
+  font-size: 1rem;
+}
+
+.updateusername:hover, .updatepassword:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
 }
 
 .basic-info, .level-info, .achievements {

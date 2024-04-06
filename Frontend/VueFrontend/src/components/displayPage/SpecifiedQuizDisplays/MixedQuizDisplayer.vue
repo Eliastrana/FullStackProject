@@ -1,5 +1,11 @@
 //MixedQuizDisplayer.vue
 <template>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
   <div class="quiz-container">
     <!-- Overlay for Quiz Completion -->
     <div v-if="quizCompleted" class="overlay"></div>
@@ -27,15 +33,16 @@
 
     <!-- Navigation Buttons and Progress Bar -->
     <div class="navigation">
-      <button class="navigation-button" @click="prevQuestion" :disabled="currentQuestionIndex === 0">← Previous</button>
+      <button class="navigation-button" @click="prevQuestion" :disabled="currentQuestionIndex === 0">
+        <span class="material-icons">arrow_back</span>
+      </button>
       <div class="progress-bar-container">
         <div class="progress-bar" :style="{ width: progressBarWidth }"></div>
       </div>
-      <button class="navigation-button"
-              @click="nextQuestion"
-              :disabled="currentQuestionIndex === (questions.value?.length ?? 0) - 1">
-        Next →
+      <button class="navigation-button" @click="nextQuestion" :disabled="currentQuestionIndex === (questions.value?.length ?? 0) - 1">
+        <span class="material-icons">arrow_forward</span>
       </button>
+
     </div>
 
     <!-- Questions Display -->

@@ -1,6 +1,7 @@
 // store/modules/quizzes.js
 import router from '@/router/index.js'
 import { v4 as uuidv4 } from 'uuid';
+import * as Vue from 'lodash-es'
 
 
 export default {
@@ -21,12 +22,25 @@ export default {
       state.quizDetails.questions.push(question);
       console.log(state.quizDetails.questions)
     },
-    UPDATE_QUESTION(state, updatedQuestion) {
-      const index = state.quizDetails.questions.findIndex(q => q.uuid === updatedQuestion.uuid);
+    UPDATE_QUESTION(state, payload) {
+      const index = state.quizDetails.questions.findIndex(q => q.uuid === payload.uuid);
       if (index !== -1) {
-        state.quizDetails.questions[index] = updatedQuestion;
+        // Check if the update is for an image and handle accordingly
+        if (payload.imageType) {
+          // Assuming 'imageFront' and 'imageBack' are properties on the question
+          // Adjust according to your actual data structure
+          if (payload.imageType === 'front') {
+            state.quizDetails.questions[index].imageFront = payload.image;
+          } else if (payload.imageType === 'back') {
+            state.quizDetails.questions[index].imageBack = payload.image;
+          }
+        } else {
+          // Handle general question updates
+          state.quizDetails.questions[index] = { ...state.quizDetails.questions[index], ...payload };
+        }
       }
     },
+
     CLEAR_QUIZZES(state) {
       state.questions = [];
       state.quizDetails = { title: '', description: '', creatorId: '', categoryName: '', questions: [] };
@@ -37,6 +51,14 @@ export default {
     REMOVE_QUESTION(state, uuid) {
       state.quizDetails.questions = state.quizDetails.questions.filter(question => question.uuid !== uuid);
     },
+    UPDATE_QUESTION_IMAGE(state, { uuid, imageData }) {
+      const questionIndex = state.quizDetails.questions.findIndex(question => question.uuid === uuid);
+      if (questionIndex !== -1) {
+        // Directly assign the image data to the question object
+        state.quizDetails.questions[questionIndex].image = imageData;
+      }
+    },
+
     setQuestionsOrder(state, questions) {
       state.questions = questions;
     }
@@ -67,6 +89,13 @@ export default {
     clearQuizzes({ commit }) {
       commit('CLEAR_QUIZZES');
     },
+
+    updateQuestionImage({ commit }, { uuid, image, imageType }) {
+      // Find the question by UUID and update its image
+       commit('UPDATE_QUESTION_IMAGE', { uuid, image, imageType });
+    },
+
+
 
     addQuestionsByType({ dispatch }, { type, numberOfQuestions = 5 }) {
       for (let i = 0; i < numberOfQuestions; i++) {
