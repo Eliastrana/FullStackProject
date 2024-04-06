@@ -15,12 +15,12 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
  * The security scheme is set up to use HTTP bearer tokens, specifically JWT tokens,
  * for authenticating API requests. This configuration is crucial for correctly
  * documenting the security aspects of the API endpoints in the generated OpenAPI documentation.
- *
+ *</p>
  * The {@link #customOpenAPI()} method defines the security requirements globally
  * for all API endpoints, indicating that a bearer token is expected for authentication.
  * The {@link #api()} method groups all endpoints under the "/api/**" path into a single
  * OpenAPI group, making it easier to organize and navigate the API documentation.
- *
+ *</p>
  * Usage of JWT tokens for security is specified, aligning with the application's
  * authentication mechanism. This setup helps ensure that the API documentation accurately
  * reflects the security measures in place for accessing the application's endpoints.
