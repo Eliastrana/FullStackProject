@@ -1,56 +1,68 @@
 <script setup>
 import { ref, defineProps } from 'vue';
 
-// Define props
+/**
+ * Props for the FillInTheBlankQuizDisplayer component
+ * @property {Object} question - The question object
+ */
 const props = defineProps({
-  question: {
-    type: Object,
-    required: true
-  }
+  question: Object
 });
 
+/**
+ * User's answer
+ * @type {import('vue').Ref<string>}
+ */
 const userAnswer = ref('');
-const isCorrect = ref(null);
 
+/**
+ * Emits custom events
+ * @type {Function}
+ */
 const emit = defineEmits(['answered']);
 
+/**
+ * Boolean value to check if the question has been answered
+ * @type {import('vue').Ref<boolean>}
+ */
+const answered = ref(false);
 
-const answered = ref(false); // New reactive property to prevent re-answering
-
+/**
+ * Checks the user's answer and emits an event with the result
+ */
 const checkAnswer = () => {
-  if (answered.value) return; // Prevent checking the answer again if already answered
+  // If the question has already been answered, do nothing
+  if (answered.value) return;
 
-  isCorrect.value = userAnswer.value.trim().toLowerCase() === props.question.answer.toLowerCase();
-  emit('answered', isCorrect.value);
-  answered.value = true; // Mark as answered
+  // Check if the user's answer matches any of the correct answers (case insensitive)
+  const isCorrect = props.question.answers.some(answer =>
+    userAnswer.value.trim().toLowerCase() === answer.text.toLowerCase()
+  );
+
+  // Emit the 'answered' event with the result
+  emit('answered', isCorrect);
+  // Mark the question as answered
+  answered.value = true;
 };
-
-
-
-
 </script>
+
 
 <template>
   <div class="question-container">
-    <div>
-      <img v-if="question.image" :src="question.image" alt="Question Image" class="question-image">
-    </div>
+    <img v-if="question.imageName" :src="question.imageName" alt="Question Image" class="question-image">
     <div class="question">
-      {{ question.questionText }}
+      {{ question.text }}
       <input v-model="userAnswer"
              @keyup.enter="checkAnswer"
-             :class="{ 'correct-answer': isCorrect, 'incorrect-answer': isCorrect === false }"
+             :class="{ 'correct-answer': isCorrect === true, 'incorrect-answer': isCorrect === false }"
              placeholder="Answer here"
              class="blank"
              :disabled="answered">
     </div>
-    <button class="checkAnswerButton" @click="checkAnswer">Check Answer</button>
-<!--    <div v-if="isCorrect !== null" class="feedback">-->
-<!--      <p v-if="isCorrect" class="correct">Correct!</p>-->
-<!--      <p v-else class="incorrect">Incorrect, try again.</p>-->
-<!--    </div>-->
+    <button class="checkAnswerButton" @click="checkAnswer" :disabled="answered">Check Answer</button>
   </div>
 </template>
+
 
 
 <style scoped>
@@ -60,16 +72,11 @@ const checkAnswer = () => {
   align-items: center;
   padding: 20px;
   border-radius: 20px;
-
   font-family: 'DM Sans', sans-serif;
   font-size: 1rem;
-
-
   background-color: #FFFFFF;
   border: 5px solid #62B6CB;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
-
-  ;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .question {
@@ -89,9 +96,7 @@ const checkAnswer = () => {
   padding: 10px 20px;
   font-family: 'DM Sans', sans-serif;
   font-size: 1rem;
-
   border: none;
-
   background-color: #62B6CB;
   border-radius: 5px;
   cursor: pointer;
@@ -113,26 +118,18 @@ const checkAnswer = () => {
   border-bottom: 2px solid #62B6CB;
 }
 
-
 .feedback {
   margin-top: 20px;
 }
 
-
-
 .correct-answer {
   border-bottom: 5px solid #4CAF50;
-
-
 }
 
 .incorrect-answer {
-
   border-bottom: 5px solid #e17474;
-
 }
 
-/* Styles for icons */
 .correct-answer::after, .incorrect-answer::after {
   content: '';
   position: absolute;
@@ -140,6 +137,5 @@ const checkAnswer = () => {
   top: 50%;
   transform: translateY(-50%);
 }
-
 
 </style>

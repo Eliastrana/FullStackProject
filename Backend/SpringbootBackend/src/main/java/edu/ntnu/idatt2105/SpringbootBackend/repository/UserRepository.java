@@ -1,6 +1,8 @@
 package edu.ntnu.idatt2105.SpringbootBackend.repository;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
+import edu.ntnu.idatt2105.SpringbootBackend.model.UserRole;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

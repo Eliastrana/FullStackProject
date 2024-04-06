@@ -1,18 +1,37 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import router from '@/router/index.js'
 
+/**
+ * User information
+ * @type {import('vue').Ref<Object>}
+ */
 const userInfo = ref(null);
 
+/**
+ * Fetches user information from the API when the component is mounted
+ */
 onMounted(async () => {
   try {
-    // Update the path to where your user.json file is located
     const response = await axios.get('/mockJSON/user/user.json');
     userInfo.value = response.data;
   } catch (error) {
     console.error('Failed to load user info:', error);
   }
 });
+
+
+const updateUsername = () => {
+
+
+
+};
+
+const updatePassword = () => {
+
+}
+
 </script>
 
 <template>
@@ -24,6 +43,22 @@ onMounted(async () => {
       <p><strong>Name:</strong> {{ userInfo.name }}</p>
       <p><strong>Email:</strong> {{ userInfo.email }}</p>
     </div>
+
+    <div class="updateinfo">
+
+      <button class="updateusername" @click="updateUsername">
+        <i class="fas fa-user-edit"></i>
+        <p>Update Info</p>
+      </button>
+
+      <button class="updatepassword" @click="updatePassword">
+        <i class="fas fa-user-edit"></i>
+        <p>Update Info</p>
+      </button>
+
+    </div>
+
+
     <div class="level-info">
       <p><strong>Level:</strong> <span class="highlight">{{ userInfo.level }}</span></p>
       <p><strong>Total Quizzes Done:</strong> <span class="highlight">{{ userInfo.totalQuizzesDone }}</span></p>
@@ -40,23 +75,54 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
 .user-info-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 90%; /* Allows container to scale but not exceed the screen width */
-  margin: 5% auto; /* Centers the container and maintains margin from the top */
+  max-width: 90%;
+  margin: 5% auto;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   background-color: #ececec;
 }
 
+.updateinfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  margin: 10px auto;
+}
+
+.updateusername, .updatepassword {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  max-width: 30%;
+  max-height: 30px;
+  margin: 10px ;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  background-color: #ececec;
+  border: none;
+  font-size: 1rem;
+}
+
+.updateusername:hover, .updatepassword:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
 .basic-info, .level-info, .achievements {
   width: 100%;
-  max-width: 600px; /* Ensures content within these divs doesn't become too wide */
+  max-width: 600px;
   text-align: center;
-  margin: 10px auto; /* Centers content blocks */
+  margin: 10px auto;
 }
 
 h1, h2, .highlight {
@@ -68,8 +134,8 @@ h2 {
 }
 
 .user-photo {
-  width: 100px; /* Consider making this responsive with a percentage or max-width */
-  height: 100px; /* Maintain aspect ratio */
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   margin: 20px 0;
 }
@@ -94,18 +160,18 @@ h2 {
 
 @media (max-width: 768px) {
   .user-info-container {
-    width: auto; /* Allows the container to fill the screen width on smaller devices */
-    margin: 5% 10px; /* Adds a small margin to the sides */
-    padding: 10px; /* Adjusts padding for smaller screens */
+    width: auto;
+    margin: 5% 10px;
+    padding: 10px;
   }
 
   .user-photo {
-    width: 80px; /* Slightly smaller photo for smaller screens */
+    width: 80px;
     height: 80px;
   }
 
   .highlight {
-    font-size: 1em; /* Adjusts font size for smaller screens */
+    font-size: 1em;
   }
 }
 </style>

@@ -24,6 +24,9 @@ public class QuizDTO {
     @Schema(required = true, example = "EASY", description = "Difficulty of the quiz")
     private Difficulty difficulty;
 
+    @Schema(required = true, example = "true", description = "Boolean value indicating whether the quiz is public or private")
+    private boolean isPublic;
+
     @Schema(example = "23e4567-e89b-12d3-a456-426614174000",description = "CategoryId of the quiz")
     private UUID categoryId;
 

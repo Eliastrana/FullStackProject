@@ -1,23 +1,48 @@
 // StudycardsQuizDisplayer.vue
+
 <script setup>
 import { ref, onMounted } from 'vue';
 import StudycardDisplayer from '@/components/displayPage/displayQuiz/StudycardDisplayer.vue'
 
+/**
+ * Title of the quiz
+ * @type {import('vue').Ref<string>}
+ */
 const quizTitle = ref('');
+
+/**
+ * Array of study cards
+ * @type {import('vue').Ref<Array>}
+ */
 const studyCards = ref([]);
+
+/**
+ * Index of the current card
+ * @type {import('vue').Ref<number>}
+ */
 const currentCardIndex = ref(0);
+
+/**
+ * Boolean value to check if the card is flipped
+ * @type {import('vue').Ref<boolean>}
+ */
 const flipped = ref(false);
 
 onMounted(() => {
-  fetch('mockJSON/onlyOneQuestionType/studycards.json')
+  /**
+   * On component mount, fetch quiz data
+   */
+  fetch('mockJSON/onlyOneQuestionType/frontpageshowoff.json')
     .then(response => response.json())
     .then(data => {
-      quizTitle.value = data.title; // Access the title
-      studyCards.value = data.questions; // Correctly assign the questions array
+      quizTitle.value = data.title;
+      studyCards.value = data.questions;
     });
 });
 
-
+/**
+ * Function to navigate to the next card
+ */
 const nextCard = () => {
   if (currentCardIndex.value < studyCards.value.length - 1) {
     currentCardIndex.value++;
@@ -25,6 +50,9 @@ const nextCard = () => {
   }
 };
 
+/**
+ * Function to navigate to the previous card
+ */
 const prevCard = () => {
   if (currentCardIndex.value > 0) {
     currentCardIndex.value--;
@@ -32,6 +60,9 @@ const prevCard = () => {
   }
 };
 
+/**
+ * Function to toggle the flip state of the card
+ */
 const toggleFlip = () => {
   flipped.value = !flipped.value;
 };
@@ -40,18 +71,13 @@ const toggleFlip = () => {
 <template>
   <div class="quiz-container">
     <h1>{{ quizTitle }}</h1>
-
     <div v-if="studyCards.length > 0">
-      <!-- Flex container for navigation buttons and card display -->
       <div class="buttons-container">
         <button class="button" @click="prevCard" :disabled="currentCardIndex === 0">Previous</button>
-
         <StudycardDisplayer
           :key="studyCards[currentCardIndex].id"
           :question="studyCards[currentCardIndex]"
-          @click.native="toggleFlip"
-        />
-
+          @click.native="toggleFlip" />
         <button class="button" @click="nextCard" :disabled="currentCardIndex === studyCards.length - 1">Next</button>
       </div>
     </div>
@@ -60,15 +86,12 @@ const toggleFlip = () => {
         v-for="(card, index) in studyCards"
         :key="card.id"
         @click="() => { currentCardIndex = index; flipped.value = false; }"
-        :class="{ active: currentCardIndex === index }"
-      >
+        :class="{ active: currentCardIndex === index }">
         {{ index + 1 }}
       </span>
     </div>
   </div>
 </template>
-
-
 
 <style scoped>
 
@@ -77,8 +100,6 @@ h1 {
   font-size: 3rem;
   margin-bottom: -80px;
 }
-
-
 
 .button {
   align-content: center;
@@ -91,7 +112,6 @@ h1 {
   cursor: pointer;
   min-width: 200px;
   margin: 0 5px;
-
   font-size: 2rem;
   font-family: 'DM Sans', sans-serif;
 }
@@ -102,16 +122,13 @@ h1 {
 
 .buttons-container {
   display: flex;
-  justify-content: space-between; /* Aligns children to each side */
+  justify-content: space-between;
   align-items: center;
-  gap: 10px; /* Adjust this value to manage space between flex items */
+  gap: 10px;
   margin-left: 100px;
   margin-right: 100px;
-
 }
 
-/* Style adjustments to ensure the card displayer is centered if needed */
-/* For example, if StudycardDisplayer is not naturally centered in its flex item */
 .studycard-displayer-wrapper {
   flex-grow: 1;
   display: flex;
@@ -119,17 +136,13 @@ h1 {
 }
 
 .button {
-  /* Existing button styles */
-  margin: 0 10px; /* Adjust margin as needed */
+  margin: 0 10px;
 }
-
-
 
 .navigation-dots {
   display: flex;
   justify-content: center;
   margin-top: 5px;
-
 }
 
 </style>

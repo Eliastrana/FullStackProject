@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 /**
  * Configures the security for the web application.
  * This class is responsible for setting up security
@@ -36,6 +37,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
+
 
     private final JWTAuthFilter jwtAuthFilter;
 
@@ -62,13 +64,13 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**", "/error").permitAll()
-                    .requestMatchers("/home", "/login", "api/user/register", "api/user/login", "/api/difficulties/**").permitAll() // Include your endpoint here
+                    .requestMatchers("/home", "/login", "/api/user/register", "/api/user/login", "/api/difficulties/**", "/api/quiz/**", "/api/questions/quiz/**").permitAll() 
                     .anyRequest().authenticated()
             )
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-    return http.build();
-}
+        return http.build();
+    }
 
 
     /**
@@ -83,6 +85,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(@NotNull CorsRegistry registry) {
                 registry.addMapping("/api/**")
+                        .allowedOrigins("http://129.241.98.1")
                         .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
             }
         };

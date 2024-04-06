@@ -26,7 +26,6 @@ public class UserQuizAttemptMapper {
         }
 
         UserQuizAttempt userQuizAttempt = new UserQuizAttempt();
-        userQuizAttempt.setUser(userQuizAttempt.getUser());
         userQuizAttempt.setId(dto.getId());
         userQuizAttempt.setScore(dto.getScore());
         return userQuizAttempt;

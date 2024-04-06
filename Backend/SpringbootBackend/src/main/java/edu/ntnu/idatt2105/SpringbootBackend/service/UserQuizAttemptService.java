@@ -2,13 +2,19 @@ package edu.ntnu.idatt2105.SpringbootBackend.service;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserQuizAttemptDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserQuizAttemptNotFoundException;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
+import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.model.UserQuizAttempt;
+import edu.ntnu.idatt2105.SpringbootBackend.repository.QuizRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserQuizAttemptRepository;
+import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.UserQuizAttemptMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -18,11 +24,15 @@ public class UserQuizAttemptService {
 
     private final UserQuizAttemptRepository userQuizAttemptRepository;
     private final UserQuizAttemptMapper userQuizAttemptMapper;
+    private final UserRepository userRepository;
+    private final QuizRepository quizRepository;
 
     @Autowired
-    public UserQuizAttemptService(UserQuizAttemptRepository userQuizAttemptRepository, UserQuizAttemptMapper userQuizAttemptMapper) {
+    public UserQuizAttemptService(UserQuizAttemptRepository userQuizAttemptRepository, UserQuizAttemptMapper userQuizAttemptMapper, UserRepository userRepository, QuizRepository quizRepository) {
         this.userQuizAttemptRepository = userQuizAttemptRepository;
         this.userQuizAttemptMapper = userQuizAttemptMapper;
+        this.userRepository = userRepository;
+        this.quizRepository = quizRepository;
     }
 
     public List<UserQuizAttemptDTO> getUserAttempts(UUID userId) {
@@ -33,8 +43,16 @@ public class UserQuizAttemptService {
 
     @Transactional
     public UserQuizAttemptDTO createUserQuizAttempt(UserQuizAttemptDTO userQuizAttemptDTO) {
-        // Assuming you have methods in your service to fetch User and Quiz entities
+        User user = userRepository.findById(userQuizAttemptDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userQuizAttemptDTO.getUserId()));
+        Quiz quiz = quizRepository.findById(userQuizAttemptDTO.getQuizId())
+                .orElseThrow(() -> new RuntimeException("Quiz not found with id: " + userQuizAttemptDTO.getQuizId()));
+
         UserQuizAttempt userQuizAttempt = userQuizAttemptMapper.toEntity(userQuizAttemptDTO);
+        userQuizAttempt.setUser(user);
+        userQuizAttempt.setQuiz(quiz);
+        userQuizAttempt.setTime(LocalDateTime.now());
+
         userQuizAttempt = userQuizAttemptRepository.save(userQuizAttempt);
         return userQuizAttemptMapper.toDto(userQuizAttempt);
     }

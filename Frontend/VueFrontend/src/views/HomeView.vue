@@ -2,13 +2,13 @@
 
 import WelcomeIntro from '@/components/displayPage/WelcomeIntro.vue'
 import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDisplayer.vue'
+import FlipcardDisplayer from '@/components/displayPage/FlipcardDisplayer.vue'
 
 </script>
 
 <template>
 
   <div class="display-page-container">
-
 
   <WelcomeIntro />
 
@@ -26,28 +26,21 @@ import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDispla
     imagePosition="right"
     backgroundColor="#BEE9E8" />
 
-
-  <FunctionalityDisplayer
-    title="Practice with quizzes to improve your knowledge."
-    description="See your stats and track your progress!"
-    imageUrl="/images/dalle/corpcore4.png"
-    imagePosition="left"
-    backgroundColor="#CAE9FF" />
-
+    <FlipcardDisplayer />
 
   </div>
 
 </template>
 
 <style scoped>
-/* Use a Flexbox layout to center the content vertically and horizontally */
+
 .display-page-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px; /* Adjust based on your spacing preference */
-  padding: 20px; /* Add some padding around the content */
+  gap: 20px;
+  padding: 20px;
 }
 
 @media (max-width: 768px) {
@@ -56,18 +49,15 @@ import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDispla
   }
 }
 
-/* Inside FunctionalityDisplayer.vue */
 .functionality-image {
-  width: 100%; /* Make the image responsive */
-  max-width: 400px; /* Prevent it from becoming too large */
-  height: auto; /* Maintain aspect ratio */
+  width: 100%;
+  max-width: 400px;
+  height: auto;
 }
 
-
 @media (max-width: 768px) {
-  /* Adjust styles for smaller screens */
   .functionality-displayer-title {
-    font-size: 18px; /* Smaller font size on small devices */
+    font-size: 18px;
   }
 }
 

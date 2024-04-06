@@ -26,7 +26,7 @@
         <img :src="quiz.image" alt="Quiz Image">
         <h2>{{ quiz.title }}</h2>
         <p>{{ quiz.description }}</p>
-        <p class="category-badge">#{{ quiz.category }}</p>
+        <p class="category-badge">#{{ quiz.category_id }}</p>
         <!-- Optionally display difficulty if present in your data -->
       </div>
     </div>
@@ -36,8 +36,8 @@
 
 <script setup>
 
-import { ref, onMounted, computed } from 'vue';
-import { defineEmits } from 'vue';
+import { computed, defineEmits, onMounted, ref } from 'vue'
+import { QuizService } from '@/services/QuizService.js'
 
 const emit = defineEmits(['select-quiz']);
 const quizzes = ref([]);
@@ -50,6 +50,7 @@ const selectedCategory = ref('');
 // Assuming QuizContainer directly manages individual quiz items
 
 const handleQuizClick = (quiz) => {
+  console.log('Selected quiz:', quiz)
   emit('select-quiz', quiz);
 };
 
@@ -58,22 +59,16 @@ const filteredQuizzes = computed(() => {
   return quizzes.value.filter((quiz) => {
     return quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
       (selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value) &&
-      (selectedCategory.value === '' || quiz.category === selectedCategory.value);
+      (selectedCategory.value === '' || quiz.category_id === selectedCategory.value);
   });
 });
 
 
 onMounted(async () => {
   try {
-    const response = await fetch('mockJSON/testdata.json');
-    if (response.ok) {
-      quizzes.value = await response.json();
-
-    } else {
-      console.error('Failed to load testdata.json', response.status);
-    }
+    quizzes.value = await QuizService.getAllQuizzes();
   } catch (error) {
-    console.error('Error while fetching testdata.json', error);
+    console.error('Error while fetching quizzes', error);
   }
 });
 
@@ -95,6 +90,32 @@ const uniqueCategories = computed(() => {
 
 
 <style scoped>
+
+.top-container select {
+  padding: 10px;
+  margin: 10px 0;
+  margin-right: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  width: auto; /* Adjusted to fit content */
+}
+
+.top-container select:focus {
+  outline: none; /* Removes default focus outline */
+  box-shadow: 0 0 0 2px #62B6CB; /* Adds a custom focus style */
+}
+
+#bottom-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px; /* Adjust as needed for spacing */
+}
 
 .controls-container {
   display: flex;
@@ -222,6 +243,17 @@ select {
     border: 1px solid #ddd; /* Legger til en grense for å gjøre feltet mer synlig */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Legger til en boks-skygge for å fremheve feltet */
   }
+
+    #bottom-container {
+      flex-direction: column;
+      align-items: stretch; /* Align items to stretch to full width */
+    }
+
+    .top-container select {
+      width: 100%; /* Full width for smaller screens */
+      margin: 10px 0; /* Adjust margin for vertical stacking */
+    }
+
 }
 @media (max-width: 668px) {
   .quiz-box {

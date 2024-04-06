@@ -1,6 +1,5 @@
 <template>
   <div class="user-menu-dropdown" @mouseleave="hideDropdown" @mouseenter="showDropdown">
-    <!-- Wrap the username in a RouterLink for navigation on click -->
     <RouterLink :to="'/MyAccount'" class="username-link" :class="{ 'active-link': isRouteActive }">
       {{ props.userName }}
     </RouterLink>
@@ -18,52 +17,76 @@ import { useStore } from 'vuex';
 import { RouterLink, useRoute } from 'vue-router'
 import router from '@/router/index.js'
 
-
-
+/**
+ * Emits closeNavbar event
+ */
 const emit = defineEmits(['closeNavbar']);
 
+/**
+ * Vue Router instance
+ * @type {import('vue-router').RouteLocationNormalized}
+ */
 const route = useRoute();
 
-// Accepting userName as a prop
+/**
+ * Props for the component
+ * @type {Object}
+ */
 const props = defineProps({
   userName: String,
   activeRoute: String,
-
 });
 
+/**
+ * Checks if the current route is active
+ * @type {import('vue').ComputedRef<boolean>}
+ */
 const isRouteActive = computed(() => {
   return route.path === props.activeRoute;
 });
 
-
+/**
+ * Dropdown visibility state
+ * @type {import('vue').Ref<boolean>}
+ */
 const isDropdownVisible = ref(false);
 
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
 
-// Sample userName, replace with actual dynamic userName if needed
-
-
+/**
+ * Shows the dropdown
+ */
 const showDropdown = () => {
   isDropdownVisible.value = true;
 };
 
+/**
+ * Hides the dropdown
+ */
 const hideDropdown = () => {
   isDropdownVisible.value = false;
 };
 
+/**
+ * Logs out the user
+ * Dispatches a logout action to the Vuex store
+ * If successful, emits closeNavbar event and redirects to the home route
+ * If unsuccessful, logs the error
+ */
 const logout = () => {
   store.dispatch('user/logout').then(() => {
-    emit('closeNavbar'); // Emit the event right before redirecting
+    emit('closeNavbar');
     router.push({ name: 'home' }).catch(err => {
       console.error(err);
     });
   }).catch(error => {
     console.error('Logout failed:', error);
-    // Handle the error, maybe show a message to the user
   });
 };
-
-
 </script>
 
 <style scoped>
@@ -95,12 +118,11 @@ const logout = () => {
 .dropdown-content a:hover {
   color: rgba(0, 0, 0, 0.8);
   font-weight: bold;
-
 }
 
 .active-link {
-  color: #FFD700; /* Example active color */
+  color: #FFD700;
   font-weight: bold;
-
 }
+
 </style>

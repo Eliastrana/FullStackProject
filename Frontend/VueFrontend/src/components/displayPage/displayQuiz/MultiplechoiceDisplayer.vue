@@ -2,60 +2,69 @@
 <script setup>
 import { defineProps, ref } from 'vue';
 
-// Update the props to accept a single question object
+/**
+ * Props for the MultiplechoiceDisplayer component
+ * @property {Object} question - The question object
+ */
 const props = defineProps({
   question: Object,
 });
 
+/**
+ * Index of the selected option
+ * @type {import('vue').Ref<number>}
+ */
 const selectedOptionIndex = ref(-1);
 
-// Emit an event when an option is selected
-const emit = defineEmits(['answer']);
+/**
+ * Emits custom events
+ * @type {Function}
+ */
+const emit = defineEmits(['answered']);
 
+/**
+ * Selects an option and checks if it's correct
+ * @param {number} index - The index of the selected option
+ */
 const selectOption = (index) => {
   selectedOptionIndex.value = index;
-  const isCorrect = index === props.question.correctIndex;
-  emit('answered', { isCorrect });
+  const isCorrect = props.question.answers[index].correct;
+  emit('answered', isCorrect);
 };
 
-
+/**
+ * Returns the classes for an option based on its state
+ * @param {number} index - The index of the option
+ * @returns {Array<string>} The classes for the option
+ */
 const getOptionClasses = (index) => {
   const classes = [];
   if (selectedOptionIndex.value !== -1) {
-    // An option has been selected
-    if (index === props.question.correctIndex) {
-      classes.push('correct'); // Apply 'correct' class to the correct option
+    if (props.question.answers[index].correct) {
+      classes.push('correct')
     } else if (index === selectedOptionIndex.value) {
-      classes.push('selected'); // Apply 'selected' class to the selected option
+      classes.push('selected')
     } else {
-      classes.push('incorrect'); // Apply 'incorrect' class to all other options
+      classes.push('incorrect')
     }
   }
-  return classes;
+  return classes
 };
 </script>
 
 <template>
   <div class="quiz-container">
-    <div class="question-title">{{ props.question.questionText }}</div>
-    <img v-if="question.image" :src="question.image" alt="Question Image" class="question-image">
-
+    <div class="question-title">{{ props.question?.text }}</div>
+    <img v-if="props.question.multimediaLink" :src="props.question.multimediaLink" alt="Question Image"
+         class="question-image">
     <div class="answers-grid">
-      <button
-        v-for="(option, index) in props.question.options"
-        :key="index"
-        class="answer"
-        :class="getOptionClasses(index)"
-        @click="selectOption(index)"
-        :disabled="selectedOptionIndex !== -1"
-      >
-        {{ option }}
+      <button v-for="(answer, index) in props.question.answers" :key="index" class="answer"
+              :class="getOptionClasses(index)" @click="selectOption(index)" :disabled="selectedOptionIndex !== -1">
+        {{ answer.text }}
       </button>
     </div>
   </div>
 </template>
-
-
 
 <style scoped>
 
@@ -85,8 +94,8 @@ li {
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  width: 100%; /* Ensure the container takes full width */
-  justify-content: center; /* Center content vertically */
+  width: 100%;
+  justify-content: center;
 }
 
 .answers-grid {
@@ -94,19 +103,16 @@ li {
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   width: 100%;
-  max-width: 400px; /* Adjust this if necessary */
-  justify-content: center; /* Center grid items horizontally */
-  margin: auto; /* This helps in centering the grid itself if it's smaller than its container */
+  max-width: 400px;
+  justify-content: center;
+  margin: auto;
 }
-
-
 
 .question-title {
   margin-bottom: 20px;
   font-size: 2rem;
   font-family: 'DM Sans', sans-serif;
 }
-
 
 .question-image {
   max-width: 100%;
@@ -115,7 +121,6 @@ li {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-
 
 .answer {
   display: flex;
@@ -130,11 +135,10 @@ li {
   border: none;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
-  position: relative; /* Added for pseudo-elements */
+  position: relative;
 }
 
 .answer:hover {
-  //background-color: #f0f0f0;
   transform: translateY(-2px);
 }
 
@@ -144,21 +148,17 @@ li {
 .correct {
   background-color: #CAE9FF;
   color: #000000;
-
-
 }
 
 .incorrect {
   background-color: #e7e7e7;
-
 }
-.selected {
-  /* Add a new style for the selected option */
-  background-color: #e7e7e7; /* A light color, for example, khaki */
-  border: 5px solid #e17474; /* A darker color, for example, darkkhaki */
 
+.selected {
+  background-color: #e7e7e7;
+  border: 5px solid #e17474;
   content: '✕';
-  color: #000000; /* Adjust as needed for visibility */
+  color: #000000;
 }
 
 .correct::before,
@@ -173,12 +173,12 @@ li {
 
 .correct::before {
   content: '✓';
-  color: white; /* Adjust as needed for visibility */
+  color: white;
 }
 
 .incorrect::before {
   content: '✕';
-  color: white; /* Adjust as needed for visibility */
+  color: white;
 }
 
 .answer:active {

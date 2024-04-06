@@ -89,3 +89,4 @@ public class UserControllerTest {
                 .andExpect(status().isInternalServerError()); // Expecting an Internal Server Error response
     }
 }
+

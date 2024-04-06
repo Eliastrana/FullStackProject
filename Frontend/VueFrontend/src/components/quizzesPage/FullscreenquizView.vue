@@ -2,34 +2,24 @@
   <transition name="fade">
     <div class="quiz-fullscreen" v-if="quiz" @click="closeQuiz">
       <div class="quiz-content" @click.stop>
-
-
-
         <div class="image-container">
           <img :src="quiz.image" alt="Quiz Image" class="quiz-image">
         </div>
-
         <button class="close-btn" @click.stop="closeQuiz">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
-
-
         <button @click.stop="startQuiz" class="start-quiz-btn">Start Quiz</button>
-
         <!-- Header and Button Container -->
         <div class="header-container">
-
           <h1>{{ quiz.title }}</h1>
         </div>
-
         <p class="category-badge">#{{ quiz.category }}</p>
         <p>{{ quiz.description }}</p>
         <h2>Questions</h2>
-
         <!-- Questions Container -->
-        <div v-if="quiz.questions && quiz.questions.length" class="questions-container">
-          <div class="question-card" v-for="(question, index) in quiz.questions" :key="index">
-            <p>{{ question.questionText }}</p>
+        <div v-if="questions.length" class="questions-container">
+          <div class="question-card" v-for="question in questions" :key="question.id">
+            <p>{{ question.text }}</p>
           </div>
         </div>
       </div>
@@ -37,30 +27,50 @@
   </transition>
 </template>
 
+<script setup>
+import { ref, watch } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { QuestionService } from '@/services/QuestionService.js';
+import { QuizService } from '@/services/QuizService.js';
+import { defineProps, defineEmits } from 'vue';
 
+const props = defineProps({
+  quiz: Object,
+});
+const emits = defineEmits(['close']);
+const questions = ref([]);
+const store = useStore(); // Use the store
+const router = useRouter(); // Use router for navigation
 
+watch(() => props.quiz, async (newQuiz, oldQuiz) => {
+  console.log('new quiz: ')
+  console.log(newQuiz.id)
+  console.log('old quiz: ')
+  console.log(oldQuiz)
+  if (newQuiz && (!oldQuiz || newQuiz.id !== oldQuiz.id)) {
+    try {
+      questions.value = await QuestionService.getQuestionsByQuizId(newQuiz.id);
+    } catch (error) {
+      console.error('Failed to fetch questions for the quiz', error);
+    }
+  }
+}, { immediate: true });
 
-
-<script>
-import router from '@/router/index.js'
-
-export default {
-  props: {
-    quiz: Object,
-  },
-  methods: {
-    startQuiz() {
-
-      router.push({ name: 'QuizDisplayer' });
-
-      // Frontend logic stops here
-    },
-    closeQuiz() {
-      this.$emit('close'); // Emit an event to tell the parent to close the fullscreen view
-    },
-  },
+const closeQuiz = () => {
+  emits('close');
 };
 
+const startQuiz = async () => {
+  try {
+    const quizData = await QuizService.getQuizById(props.quiz.id);
+    // Include the quiz ID in the payload
+    await store.dispatch('quizAttempt/setQuizData', { quizData, quizId: props.quiz.id });
+    await router.push({ name: 'QuizDisplayer' });
+  } catch (error) {
+    console.error('Failed to fetch and store quiz data:', error);
+  }
+};
 </script>
 
 <style scoped>

@@ -1,6 +1,7 @@
-// user.js
+// store/modules/user.js
 import { SessionToken } from '@/features/SessionToken.js';
 import { UserService } from '@/services/UserService.js';
+import router from '@/router/index.js'
 
 const state = () => ({
   token: SessionToken.getToken(),
@@ -16,62 +17,66 @@ const getters = {
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token;
-    SessionToken.setToken(token); // Persist token changes to the session
+    SessionToken.setToken(token);
   },
   SET_USER_INFO: (state, userInfo) => {
     state.userInfo = userInfo;
-    SessionToken.setUserInfo(userInfo); // Persist user info changes to the session
+    SessionToken.setUserInfo(userInfo);
   },
   CLEAR_USER: (state) => {
     state.token = null;
     state.userInfo = null;
-    SessionToken.clearToken(); // Clear the token from the session storage
-    SessionToken.clearUserInfo(); // Clear the user info from the session storage
+    SessionToken.clearToken();
+    SessionToken.clearUserInfo();
   },
 };
 
 const actions = {
-  async register({ dispatch }, userDetails) {
-    try {
-      const response = await UserService.register(userDetails);
-      if (response.token) {
-        dispatch('fetchUserDetails', response.token);
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
+  async register({ commit, dispatch }, userDetails) {
+    const response = await UserService.register(userDetails);
+    commit('SET_TOKEN', response.token);
+    await dispatch('fetchUserDetails');
+  },
+  async login({ commit, dispatch }, credentials) {
+    const response = await UserService.login(credentials);
+    commit('SET_TOKEN', response.token);
+    if (response.name) {
+      commit('SET_USER_INFO', { name: response.name });
+    } else {
+      await dispatch('fetchUserDetails');
     }
   },
-  async login({ dispatch }, credentials) {
-    try {
-      const response = await UserService.login(credentials);
-      if (response.token) {
-        dispatch('fetchUserDetails', response.token);
+  async fetchUserDetails({ commit }) {
+    // The token is automatically attached via Axios interceptor, no need to pass it
+    const userDetails = await UserService.getUserDetails();
+    commit('SET_USER_INFO', userDetails);
+  },
+
+  clearQuizzes({ commit }) {
+    commit('CLEAR_QUIZZES');
+  },
+
+
+// The logout action
+  logout({ commit, dispatch }) {
+    return new Promise((resolve, reject) => {
+      try {
+        commit('CLEAR_USER');
+        dispatch('quizzes/clearQuizzes', null, { root: true }); // Adjusted to dispatch to an action
+        resolve();
+      } catch (error) {
+        console.error('Logout failed:', error);
+        reject(error);
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
+    }).then(() => {
+      router.push({ name: 'home' });
+    }).catch(error => {
+      console.error('Logout failed:', error);
+    });
   },
-  async fetchUserDetails({ commit }, token) {
-    try {
-      const userDetails = await UserService.getUserDetails(token);
-      if (!userDetails.id) {
-        console.log('User ID not found in response:', userDetails);
-      }
-      console.log('User details:', userDetails);
-      commit('SET_TOKEN', token);
-      commit('SET_USER_INFO', userDetails);
-    } catch (error) {
-      console.error('Fetching user details failed:', error);
-      commit('CLEAR_USER');
-    }
-  },
-  logout({ commit }) {
-    UserService.logout(); // Logout the user on the server-side (if applicable)
-    commit('CLEAR_USER'); // Clear user information from the state
-    commit('quizzes/CLEAR_QUIZZES', null, { root: true }); // Clears quizzes associated with the user
-  },
+
+
+
 };
 
 export default {

@@ -2,22 +2,22 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <div class="squares-container">
 
-    <div class="squareMultiple" @click="navigateToLogin">
+    <div class="squareMultiple" @click="navigateToQuizCreator('MULTIPLE_CHOICE')">
       <i class="fas fa-question-circle"></i>
       <p>Multiple Choice</p>
     </div>
 
-    <div class="squareFill" @click="navigateToLogin">
+    <div class="squareFill" @click="navigateToQuizCreator('FILL_IN_BLANK')">
       <i class="fas fa-pencil-alt"></i>
       <p>Fill in the Blank</p>
     </div>
 
-    <div class="squareStudy" @click="navigateToLogin">
+    <div class="squareStudy" @click="navigateToQuizCreator('STUDY')">
       <i class="fas fa-book"></i>
       <p>Study Cards</p>
     </div>
 
-    <div class="squareMixed" @click="navigateToLogin">
+    <div class="squareMixed" @click="navigateToQuizCreator">
       <i class="fas fa-brush"></i>
       <p>Mixed</p>
     </div>
@@ -26,27 +26,42 @@
 </template>
 
 <script setup>
-// import { useRouter } from 'vue-router';
-
-// const router = useRouter();
-
-
+// Importing router from Vue Router
 import router from '@/router/index.js'
+import store from '@/store/index.js'
 
+/**
+ * Navigates to the QuizcreatorTool route
+ * This function is currently set to navigate to the QuizcreatorTool route when invoked.
+ * It should be updated to navigate to the login route when the backend is ready.
+ */
 
+const navigateToQuizCreator = (type) => {
 
-const navigateToLogin = () => {
-  //SET THIS TO GO TO LOGIN WHEN BACKEND IS READY
-  router.push({ name: 'QuizcreatorTool' });
+  store.dispatch('quizzes/clearQuizzes');
 
+  // Call the modified action with the specific question type
+  store.dispatch('quizzes/addQuestionsByType', { type });
 
+  // Navigate to the Quiz Creator page
+  router.push({ name: 'Quizcreator' });
 };
+
+/**
+ * Generates pre-filled questions based on the type
+ * This function should be updated to generate pre-filled questions based on the type selected.
+ * For example, for 'multipleChoice', generate multiple choice questions.
+ * @param {string} type - The type of questions to generate
+ * @param {number} count - The number of questions to generate
+ * @returns {Array} - An array of pre-filled questions
+ */
+
 </script>
 
 <style scoped>
 h1 {
   font-family: 'DM Sans', sans-serif;
-  font-size: clamp(1.4rem, 10vw, 5rem); /* Justerer størrelsen basert på skjermens bredde */
+  font-size: clamp(1.4rem, 10vw, 5rem);
   text-align: left;
   margin-top: 40px;
   margin-bottom: -20px;
@@ -66,12 +81,12 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 150px; /* Adjust based on your needs */
-  height: 150px; /* Adjust based on your needs */
+  width: 150px;
+  height: 150px;
   margin: 10px;
-  border-radius: 15px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Initial shadow */
-  transition: box-shadow 0.3s; /* Smooth transition for the shadow */
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s;
   font-family: 'DM Sans', sans-serif;
   font-size: 1.5rem;
   text-align: center;
@@ -86,12 +101,12 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 150px; /* Adjust based on your needs */
-  height: 150px; /* Adjust based on your needs */
+  width: 150px;
+  height: 150px;
   margin: 10px;
-  border-radius: 15px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Initial shadow */
-  transition: box-shadow 0.3s; /* Smooth transition for the shadow */
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s;
   font-family: 'DM Sans', sans-serif;
   font-size: 1.5rem;
   text-align: center;
@@ -106,12 +121,12 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 150px; /* Adjust based on your needs */
-  height: 150px; /* Adjust based on your needs */
+  width: 150px;
+  height: 150px;
   margin: 10px;
-  border-radius: 15px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Initial shadow */
-  transition: box-shadow 0.3s; /* Smooth transition for the shadow */
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s;
   font-family: 'DM Sans', sans-serif;
   font-size: 1.5rem;
   text-align: center;
@@ -126,53 +141,51 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 150px; /* Adjust based on your needs */
-  height: 150px; /* Adjust based on your needs */
+  width: 150px;
+  height: 150px;
   margin: 10px;
-  border-radius: 15px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Initial shadow */
-  transition: box-shadow 0.3s; /* Smooth transition for the shadow */
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s;
   font-family: 'DM Sans', sans-serif;
   font-size: 1.5rem;
   text-align: center;
   color: #333;
   background-image: linear-gradient(to right, #CAE9FF, #BEE9E8, #62B6CB);
-
 }
 
 .squareFill:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
 .squareStudy:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
 .squareMultiple:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
 .squareMixed:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
-
-
 .square:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .square i {
-  margin-bottom: 10px; /* Space between icon and text */
+  margin-bottom: 10px;
 }
 
 .square p {
-  margin: 0; /* Remove default margin */
+  margin: 0;
 }
+
 @media screen and (max-width: 760px) {
   .squares-container {
     flex-direction: column;
@@ -180,20 +193,20 @@ h1 {
   }
 
   .squareFill, .squareStudy, .squareMultiple, .squareMixed {
-    min-width: 100%; /* Ta full bredde */
-    min-height: 100px; /* Reduser høyde for å gjøre det mindre høyt */
-    width: auto; /* Tilpasser bredden */
+    min-width: 100%;
+    min-height: 100px;
+    width: auto;
     padding-top: 20px;
-    height: auto; /* Tilpasser høyden */
-    margin: 10px 0; /* Gir vertikal margin for å separere elementene */
+    height: auto;
+    margin: 10px 0;
   }
 
   .squareFill i, .squareStudy i, .squareMultiple i, .squareMixed i {
-    font-size: 4rem; /* Juster størrelsen på ikonene om nødvendig */
+    font-size: 4rem;
   }
 
   .squareFill p, .squareStudy p, .squareMultiple p, .squareMixed p {
-    font-size: 1rem; /* Juster tekststørrelsen for å passe til mindre høyder */
+    font-size: 1rem;
   }
 }
 </style>

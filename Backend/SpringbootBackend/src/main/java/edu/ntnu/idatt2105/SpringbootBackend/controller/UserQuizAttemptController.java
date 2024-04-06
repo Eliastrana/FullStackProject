@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class UserQuizAttemptController {
     @Operation(summary = "Create User Quiz Attempt", description = "Creates a new user quiz attempt")
     @ApiResponse(responseCode = "201", description = "User Quiz Attempt created successfully")
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserQuizAttemptDTO> createUserQuizAttempt(@RequestBody UserQuizAttemptDTO userQuizAttemptDTO) {
         UserQuizAttemptDTO createdAttempt = userQuizAttemptService.createUserQuizAttempt(userQuizAttemptDTO);
         return new ResponseEntity<>(createdAttempt, HttpStatus.CREATED);
