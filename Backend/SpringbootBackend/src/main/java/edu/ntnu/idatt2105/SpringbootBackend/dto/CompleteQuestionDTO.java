@@ -14,6 +14,13 @@ import java.util.Set;
  * a set of possible answers, and any associated images. This comprehensive structure is designed
  * to provide a full overview of a question's properties in a single object, facilitating easier data
  * transfer and processing between the client and server.
+ *
+ * @author vegard johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see AnswerCreateDTO
+ * @see QuestionType
+ * @see CompleteQuestionDTO
  */
 @Data
 @NoArgsConstructor

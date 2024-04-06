@@ -5,8 +5,10 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * This could be due to various reasons such as invalid input data or database errors.
  *
  * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
  *
- * @see edu.ntnu.idatt2105.SpringbootBackend.service.AnswerService#createAnswer
+ * @see edu.ntnu.idatt2105.SpringbootBackend.service.AnswerService
  */
 public class AnswerCreationException extends RuntimeException {
     /**

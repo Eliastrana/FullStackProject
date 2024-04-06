@@ -7,7 +7,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * have unique names within the system.
  *
  * @author Sander rom skofsrud
- *
+ * @version 0.1
+ * @since 0.1
  */
 public class TagAlreadyExistsException extends RuntimeException {
 

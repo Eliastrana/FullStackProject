@@ -6,6 +6,9 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * resources, is attempted by a user who is not recognized as the owner of those resources.
  *
  * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see edu.ntnu.idatt2105.SpringbootBackend.controller.UserController
  *
  */
 public class NotOwnerException extends RuntimeException {

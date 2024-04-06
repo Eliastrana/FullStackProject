@@ -7,6 +7,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * that does not exist, typically during role assignment or role-based access control.
  *
  * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
  *
  */
 public class RoleNotFoundException extends RuntimeException {

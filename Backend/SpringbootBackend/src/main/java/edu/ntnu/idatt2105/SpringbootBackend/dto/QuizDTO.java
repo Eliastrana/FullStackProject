@@ -14,6 +14,11 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
  * visibility status, category, creator's identity, and an optional image. This structured representation
  * facilitates the efficient transmission of quiz details necessary for display, categorization, and user interaction
  * within a quiz-oriented application context.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see Difficulty
  */
 @Schema(description = "Quiz DTO for displaying quiz information")
 @Data

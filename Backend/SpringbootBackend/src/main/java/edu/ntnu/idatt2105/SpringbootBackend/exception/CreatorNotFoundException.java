@@ -6,6 +6,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * such as attributing content or accessing creator-specific information.
  *
  * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
  *
  */
 

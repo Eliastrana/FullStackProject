@@ -19,6 +19,12 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
  * public/private visibility status, the creator's unique identifier, category association, a collection
  * of questions, and an optional image identifier for visual representation. This structured format ensures
  * that all critical aspects of quiz creation are covered.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see QuestionCreateDTO
+ * @see Difficulty
  */
 @Schema(description = "Quiz Create DTO for creating new quizzes")
 @Data

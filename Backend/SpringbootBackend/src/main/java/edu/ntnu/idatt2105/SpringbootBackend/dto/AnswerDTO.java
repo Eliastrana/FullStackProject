@@ -13,6 +13,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * details between the client and server, encapsulating information such as the answer's unique identifier,
  * the textual content of the answer, and a boolean flag indicating its correctness. This structure is essential
  * for operations involving answer creation, retrieval, and manipulation in quiz-related functionalities.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see AnswerCreateDTO
  */
 @Data
 @NoArgsConstructor

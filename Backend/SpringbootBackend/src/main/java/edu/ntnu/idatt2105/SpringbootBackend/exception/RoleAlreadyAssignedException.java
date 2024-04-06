@@ -6,7 +6,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * when they already possess that role, preventing duplication of roles for a single user.
  *
  * @author Vegard Johnsen
- *
+ * @version 0.1
+ * @since 0.1
  */
 public class RoleAlreadyAssignedException extends RuntimeException {
 

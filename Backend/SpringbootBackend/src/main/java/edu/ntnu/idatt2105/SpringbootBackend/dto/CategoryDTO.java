@@ -11,6 +11,11 @@ import java.util.UUID;
  * Represents a Data Transfer Object (DTO) for a Category, which is used to categorize or classify questions into specific areas or topics.
  * Categories facilitate the organization and retrieval of questions by theme, making it easier for users to navigate and interact with quiz content.
  * This DTO structure is utilized for operations involving the creation, retrieval, and updating of category information.
+ *
+ * @author Sander rom Skofsrud
+ * @version 0.1
+ * @since 0.1
+ * @see CategoryDTO
  */
 @Data
 @Builder

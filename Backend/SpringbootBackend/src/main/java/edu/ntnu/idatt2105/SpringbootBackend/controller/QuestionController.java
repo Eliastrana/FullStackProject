@@ -28,9 +28,11 @@ import java.util.UUID;
  * updating, and deletion of questions, as well as the retrieval of all questions
  * associated with a specific quiz.
  *
+ * @author Vegard Johnsen
+ * @version 1.0
+ * @since 1.0
  * @see QuestionService
- * @see QuestionDTO
- * @see QuestionCreateDTO
+ * @see CategoryController
  */
 @Tag(name = "Question Management")
 @CrossOrigin(origins = "*")

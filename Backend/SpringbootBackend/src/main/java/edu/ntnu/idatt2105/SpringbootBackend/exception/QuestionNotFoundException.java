@@ -8,6 +8,9 @@ import java.util.UUID;
  * that does not exist in the system, identified by either a UUID or a specific criterion.
  *
  * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see edu.ntnu.idatt2105.SpringbootBackend.service.QuestionService
  *
  */
 public class QuestionNotFoundException extends RuntimeException {

@@ -7,6 +7,9 @@ import java.util.UUID;
  * This can occur when performing operations that require an existing category, such as retrieving, updating, or deleting.
  *
  * @author Sander rom skofsrud, Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see edu.ntnu.idatt2105.SpringbootBackend.service.CategoryService
  *
  */
 public class CategoryNotFoundException extends RuntimeException {

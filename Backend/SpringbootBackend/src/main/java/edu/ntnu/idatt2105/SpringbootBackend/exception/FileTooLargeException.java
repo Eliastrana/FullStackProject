@@ -8,6 +8,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * includes details about the maximum file size allowed and the actual size of the attempted upload.
  *
  * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
  *
  */
 public class FileTooLargeException extends RuntimeException {

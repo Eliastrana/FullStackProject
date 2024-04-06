@@ -6,6 +6,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * or it is not accessible due to privacy or deletion.
  *
  * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
  *
  * @see edu.ntnu.idatt2105.SpringbootBackend.service.AnswerService#getAnswerById
  */

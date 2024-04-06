@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
  * of quizzes within the system. It allows for the retrieval of all predefined difficulty
  * levels that can be assigned to a quiz.
  *
+ * @author Vegard johnsen, Sander R. Skofsrud
+ * @version 1.0
+ * @since 1.0
  * @see Difficulty
  */
 @Tag(name = "Difficulty Management", description = "Handles quiz difficulty levels")

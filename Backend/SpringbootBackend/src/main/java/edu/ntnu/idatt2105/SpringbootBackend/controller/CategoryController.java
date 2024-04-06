@@ -12,6 +12,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The CategoryController class is responsible for handling HTTP requests related to category operations.
+ * It provides endpoints for creating, retrieving, updating, and deleting categories.
+ * Utilizes {@link CategoryService} for business logic and interacts with {@link CategoryDTO} for data transfer.
+ * <p>
+ * This controller is part of the category management module of the application,
+ * allowing for the manipulation and retrieval of category data essential for quiz categorization.
+ *
+ * @author Vegard Johnsen, Sander R. Skofsrud
+ * @version 0.1
+ * @since 0.1
+ * @see CategoryService for category management operations
+ * @see CategoryDTO for data transfer object structure
+ */
+
 @Tag(name = "Category Management")
 @CrossOrigin(origins = "*")
 @RestController
@@ -33,6 +48,11 @@ public class CategoryController {
    * @return A {@link ResponseEntity<CategoryDTO>} containing the created {@link CategoryDTO}
    * and the HTTP status {@link HttpStatus#CREATED} if the creation is successful;
    * otherwise, returns a response entity with an appropriate error status.
+   *
+   * @see CategoryDTO
+   * @see ResponseEntity
+   * @see HttpStatus
+   * @see CategoryService
    */
   @Operation(summary = "Create a new category", description = "Creates a new category with the provided details")
   @ApiResponse(responseCode = "201", description = "Category created successfully")

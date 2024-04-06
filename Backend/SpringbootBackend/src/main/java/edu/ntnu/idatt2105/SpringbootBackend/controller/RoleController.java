@@ -18,8 +18,12 @@ import java.util.List;
  * It allows fetching all roles and creating new roles, leveraging the {@link RoleService}.
  * Access to the APIs is secured, requiring authentication.
  *
- * @see Role
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
  * @see RoleService
+ * @see Role
+ * @see ResponseEntity
  */
 @Tag(name = "Role Management", description = "API for managing roles")
 @RestController

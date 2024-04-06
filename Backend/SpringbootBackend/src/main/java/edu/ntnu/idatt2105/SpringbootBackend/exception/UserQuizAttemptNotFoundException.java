@@ -6,7 +6,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * by its identifier or other distinguishing details, but no such attempt exists in the system.
  *
  * @author Vegard Johnsen
- *
+ * @version 0.1
+ * @since 0.1
  */
 
 public class UserQuizAttemptNotFoundException extends RuntimeException {

@@ -31,6 +31,12 @@ import java.util.UUID;
  * operations on quizzes as a whole, encompassing their questions and answers. It aims to
  * facilitate the management of quizzes, from their inception to their consumption and eventual
  * removal, ensuring a comprehensive approach to quiz handling within the system.
+ *
+ * @author vegard johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see CompleteQuizService
+ * @see CompleteQuizController
  */
 @Tag(name = "Complete Quiz Management")
 @RestController
@@ -59,9 +65,11 @@ public class CompleteQuizController {
      *
      * @param completeQuizDTO The DTO containing the complete quiz details to be created.
      * @return A ResponseEntity containing a map with the newly created quiz's unique identifier
-     *         and a confirmation message, alongside the HTTP status code for creation (201).
-     *         If the creation process fails due to server-side issues, an error message is returned
-     *         with an HTTP status code indicating an internal server error (500).
+     * and a confirmation message, alongside the HTTP status code for creation (201).
+     * If the creation process fails due to server-side issues, an error message is returned
+     * with an HTTP status code indicating an internal server error (500).
+     *
+     * @see CompleteQuizDTO
      */
     @Operation(summary = "Create a complete quiz", description = "Creates a new quiz along with questions and answers.")
     @ApiResponse(responseCode = "201", description = "Complete quiz created successfully.")
@@ -94,7 +102,7 @@ public class CompleteQuizController {
      *
      * @param quizId The UUID of the quiz to retrieve.
      * @return A ResponseEntity containing the CompleteQuizDTO if the quiz is found, or an HTTP
-     *         status code indicating not found (404) if the quiz does not exist.
+     * status code indicating not found (404) if the quiz does not exist.
      */
     @Operation(summary = "Get a complete quiz", description = "Fetches a complete quiz with questions and answers.")
     @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.")
@@ -129,8 +137,8 @@ public class CompleteQuizController {
      * @param quizId The UUID of the quiz to be updated.
      * @param completeQuizDTO The DTO containing the updated quiz information.
      * @return A ResponseEntity containing a confirmation message if the update is successful,
-     *         a "Quiz not found" error if the quiz does not exist, or an internal server error
-     *         if an unexpected error occurs during the update process.
+     * a "Quiz not found" error if the quiz does not exist, or an internal server error
+     * if an unexpected error occurs during the update process.
      */
     @Operation(summary = "Update a complete quiz", description = "Updates an existing quiz along with questions and answers.")
     @ApiResponse(responseCode = "200", description = "Complete quiz updated successfully.")

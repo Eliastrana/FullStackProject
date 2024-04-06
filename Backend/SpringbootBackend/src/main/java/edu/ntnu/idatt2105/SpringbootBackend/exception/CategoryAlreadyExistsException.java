@@ -5,6 +5,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * This ensures that category names are unique within the application, preventing duplicates.
  *
  * @author Sander rom skofsrud
+ * @version 0.1
+ * @since 0.1
  *
  * @see edu.ntnu.idatt2105.SpringbootBackend.service.CategoryService#createCategory
  */

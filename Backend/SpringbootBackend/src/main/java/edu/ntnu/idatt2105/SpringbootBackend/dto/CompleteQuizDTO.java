@@ -15,6 +15,13 @@ import java.util.UUID;
  * as well as the list of complete questions making up the quiz. Additionally, it provides fields
  * for managing quiz visibility (public or private) and associated imagery, enabling a rich
  * representation of the quiz content.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see CompleteQuestionDTO
+ * @see Difficulty
+ * @see CompleteQuizDTO
  */
 @Data
 @NoArgsConstructor

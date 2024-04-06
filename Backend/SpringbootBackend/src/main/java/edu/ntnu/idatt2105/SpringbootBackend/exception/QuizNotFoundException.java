@@ -6,7 +6,10 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * that does not exist in the system, identified by a specific criterion such as a UUID or a name.
  *
  * @author Vegard Johnsen
- *
+ * @version 0.1
+ * @since 0.1
+ * @see edu.ntnu.idatt2105.SpringbootBackend.service.QuizService
+ * @see edu.ntnu.idatt2105.SpringbootBackend.controller.QuizController
  */
 public class QuizNotFoundException extends RuntimeException {
 

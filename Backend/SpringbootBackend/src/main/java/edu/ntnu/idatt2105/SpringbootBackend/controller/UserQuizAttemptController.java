@@ -20,6 +20,12 @@ import java.util.UUID;
  * It supports operations such as creating, retrieving, updating, and deleting quiz attempts for authenticated users.
  * This controller ensures that only authenticated users can perform these operations, leveraging Spring Security
  * for authorization checks.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see UserQuizAttemptController
+ * @see UserQuizAttemptDTO
  */
 @Tag(name = "UserQuizAttempt Management")
 @CrossOrigin(origins = "*")

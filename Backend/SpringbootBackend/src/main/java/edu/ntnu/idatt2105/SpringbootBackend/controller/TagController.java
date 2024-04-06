@@ -16,13 +16,18 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * The {@link TagController} class provides REST APIs for managing tags within the system.
+ * The {@code TagController} class provides REST APIs for managing tags within the system.
  * It offers functionality to create, retrieve, update, and delete tags, leveraging the {@link TagService}.
  * These APIs ensure that only authenticated users can perform write operations, enhancing security.
  *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
  * @see Tag
  * @see TagDTO
  * @see TagService
+ * @see ResponseEntity
+ * @see HttpStatus
  */
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Tag Management")
 @RestController

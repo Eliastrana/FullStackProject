@@ -9,7 +9,8 @@ import java.util.UUID;
  * referring to a specific tag cannot proceed due to the tag's absence.
  *
  * @author Vegard Johnsen, sander rom skofsrud
- *
+ * @version 0.1
+ * @since 0.1
  */
 public class TagNotFoundException extends RuntimeException {
 

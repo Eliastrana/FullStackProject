@@ -7,6 +7,10 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * an image's identifier does not match any existing images.
  *
  * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see edu.ntnu.idatt2105.SpringbootBackend.service.ImageService
+ * @see edu.ntnu.idatt2105.SpringbootBackend.controller.ImageController
  *
  */
 public class ImageNotFoundException extends RuntimeException {

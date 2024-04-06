@@ -15,6 +15,11 @@ import java.util.UUID;
  * Represents a Data Transfer Object (DTO) for a question, encapsulating all relevant details about the question.
  * This includes the question's content, associated quiz, type, tags, and any linked multimedia content.
  * The QuestionDTO structure is used for operations involving the creation, retrieval, and updating of question information.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see QuestionType
  */
 @Data
 @NoArgsConstructor

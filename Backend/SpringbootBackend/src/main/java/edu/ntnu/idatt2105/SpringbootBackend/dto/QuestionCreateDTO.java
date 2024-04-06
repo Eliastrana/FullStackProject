@@ -16,6 +16,13 @@ import java.util.UUID;
  * a set of possible answers, and an optional image for visual representation. This structured format ensures
  * that all necessary information for question creation is encapsulated and can be easily transmitted between
  * the client and server, facilitating the dynamic construction of quizzes and educational content.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see AnswerCreateDTO
+ * @see QuestionType
+ *
  */
 @Data
 @Builder

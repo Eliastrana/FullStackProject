@@ -29,6 +29,9 @@ import java.util.UUID;
  * interacts with {@link QuizService} for quiz operations and {@link UserService}
  * for retrieving user details.
  *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
  * @see QuizService
  * @see UserService
  * @see QuizDTO

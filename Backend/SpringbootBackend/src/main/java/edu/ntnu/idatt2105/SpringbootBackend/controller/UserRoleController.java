@@ -17,6 +17,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * Controller for managing user roles within the application. It supports operations such as retrieving user roles,
  * assigning new roles to users, updating existing roles, and removing roles from users.
  * This controller ensures that only authenticated users can perform these operations.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see UserRoleService
+ * @see UserRepository
+ * @see User
  */
 @RestController
 @RequestMapping("/api/user-roles")
