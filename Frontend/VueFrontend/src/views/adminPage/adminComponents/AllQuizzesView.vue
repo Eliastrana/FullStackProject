@@ -10,13 +10,31 @@ const showConfirmationModal = ref(false);
 const pendingDeleteQuizId = ref(null);
 
 // Fetch quizzes data from the API when the component is mounted
+const loadImageData = async (imageId) => {
+  try {
+    const imageData = await QuizService.getImageById(imageId);
+    return imageData; // This could be a URL or base64-encoded data
+  } catch (error) {
+    console.error('Failed to load image:', error);
+    return ''; // Return a fallback or empty string if the image fails to load
+  }
+};
+
+// Example of how you might use it within your component
 onMounted(async () => {
   try {
-    quizzes.value = await QuizService.getAllQuizzes();
+    const quizzesFetched = await QuizService.getAllQuizzes();
+    for (const quiz of quizzesFetched) {
+      if (quiz.imageId) {
+        quiz.imageData = await loadImageData(quiz.imageId);
+      }
+    }
+    quizzes.value = quizzesFetched;
   } catch (error) {
     console.error('Failed to load quizzes:', error);
   }
 });
+
 
 // Function to ask for quiz deletion
 const askDeleteQuiz = (quizId) => {
@@ -63,7 +81,11 @@ const editQuiz = (id) => {
     <div class="quizzes">
       <div class="quiz" v-for="(quiz, index) in quizzes" :key="quiz.id">
         <div class="quiz-info">
-          <img :src="quiz.image" :alt="quiz.title" class="quiz-image"/>
+
+<!--          <img src="https://via.placeholder.com/150" alt="Placeholder Image" class="quiz-image"/>-->
+
+          <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image" class="quiz-image"/>
+
           <div class="quiz-text">
             <h3>{{quiz.title }}</h3>
             <p>Creator ID: {{ quiz.creatorId }}</p>
@@ -157,10 +179,11 @@ const editQuiz = (id) => {
 }
 
 .quiz-image {
-  width: 100px; /* Adjust the image size as needed */
-  height: fit-content;
-  border-radius: 8px;
+  width: 100px; /* Ensure this size is suitable for your layout */
+  height: 100px; /* Provide a specific height */
+  object-fit: cover; /* Adjusts the size of the image to fill the box, preserving aspect ratio */
 }
+
 
 .quiz-text {
   flex: 1;
