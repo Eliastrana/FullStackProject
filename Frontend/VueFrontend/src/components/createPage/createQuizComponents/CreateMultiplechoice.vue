@@ -8,6 +8,7 @@ import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.
  * @property {String} text - The text of the question
  * @property {Array} answers - The array of answers
  */
+
 const props = defineProps({
   uuid: String,
   text: String,
@@ -54,14 +55,15 @@ const canAddMoreAnswers = computed(() => answers.value.length < 4)
 /**
  * Watches for changes in the title and answers and emits the updated data
  */
-watch([title, answers], () => {
+watch(() => ({ title: title.value, answers: answers.value, coverImage: coverImage.value }), (newVal) => {
   emits('submitData', {
     uuid: props.uuid,
-    text: title.value,
+    text: newVal.title,
     questionType: 'MULTIPLE_CHOICE',
-    answers: answers.value
-  })
-}, { deep: true })
+    answers: newVal.answers,
+    image: newVal.coverImage // Include the image data
+  });
+}, { deep: true, immediate: true });
 
 /**
  * Removes an answer from the answers array at the specified index

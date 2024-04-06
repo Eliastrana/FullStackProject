@@ -38,7 +38,7 @@ import store from '@/store/index.js'
 
 const navigateToQuizCreator = (type) => {
 
-  store.dispatch('quizzes/clearQuizzes');
+  //store.dispatch('quizzes/clearQuizzes');
 
   // Call the modified action with the specific question type
   store.dispatch('quizzes/addQuestionsByType', { type });

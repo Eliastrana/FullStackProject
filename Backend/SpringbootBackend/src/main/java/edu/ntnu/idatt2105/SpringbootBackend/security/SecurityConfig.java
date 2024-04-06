@@ -64,7 +64,7 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**", "/error").permitAll()
-                    .requestMatchers("/home", "/login", "/api/user/register", "/api/user/login", "/api/difficulties/**", "/api/quiz/**", "/api/questions/quiz/**").permitAll() 
+                    .requestMatchers("/home", "/login", "/api/user/register", "/api/user/login", "/api/difficulties/**", "/api/quiz/**", "/api/questions/quiz/**", "/api/images/**").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -85,7 +85,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(@NotNull CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://129.241.98.1")
+                        .allowedOrigins("http://129.241.98.1", "http://localhost:5173", "http://localhost:8080", "http://localhost")
                         .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
             }
         };
