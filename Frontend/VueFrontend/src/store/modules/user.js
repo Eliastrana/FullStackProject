@@ -63,6 +63,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         commit('CLEAR_USER');
+        SessionToken.clearToken();
         dispatch('quizzes/clearQuizzes', null, { root: true }); // Adjusted to dispatch to an action
         resolve();
       } catch (error) {
@@ -75,7 +76,6 @@ const actions = {
       console.error('Logout failed:', error);
     });
   },
-
 
 
 };
