@@ -6,6 +6,7 @@ import CreateMultipleChoice from '@/components/createPage/createQuizComponents/C
 import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
 import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
 import { QuizService } from '@/services/QuizService.js'
+import router from '@/router/index.js'
 
 
 const store = useStore();
@@ -24,7 +25,9 @@ onMounted(() => {
   quizDescription.value = quizDetails.description;
   quizCategory.value = quizDetails.category;
   quizDifficulty.value = quizDetails.difficulty;
-  coverImage.value = quizDetails.coverImage;
+  if (quizDetails.coverImage) {
+    coverImage.value = `data:image/${quizDetails.imageType};base64,${quizDetails.imageData}`;
+  }
 });
 
 const quizTypes = ref([
@@ -68,7 +71,10 @@ function addQuestionType(type) {
     text: '', // Default text for the question
     questionType: '', // To be set based on type
     tags: [], // Assuming tags might be optional or provided later
-    answers: [] // Default answers array
+    answers: [], // Default answers array
+    image: null,
+    imageFront: null,
+    imageBack: null,
   };
 
   // Customize the question template based on the type
@@ -119,7 +125,7 @@ function updateQuizDetails() {
   store.commit('quizzes/SET_QUIZ_DETAILS', {
     title: quizTitle.value,
     description: quizDescription.value,
-    category: quizCategory.value,
+    categoryName: quizCategory.value,
     difficulty: quizDifficulty.value,
     coverImage: coverImage.value,
   });
@@ -127,10 +133,12 @@ function updateQuizDetails() {
 
 async function createQuiz() {
   const quizDetails = store.state.quizzes.quizDetails;
+  // Assuming other quiz details are correctly set up in Vuex store
   try {
-    console.log('Creating quiz:', quizDetails)
     const response = await QuizService.create(quizDetails);
+    store.commit('quizzes/CLEAR_QUIZZES');
     console.log('Quiz created successfully:', response);
+    await router.push('/');
   } catch (error) {
     console.error('Error creating quiz:', error);
   }
@@ -144,18 +152,24 @@ function removeQuestionFromStore(uuid) {
 }
 
 function handleFileUpload(event) {
-  const file = event.target.files[0]; // Get the uploaded file
-
+  const file = event.target.files[0];
   if (file) {
-    const reader = new FileReader(); // Create a FileReader to read the file
-
+    const reader = new FileReader();
     reader.onload = (e) => {
-      coverImage.value = e.target.result; // Set the coverImage ref to the data URL
+      coverImage.value = e.target.result; // Directly using the result as the image source
+      // Update quizDetails with new image info
+      const [imageType, imageData] = e.target.result.split(';base64,');
+      store.commit('quizzes/SET_QUIZ_DETAILS', {
+        ...store.state.quizzes.quizDetails,
+        imageName: file.name,
+        imageType: imageType.split(':')[1],
+        imageData: imageData,
+      });
     };
-
-    reader.readAsDataURL(file); // Read the file as a Data URL
+    reader.readAsDataURL(file);
   }
 }
+
 
 function removeImage() {
   coverImage.value = null; // Clears the image, effectively removing it
@@ -192,7 +206,6 @@ function moveQuestionDown(index) {
 
     <div class="top-container">
       <h1>Quiz Creator Tool</h1>
-      <!-- Image Preview -->
       <!-- Image Preview with Remove Button -->
       <div v-if="coverImage" class="image-preview">
         <img :src="coverImage" alt="Cover Image Preview" />
@@ -236,21 +249,6 @@ function moveQuestionDown(index) {
     <div class="quiz-container">
 
 
-      <div class="quiz-type-selector">
-        <h2>Choose question type:</h2>
-        <div class="quiz-type-buttons">
-          <button
-            v-for="quizType in quizTypes"
-            :key="quizType.id"
-            @click="addQuestionType(quizType.id)"
-            :style="{ backgroundColor: quizType.color }"
-            class="quiz-type-button"
-          >
-            + {{ quizType.name }}
-          </button>
-        </div>
-      </div>
-
       <h2>Your Questions:</h2>
 
 
@@ -281,7 +279,20 @@ function moveQuestionDown(index) {
         </div>
       </div>
 
-
+      <div class="quiz-type-selector">
+        <h2>Choose question type:</h2>
+        <div class="quiz-type-buttons">
+          <button
+            v-for="quizType in quizTypes"
+            :key="quizType.id"
+            @click="addQuestionType(quizType.id)"
+            :style="{ backgroundColor: quizType.color }"
+            class="quiz-type-button"
+          >
+            + {{ quizType.name }}
+          </button>
+        </div>
+      </div>
 
       <!--      <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>-->
       <button class="compileButton" @click="createQuiz">Create Quiz</button>

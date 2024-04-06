@@ -21,6 +21,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+
 /**
  * Provides services for user authentication, including registration and login.
  * Utilizes {@link UserRepository} for user persistence, {@link PasswordEncoder} for password encryption,
@@ -64,17 +66,35 @@ public class AuthenticationService {
                 .username(userCreationDTO.getUsername())
                 .password(passwordEncoder.encode(userCreationDTO.getPassword()))
                 .email(userCreationDTO.getEmail())
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .enabled(true)
                 .build();
+
+        logger.info("Registering user with username: " + user.getUsername());
 
         Role defaultRole = roleRepository.findByRole("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("Error: Default role is not found."));
 
-        // Istansiate and set up UserRole
+        logger.info("Default role is: " + defaultRole.getRole());
+
         UserRole userRole = new UserRole();
         userRole.setUser(user);
+        logger.info("User role is: " + userRole.getUser().getUsername());
         userRole.setRole(defaultRole);
+        logger.info("Role is: " + userRole.getRole().getRole());
 
+        if (user.getUserRoles() == null) {
+            logger.info("User roles are null");
+            user.setUserRoles(new HashSet<>());
+        }
+        logger.info("User roles are: " + user.getUserRoles());
         user.getUserRoles().add(userRole);
+        logger.info("User roles are: " + user.getUserRoles());
+
+
+        //user.getUserRoles().add(userRole);
 
         User savedUser = userRepository.save(user);
         logger.info("User " + savedUser.getUsername() + " has been registered");
