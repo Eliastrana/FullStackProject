@@ -25,6 +25,7 @@ export default {
 
 <style scoped>
 .modal-background {
+  z-index: 1000;
   position: fixed;
   top: 0;
   left: 0;

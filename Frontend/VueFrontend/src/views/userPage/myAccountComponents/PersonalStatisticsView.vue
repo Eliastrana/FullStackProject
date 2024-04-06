@@ -12,6 +12,9 @@ const quizAttempts = ref([]);
 
 const userInfo = ref(null);
 
+const totalQuizzesDone = ref(0); // New ref for storing total quizzes done
+
+
 
 
 /**
@@ -27,7 +30,24 @@ onMounted(async () => {
     }
 
     const attempts = await AttemptService.getAttemptByUserId(userId);
+
+    totalQuizzesDone.value = attempts.length; // Assuming each attempt represents a quiz done
+
+// Assuming each attempt represents a quiz done
+
+    // Inside your onMounted lifecycle hook
     quizAttempts.value = attempts;
+
+    store.dispatch('quizAttempt/updateTotalQuizzesDone', attempts.length);
+
+
+
+
+    store.dispatch('quizAttempt/updateTotalQuizzesDone', totalQuizzesDone.value); // Update the total quizzes done in the Vuex store
+
+
+    console.log('Total quizzes done:', totalQuizzesDone.value)
+
 
   } catch (error) {
     console.error('Failed to load quiz attempts:', error);

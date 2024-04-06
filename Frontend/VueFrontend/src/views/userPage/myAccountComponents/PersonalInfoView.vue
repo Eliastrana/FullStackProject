@@ -1,25 +1,31 @@
+//PersonalInfoView.vue
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, computed } from 'vue'
 import router from '@/router/index.js'
 import { UserService } from '@/services/UserService.js'
+import store from '@/store/index.js'
 
 /**
  * User information
  * @type {import('vue').Ref<Object>}
  */
+
 const userInfo = ref(null);
+const totalQuizzesDone = computed(() => store.getters['quizAttempt/totalQuizzesDone']);
 
 onMounted(async () => {
   try {
     const userDetails = await UserService.getUserDetails();
     userInfo.value = userDetails;
+
   } catch (error) {
     console.error('Failed to load user info:', error);
     // Handle unauthorized access or redirect to login
     router.push({ name: 'login' });
   }
 });
+
+
 
 const updateUsername = () => {
 
@@ -37,14 +43,13 @@ const updatePassword = () => {
   <div class="user-info-container" v-if="userInfo">
     <h1>Your Info</h1>
     <h2>This is you</h2>
-    <img :src="userInfo.photo" alt="User photo" class="user-photo"/>
+    <img :src="'/images/profilepic.png'" alt="User photo" class="user-photo"/>
     <div class="basic-info">
       <p><strong>Name:</strong> {{ userInfo.username }}</p>
       <p><strong>Email:</strong> {{ userInfo.email }}</p>
     </div>
 
     <div class="updateinfo">
-
       <button class="updateusername" @click="updateUsername">
         <i class="fas fa-user-edit"></i>
         <p>Update Info</p>
@@ -54,22 +59,11 @@ const updatePassword = () => {
         <i class="fas fa-user-edit"></i>
         <p>Update Info</p>
       </button>
-
     </div>
-
-
     <div class="level-info">
-      <p><strong>Level:</strong> <span class="highlight">{{ userInfo.level }}</span></p>
-      <p><strong>Total Quizzes Done:</strong> <span class="highlight">{{ userInfo.totalQuizzesDone }}</span></p>
+      <p><strong>Total Quizzes Done:</strong> {{totalQuizzesDone}}</p>
     </div>
-    <div class="achievements">
-      <h3>Achievements:</h3>
-      <ul>
-        <li v-for="achievement in userInfo.achievements" :key="achievement.title">
-          <strong>{{ achievement.title }}:</strong> {{ achievement.description }}
-        </li>
-      </ul>
-    </div>
+
   </div>
 </template>
 
