@@ -7,8 +7,11 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Set;
 import java.util.UUID;
 
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = "userRoles")
 @Entity
-@Data
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
@@ -23,6 +26,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return "ROLE_" + role;
+        return role;
     }
 }

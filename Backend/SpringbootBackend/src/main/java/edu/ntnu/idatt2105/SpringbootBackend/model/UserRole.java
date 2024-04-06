@@ -3,13 +3,17 @@ package edu.ntnu.idatt2105.SpringbootBackend.model;
 import java.util.UUID;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
+import lombok.*;
 
 
 @Entity
-@Data
 @Table(name = "user_role")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(exclude = {"user", "role"}) // Exclude user and role from toString to prevent recursion
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID) // Or your chosen strategy
