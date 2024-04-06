@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import router from '@/router/index.js'
+import { UserService } from '@/services/UserService.js'
 
 /**
  * User information
@@ -9,18 +10,16 @@ import router from '@/router/index.js'
  */
 const userInfo = ref(null);
 
-/**
- * Fetches user information from the API when the component is mounted
- */
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/user/user.json');
-    userInfo.value = response.data;
+    const userDetails = await UserService.getUserDetails();
+    userInfo.value = userDetails;
   } catch (error) {
     console.error('Failed to load user info:', error);
+    // Handle unauthorized access or redirect to login
+    router.push({ name: 'login' });
   }
 });
-
 
 const updateUsername = () => {
 
@@ -40,7 +39,7 @@ const updatePassword = () => {
     <h2>This is you</h2>
     <img :src="userInfo.photo" alt="User photo" class="user-photo"/>
     <div class="basic-info">
-      <p><strong>Name:</strong> {{ userInfo.name }}</p>
+      <p><strong>Name:</strong> {{ userInfo.username }}</p>
       <p><strong>Email:</strong> {{ userInfo.email }}</p>
     </div>
 

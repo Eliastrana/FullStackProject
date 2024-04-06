@@ -1,3 +1,4 @@
+//QuiacreatortoolView.vue
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 import { computed, onMounted, ref, nextTick } from 'vue'
@@ -54,7 +55,7 @@ function scrollToBottom() {
 
 function scrollToTop() {
   window.scrollTo({
-    top: 700,
+    top: 0,
     behavior: 'smooth',
   });
 }
@@ -133,7 +134,6 @@ function updateQuizDetails() {
 
 async function createQuiz() {
   const quizDetails = store.state.quizzes.quizDetails;
-  // Assuming other quiz details are correctly set up in Vuex store
   try {
     const response = await QuizService.create(quizDetails);
     store.commit('quizzes/CLEAR_QUIZZES');
@@ -169,7 +169,6 @@ function handleFileUpload(event) {
     reader.readAsDataURL(file);
   }
 }
-
 
 function removeImage() {
   coverImage.value = null; // Clears the image, effectively removing it

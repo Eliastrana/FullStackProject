@@ -1,42 +1,64 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { AttemptService } from '@/services/AttemptService.js';
+import store from '@/store/index.js'
+import { QuestionService as questionService } from '@/services/QuestionService.js';
 
 /**
- * Achievements data
+ * Quiz attempts data
  * @type {import('vue').Ref<Array>}
  */
-const achievements = ref([]);
+const quizAttempts = ref([]);
+
+const userInfo = ref(null);
+
+
 
 /**
- * Fetches achievements data from the API when the component is mounted
+ * Fetches quiz attempts data from the API when the component is mounted
  */
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/statistics/achievements/achievements.json');
-    achievements.value = response.data;
+    // Ensure that you are retrieving the userId correctly from the Vuex store
+    const userId = store.getters['user/userId']; // Adjust this path based on your store structure
+    if (!userId) {
+      console.error('UserId is undefined. Make sure the user is logged in.');
+      return;
+    }
+
+    const attempts = await AttemptService.getAttemptByUserId(userId);
+    quizAttempts.value = attempts;
+
   } catch (error) {
-    console.error('Failed to load achievements:', error);
+    console.error('Failed to load quiz attempts:', error);
   }
 });
+
+
+
 </script>
 
+
 <template>
-  <div class="achievements-container">
-    <h1>Your statistics</h1>
-    <h2>Keep working hard!</h2>
+  <div class="attempts-container">
+    <h1>Your Quiz Attempts</h1>
+    <h2>Review your progress</h2>
     <div class="tiles">
-      <div class="tile" v-for="(achievement, index) in achievements" :key="index"
-           :class="{'gold-background': achievement.progress === 100}">
-        <h3>{{ achievement.title }}</h3>
-        <p>{{ achievement.description }}</p>
+      <div class="tile" v-for="(attempt, index) in quizAttempts" :key="index">
+
+<!--        <h2>{{userInfo.username}}</h2>-->
+        <h3>{{ attempt.id}}</h3>
+        <h4>Correct answers: {{attempt.score}}</h4>
+        <p>{{attempt.userId}}</p>
+        <p>{{attempt.quizId}}</p>
         <div class="progress-bar-container">
-          <div class="progress-bar" :style="{ width: achievement.progress + '%' }"></div>
+          <div class="progress-bar" :style="{ width: (attempt.score / questionService.getQuestionsByQuizId(attempt.quizId)) * 100 + '%' }"></div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 
 <style scoped>

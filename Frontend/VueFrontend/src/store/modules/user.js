@@ -46,6 +46,7 @@ const actions = {
       await dispatch('fetchUserDetails');
     }
   },
+
   async fetchUserDetails({ commit }) {
     // The token is automatically attached via Axios interceptor, no need to pass it
     const userDetails = await UserService.getUserDetails();
