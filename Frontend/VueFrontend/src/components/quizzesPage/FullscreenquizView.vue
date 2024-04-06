@@ -13,10 +13,16 @@
         <div class="header-container">
           <h1>{{ quiz.title }}</h1>
         </div>
+
+        <div class="quiz-info">
         <!-- Displaying Category -->
         <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
         <!-- Displaying Difficulty -->
-        <p class="difficulty-badge">{{ quiz.difficulty }}</p>
+          <p :class="['difficulty-badge', difficultyClass(quiz.difficulty)]">{{ quiz.difficulty }}</p>
+        </div>
+
+
+
         <p>{{ quiz.description }}</p>
         <h2>Questions</h2>
         <!-- Questions Container -->
@@ -81,6 +87,21 @@ const startQuiz = async () => {
     console.error('Failed to fetch and store quiz data:', error);
   }
 };
+
+
+function difficultyClass(difficulty) {
+  switch (difficulty.toLowerCase()) {
+    case 'easy':
+      return 'difficulty-easy';
+    case 'medium':
+      return 'difficulty-medium';
+    case 'hard':
+      return 'difficulty-hard';
+    default:
+      return '';
+  }
+}
+
 </script>
 
 <style scoped>
@@ -124,6 +145,8 @@ button {
   cursor: pointer;
 }
 
+
+
 button:hover {
   background-color: #0056b3;
 }
@@ -147,9 +170,11 @@ button:hover {
 
 }
 
-.difficulty-badge {
+
+
+.difficulty-easy {
+  background-color: #28a745; /* Green for easy */
   display: inline-block;
-  background-color: #007bff;
   color: #ffffff;
   padding: 5px 15px;
   border-radius: 20px;
@@ -157,6 +182,25 @@ button:hover {
   margin: 5px 0;
 }
 
+.difficulty-medium {
+  background-color: #f3dc5e; /* Yellow for medium */
+  display: inline-block;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+
+.difficulty-hard {
+  background-color: #dc3545; /* Red for hard */
+  display: inline-block;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
 
 button {
   padding: 10px 20px;
@@ -206,7 +250,7 @@ button:hover {
 
 .category-badge {
   display: inline-block; /* Treat the <p> tag more like an inline element */
-  background-color: rgb(23, 22, 22); /* Example background color */
+  background-color: #007bff;
   color: #ffffff; /* Text color */
   padding: 5px 15px; /* Vertical and horizontal padding */
   border-radius: 20px; /* Rounded corners */
@@ -234,6 +278,13 @@ button:hover {
 }
 
 
+
+.quiz-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
 
 @media (max-width: 600px) { /* Example breakpoint */
   .header-container {

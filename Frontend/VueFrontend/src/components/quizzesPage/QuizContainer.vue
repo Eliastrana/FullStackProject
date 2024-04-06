@@ -25,8 +25,14 @@
         <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image">
         <h2>{{ quiz.title }}</h2>
         <p>{{ quiz.description }}</p>
-        <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
-        <p class="category-badge">{{ quiz.difficulty }}</p>
+
+        <div class="quiz-info">
+          <!-- Displaying Category -->
+          <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
+          <!-- Displaying Difficulty -->
+          <p :class="['difficulty-badge', difficultyClass(quiz.difficulty)]">{{ quiz.difficulty }}</p>
+        </div>
+
       </div>
     </div>
   </div>
@@ -81,6 +87,21 @@ computed(() => Object.values(categories.value).sort())
 function handleQuizClick(quiz) {
   emit('select-quiz', quiz);
 }
+
+function difficultyClass(difficulty) {
+  switch (difficulty.toLowerCase()) {
+    case 'easy':
+      return 'difficulty-easy';
+    case 'medium':
+      return 'difficulty-medium';
+    case 'hard':
+      return 'difficulty-hard';
+    default:
+      return '';
+  }
+}
+
+
 </script>
 
 
@@ -252,6 +273,55 @@ select {
       margin: 10px 0; /* Adjust margin for vertical stacking */
     }
 
+}
+
+.category-badge {
+  display: inline-block; /* Treat the <p> tag more like an inline element */
+  background-color: #007bff;
+  color: #ffffff; /* Text color */
+  padding: 5px 15px; /* Vertical and horizontal padding */
+  border-radius: 20px; /* Rounded corners */
+  font-size: 0.8rem; /* Adjust font size as needed */
+  margin: 0; /* Remove default <p> margin if needed */
+}
+
+.difficulty-easy {
+  background-color: #28a745; /* Green for easy */
+    display: inline-block;
+    color: #ffffff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin: 5px 0;
+}
+
+.difficulty-medium {
+  background-color: #f3dc5e; /* Yellow for medium */
+  display: inline-block;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+
+.difficulty-hard {
+  background-color: #dc3545; /* Red for hard */
+  display: inline-block;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+
+
+
+.quiz-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
 @media (max-width: 668px) {
   .quiz-box {
