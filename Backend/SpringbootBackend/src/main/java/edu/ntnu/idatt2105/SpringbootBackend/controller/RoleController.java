@@ -23,8 +23,9 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @Operation(summary = "Get all roles", description = "Fetch a list of all roles")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved list", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Role.class)))
+    @Operation(summary = "Get all roles", description = "Fetch a list of all roles", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved list", content = @Content(mediaType = "application/json", 
+        schema = @Schema(implementation = Role.class)))})
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<Role>> getAllRoles() {
@@ -32,10 +33,11 @@ public class RoleController {
         return ResponseEntity.ok(roles);
     }
 
-    @Operation(summary = "Create a new role", description = "Create a new role in the system")
-    @ApiResponse(responseCode = "200", description = "Successfully created new role", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Role.class)))
+    @Operation(summary = "Create a new role", description = "Create a new role in the system", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully created new role", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Role.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid role data provided")})
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Role> createRole(@RequestBody Role role) {
         Role savedRole = roleService.createRole(role);
         return ResponseEntity.ok(savedRole);
