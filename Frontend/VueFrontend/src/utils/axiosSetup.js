@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { SessionToken } from '@/features/SessionToken';
 import router from '@/router/index.js'
+import store from '@/store/index.js'
 
 axios.interceptors.request.use(config => {
   // Define a list of paths that don't require authentication
@@ -10,7 +11,7 @@ axios.interceptors.request.use(config => {
     "/v3/api-docs/", "/swagger-resources/", "/webjars/", "/error",
     "/home", "/login", "/api/user/register", "/api/user/login",
     "/api/difficulties/", "/api/quiz/", "/api/questions/quiz/",
-    "/api/quizzes/"
+    "/api/quizzes/", "/api/images/"
   ];
 
   // Check if the request's URL ends with any of the open paths
@@ -28,12 +29,18 @@ axios.interceptors.request.use(config => {
 }, error => Promise.reject(error));
 
 
+
 axios.interceptors.response.use(
   response => response,
   error => {
-    if (error.response && error.response.status === 401) {
-      SessionToken.clearToken();
-      router.push('/login');
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      store.dispatch('user/logout') // Dispatch the logout action
+        .then(() => {
+          router.push('/login'); // Redirect to login page after cleanup
+        })
+        .catch(logoutError => {
+          console.error('Error during logout:', logoutError);
+        });
     }
     return Promise.reject(error);
   }

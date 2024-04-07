@@ -37,10 +37,17 @@ onMounted(async () => {
 <template>
   <h1>Welcome {{userName}}!</h1>
   <h2>Here you can view your private quizzes, statistics, and info</h2>
+
   <div class="container">
     <PersonalQuizzesView class="personal-quizzes"/>
-    <PersonalStatisticsView class="personal-statistics"/>
+
     <PersonalInfoView class="personal-info"/>
+
+    <div/>
+
+
+    <PersonalStatisticsView class="personal-statistics"/>
+
   </div>
 </template>
 
@@ -62,26 +69,10 @@ h2 {
   font-size: 2rem;
 }
 
-.container {
-  margin-top: -5%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: flex-start;
-  gap: 20px;
-}
 
-.personal-statistics, .personal-info {
-  flex-basis: calc(47% - 20px);
-  max-width: calc(47% - 20px);
 
-}
 
-.personal-quizzes {
-  flex-basis: 100%;
-  max-width: 100%;
-  margin-bottom: -3%;
-}
+
 
 @media (max-width: 768px) {
   .personal-statistics, .personal-info, .personal-quizzes {

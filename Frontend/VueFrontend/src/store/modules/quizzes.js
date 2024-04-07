@@ -1,25 +1,28 @@
 // store/modules/quizzes.js
-import router from '@/router/index.js'
 import { v4 as uuidv4 } from 'uuid';
+import { QuizService } from '@/services/QuizService.js'
 
 
 export default {
   namespaced: true,
   state: () => ({
-    questions: [], // Retain for storing question data
+    questions: [],
     quizDetails: {
       title: '',
       description: '',
       creatorId: '',
-      categoryName: '',
+      categoryId: '',
       questions: [],
+      coverImage: null,
+      imageName: '',
+      imageType: '',
+      isPublic: false,
     },
+    quizzes: [],
   }),
   mutations: {
     ADD_QUESTION(state, question) {
-      console.log('ADD_QUESTION', question)
-      state.quizDetails.questions.push(question);
-      console.log(state.quizDetails.questions)
+      state.quizDetails.questions.push(question); // Now handles all types of questions including Study with front/back images
     },
     UPDATE_QUESTION(state, updatedQuestion) {
       const index = state.quizDetails.questions.findIndex(q => q.uuid === updatedQuestion.uuid);
@@ -27,32 +30,75 @@ export default {
         state.quizDetails.questions[index] = updatedQuestion;
       }
     },
+
     CLEAR_QUIZZES(state) {
       state.questions = [];
-      state.quizDetails = { title: '', description: '', creatorId: '', categoryName: '', questions: [] };
+      state.quizDetails = {
+        title: '',
+        description: '',
+        creatorId: '',
+        categoryId: '',
+        questions: [],
+        coverImage: null,
+        imageName: '',
+        imageType: '',
+        isPublic: false,
+      };
     },
     SET_QUIZ_DETAILS(state, details) {
       state.quizDetails = { ...state.quizDetails, ...details };
     },
     REMOVE_QUESTION(state, uuid) {
-      state.quizDetails.questions = state.quizDetails.questions.filter(question => question.uuid !== uuid);
+      const index = state.quizDetails.questions.findIndex(q => q.uuid === uuid);
+      if (index !== -1) {
+        state.quizDetails.questions.splice(index, 1);
+      }
     },
-    setQuestionsOrder(state, questions) {
+    // UPDATE_QUESTION_IMAGE(state, { uuid, imageData }) {
+    //   const questionIndex = state.quizDetails.questions.findIndex(question => question.uuid === uuid);
+    //   if (questionIndex !== -1) {
+    //     state.quizDetails.questions[questionIndex].image = imageData;
+    //   }
+    // },
+    SET_QUESTION_ORDER(state, questions) {
       state.questions = questions;
-    }
+    },
+    SET_QUIZZES(state, quizzes) {
+      state.quizDetails.questions = quizzes;
+    },
+    SET_QUIZ_ARRAY(state, quizzes) {
+      state.quizzes = quizzes;
+    },
+    UPDATE_QUESTION_TAGS(state, { uuid, newTags }) {
+      const questionIndex = state.quizDetails.questions.findIndex(q => q.uuid === uuid);
+      if (questionIndex !== -1) {
+        state.quizDetails.questions[questionIndex].tags = newTags;
+      }
+    },
+    SET_QUIZ_IMAGE(state, { quizId, imageData }) {
+      const quizIndex = state.quizzes.findIndex(quiz => quiz.id === quizId);
+      if (quizIndex !== -1) {
+        state.quizzes[quizIndex].imageData = imageData;
+      }
+    },
 
   },
   actions: {
     addOrUpdateQuestion({ commit, state, rootGetters }, questionData) {
-      console.log('addOrUpdateQuestion', questionData)
       state.quizDetails.creatorId = rootGetters['user/userId'];
       const existingIndex = state.quizDetails.questions.findIndex(q => q.uuid === questionData.uuid);
       if (existingIndex !== -1) {
         commit('UPDATE_QUESTION', questionData);
       } else {
-        console.log('addOrUpdateQuestion2', questionData)
         commit('ADD_QUESTION', questionData);
       }
+      // if (questionData.coverImage) {
+      //   commit('SET_QUIZ_COVER_IMAGE', {
+      //     imageName: questionData.imageName,
+      //     imageType: questionData.imageType,
+      //     coverImage: questionData.coverImage
+      //   });
+      // }
     },
     setQuizDetails({ commit }, details) {
       commit('SET_QUIZ_DETAILS', details);
@@ -61,13 +107,50 @@ export default {
       commit('REMOVE_QUESTION', uuid);
     },
     updateQuestionsOrder({ commit }, questions) {
-      commit('setQuestionsOrder', questions);
+      commit('SET_QUESTION_ORDER', questions);
     },
-
     clearQuizzes({ commit }) {
       commit('CLEAR_QUIZZES');
     },
-
+    updateQuestionTags({ commit }, payload) {
+      commit('UPDATE_QUESTION_TAGS', payload);
+    },
+    // updateQuestionImage({ commit }, { uuid, image, imageType }) {
+    //   // Find the question by UUID and update its image
+    //    commit('UPDATE_QUESTION_IMAGE', { uuid, image, imageType });
+    // },
+    async fetchAllQuizzes({ commit }) {
+      try {
+        const quizzesData = await QuizService.getAllQuizzes();
+        commit('SET_QUIZ_ARRAY', quizzesData);
+      } catch (error) {
+        console.error('Error fetching all quizzes:', error);
+      }
+    },
+    async fetchQuizImages({ commit, state }) {
+      for (let quiz of state.quizzes) {
+        if (quiz.imageId) {
+          try {
+            const imageData = await QuizService.getImageById(quiz.imageId);
+            commit('SET_QUIZ_IMAGE', { quizId: quiz.id, imageData });
+          } catch (error) {
+            console.error('Error fetching image for quiz', quiz.id, error);
+          }
+        }
+      }
+    },
+    async addImageToQuiz({ commit, state }, { quizId }) {
+      try {
+        for (let quiz of state.quizzes) {
+          if (quiz.id === quizId) {
+            const imageData = await QuizService.getImageById(quiz.imageId);
+            commit('SET_QUIZ_IMAGE', { quizId, imageData });
+          }
+        }
+      } catch (error) {
+        console.error('Error adding image to quiz:', error);
+      }
+    },
     addQuestionsByType({ dispatch }, { type, numberOfQuestions = 5 }) {
       for (let i = 0; i < numberOfQuestions; i++) {
         let questionTemplate;
@@ -79,7 +162,8 @@ export default {
               text: '',
               questionType: 'FILL_IN_BLANK',
               tags: [],
-              answers: [{ text: '', correct: true }]
+              answers: [{ text: '', correct: true }],
+//              image: null,
             };
             break;
           case 'MULTIPLE_CHOICE':
@@ -88,7 +172,8 @@ export default {
               text: '',
               questionType: 'MULTIPLE_CHOICE',
               tags: [],
-              answers: [{ text: '', correct: false }] // Adjust as needed
+              answers: [{ text: '', correct: false }],
+//              image: null,
             };
             break;
           case 'STUDY':
@@ -97,18 +182,17 @@ export default {
               text: '',
               questionType: 'STUDY',
               tags: [],
-              answers: [{ text: '', correct: true }] // Adjust as needed
+              answers: [{ text: '', correct: true }],
+//              imageFront: null,
+//              imageBack: null,
             };
             break;
           default:
             console.warn('Unsupported question type:', type);
-            return; // Exit the function if the type is not supported
+            return;
         }
-
         dispatch('addOrUpdateQuestion', questionTemplate);
       }
     }
-
-
   },
 };

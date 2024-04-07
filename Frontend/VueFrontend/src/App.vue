@@ -12,8 +12,10 @@
       <nav :class="{ 'open': isNavbarOpen, 'closing': isNavbarClosing }">
         <div class="close-icon" @click="toggleNavbar" v-if="isNavbarOpen">✕</div>
         <div class="nav-links" v-show="isNavbarOpen || screenWidth > 768">
-          <div @click="navigateAfterClose('/Quizzes')" class="alternativeRouter">Quizzes</div>
-          <div @click="navigateAfterClose('/Create')" class="alternativeRouter">Create</div>
+          <div @click="navigateAfterClose('/Quizzes')"
+               :class="{'alternativeRouter': true, 'active-link': route.path === '/Quizzes'}">Quizzes</div>
+          <div @click="navigateAfterClose('/Create')"
+               :class="{'alternativeRouter': true, 'active-link': route.path === '/Create'}">CreateQuiz</div>
           <div @click="navigateAfterClose('/Login')" class="alternativeRouter" v-if="!isAuthenticated">Sign in</div>
           <template v-if="isAuthenticated">
             <div v-if="screenWidth <= 768 && isNavbarOpen" @click.stop="toggleNavbar" class="smallermenu">
@@ -41,6 +43,15 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import UserMenuDropdown from '@/components/userDropdown/UserMenuDropdown.vue'
 import router from '@/router/index.js'
+import { useRoute } from 'vue-router'
+
+
+/**
+ * Vue router instance
+ * @type {import('vue-router').Router}
+ */
+
+const route = useRoute();
 
 /**
  * Vuex store instance
@@ -280,6 +291,8 @@ nav a {
 }
 
 
+
+
 .alternativeRouter {
   font-size: 40px;
   text-decoration: none;
@@ -290,6 +303,8 @@ nav a {
   color: #ffffaa;
   cursor: pointer;
 }
+
+
 
 nav a:hover {
   color: #ffffaa;

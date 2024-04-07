@@ -1,62 +1,157 @@
+//PersonalInfoView.vue
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { computed, onMounted, ref } from 'vue'
+import router from '@/router/index.js'
+import { UserService } from '@/services/UserService.js'
+import store from '@/store/index.js'
 
 /**
  * User information
  * @type {import('vue').Ref<Object>}
  */
-const userInfo = ref(null);
 
-/**
- * Fetches user information from the API when the component is mounted
- */
+const userInfo = ref(null);
+const totalQuizzesDone = computed(() => store.getters['quizAttempt/totalQuizzesDone']);
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/user/user.json');
-    userInfo.value = response.data;
+    userInfo.value = await UserService.getUserDetails();
   } catch (error) {
     console.error('Failed to load user info:', error);
+    await router.push({ name: 'login' });
   }
 });
+
+
+
+const updatePassword = async () => {
+  const oldPassword = prompt('Enter your old password:');
+  const newPassword = prompt('Enter your new password:');
+  if (newPassword && passwordRegex.test(newPassword)) {
+    try {
+      await UserService.updatePassword({ oldPassword, newPassword });
+      alert('Password updated successfully');
+    } catch (error) {
+      console.error('Failed to update password:', error);
+      alert('Failed to update password');
+    }
+  } else {
+    alert('New password does not meet the complexity requirements.');
+  }
+};
+
 </script>
 
 <template>
   <div class="user-info-container" v-if="userInfo">
-    <h1>Your Info</h1>
-    <h2>This is you</h2>
-    <img :src="userInfo.photo" alt="User photo" class="user-photo"/>
+
+    <div class="title">
+      <h1>Your Info</h1>
+      <h2>This is you</h2>
+      <img :src="'/images/profilepic.png'" alt="User photo" class="user-photo"/>
+    </div>
+
     <div class="basic-info">
-      <p><strong>Name:</strong> {{ userInfo.name }}</p>
+      <p><strong>Name:</strong> {{ userInfo.username }}</p>
       <p><strong>Email:</strong> {{ userInfo.email }}</p>
     </div>
+
+    <div class="updateinfo">
+
+
+      <button class="updatepassword" @click="updatePassword">
+        <i class="fas fa-user-edit"></i>
+        Update password
+      </button>
+    </div>
     <div class="level-info">
-      <p><strong>Level:</strong> <span class="highlight">{{ userInfo.level }}</span></p>
-      <p><strong>Total Quizzes Done:</strong> <span class="highlight">{{ userInfo.totalQuizzesDone }}</span></p>
+      <p><strong>Total Quizzes Done:</strong> {{totalQuizzesDone}}</p>
     </div>
-    <div class="achievements">
-      <h3>Achievements:</h3>
-      <ul>
-        <li v-for="achievement in userInfo.achievements" :key="achievement.title">
-          <strong>{{ achievement.title }}:</strong> {{ achievement.description }}
-        </li>
-      </ul>
-    </div>
+
   </div>
 </template>
 
 <style scoped>
 
 .user-info-container {
-  display: flex;
+  max-width: 800px; /* or your desired width */
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
+  padding: 20px;
+  /* other styles */
+}
+
+.user-info-container {
+  max-width: 800px; /* or your desired width */
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
+  padding: 20px;
+  /* other styles */
+
   flex-direction: column;
   align-items: center;
-  max-width: 90%;
-  margin: 5% auto;
+  min-height: 83vh;
+  margin-top: 5%;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.title, .basic-info, .level-info, .achievements, .updateinfo {
+  text-align: center;
+  width: 100%; /* Ensures the container fills its parent's width */
+}
+
+/* Ensure buttons are centered by adjusting the .updateinfo class if they are not */
+.updateinfo {
+  justify-content: center; /* Centers flex items on the main axis (horizontally) */
+  flex-direction: column; /* Stacks flex items vertically */
+  gap: 20px; /* Adds space between vertically stacked items */
+}
+
+.updateusername, .updatepassword {
+  margin: 10px auto; /* Automatically margins on the sides center the buttons */
+}
+
+.user-photo {
+  display: block; /* Makes the <img> block level for margin auto to work */
+  margin: 20px auto; /* Centers the image */
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.updateinfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 20px;
+  width: 100%;
+  margin: 10px auto;
+}
+
+.updateusername, .updatepassword {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  max-width: 30%;
+  max-height: 30px;
+  margin: 10px ;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   background-color: #ececec;
+  border: none;
+  font-size: 1rem;
+}
+
+.updateusername:hover, .updatepassword:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
 }
 
 .basic-info, .level-info, .achievements {
@@ -74,12 +169,6 @@ h2 {
   color: #3232ff;
 }
 
-.user-photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin: 20px 0;
-}
 
 .highlight {
   font-size: 1.2em;

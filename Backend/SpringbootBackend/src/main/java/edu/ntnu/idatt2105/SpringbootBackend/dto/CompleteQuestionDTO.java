@@ -7,12 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Data Transfer Object for a complete question, including all details such as text, type, multimedia link, tags, answers, and associated image.")
 public class CompleteQuestionDTO {
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "The unique identifier of the question.", required = true)
+    private UUID id;
+
     @Schema(example = "What is the penalty for a handball in soccer?", description = "The text content of the question.", required = true)
     private String text;
     

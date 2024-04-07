@@ -5,6 +5,7 @@ import edu.ntnu.idatt2105.SpringbootBackend.exception.AnswerNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuestionNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,8 +34,12 @@ public class AnswerController {
     @ApiResponse(responseCode = "201", description = "Answer created successfully", content = @Content(schema = @Schema(implementation = AnswerDTO.class)))
     @ApiResponse(responseCode = "404", description = "Question not found")
     @PostMapping("/{questionId}")
-    public ResponseEntity<AnswerDTO> createAnswer(@PathVariable UUID questionId, @RequestBody AnswerDTO answerDTO) {
-        try {
+    public ResponseEntity<AnswerDTO> createAnswer(
+        @Parameter(description = "Unique identifier of the question to which the answer belongs", required = true) 
+        @PathVariable UUID questionId, 
+        
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Answer details to be created", required = true, content = @Content(schema = @Schema(implementation = AnswerDTO.class))) 
+        @RequestBody AnswerDTO answerDTO) {        try {
             AnswerDTO createdAnswer = answerService.createAnswer(questionId, answerDTO);
             return new ResponseEntity<>(createdAnswer, HttpStatus.CREATED);
         } catch (QuestionNotFoundException e) {
@@ -46,8 +51,10 @@ public class AnswerController {
     @ApiResponse(responseCode = "200", description = "Answer retrieved successfully", content = @Content(schema = @Schema(implementation = AnswerDTO.class)))
     @ApiResponse(responseCode = "404", description = "Answer not found")
     @GetMapping("/{answerId}")
-    public ResponseEntity<AnswerDTO> getAnswerById(@PathVariable UUID answerId) {
-        try {
+    public ResponseEntity<AnswerDTO> getAnswerById(
+        @Parameter(description = "Unique identifier of the answer", required = true) 
+        @PathVariable UUID answerId) {        
+            try {
             AnswerDTO answerDTO = answerService.getAnswerById(answerId);
             return ResponseEntity.ok(answerDTO);
         } catch (AnswerNotFoundException e) {
@@ -59,8 +66,13 @@ public class AnswerController {
     @ApiResponse(responseCode = "200", description = "Answer updated successfully", content = @Content(schema = @Schema(implementation = AnswerDTO.class)))
     @ApiResponse(responseCode = "404", description = "Answer not found")
     @PutMapping("/{answerId}")
-    public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable UUID answerId, @RequestBody AnswerDTO answerDTO) {
-        try {
+    public ResponseEntity<AnswerDTO> updateAnswer(
+        @Parameter(description = "Unique identifier of the answer to be updated", required = true) 
+        @PathVariable UUID answerId, 
+        
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Updated answer details", required = true, content = @Content(schema = @Schema(implementation = AnswerDTO.class))) 
+        @RequestBody AnswerDTO answerDTO) {        
+            try {
             AnswerDTO updatedAnswer = answerService.updateAnswer(answerId, answerDTO);
             return ResponseEntity.ok(updatedAnswer);
         } catch (AnswerNotFoundException e) {
@@ -72,8 +84,10 @@ public class AnswerController {
     @ApiResponse(responseCode = "204", description = "Answer deleted successfully")
     @ApiResponse(responseCode = "404", description = "Answer not found")
     @DeleteMapping("/{answerId}")
-    public ResponseEntity<Void> deleteAnswer(@PathVariable UUID answerId) {
-        try {
+    public ResponseEntity<Void> deleteAnswer(
+        @Parameter(description = "Unique identifier of the answer to be deleted", required = true) 
+        @PathVariable UUID answerId) {        
+            try {
             answerService.deleteAnswer(answerId);
             return ResponseEntity.noContent().build();
         } catch (AnswerNotFoundException e) {

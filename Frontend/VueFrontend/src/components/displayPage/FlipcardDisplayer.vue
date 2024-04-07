@@ -125,11 +125,11 @@ const props = defineProps({
     border-radius: 30px;
   }
   .text-content h1 {
-    font-size: clamp(1.7rem, 2.6vw, 20rem);
+    font-size: clamp(1.3rem, 2.6vw, 20rem);
   }
 
   .text-content p {
-    font-size: clamp(1.2rem, 1vw, 10rem);
+    font-size: clamp(0.5rem, 1vw, 10rem);
   }
   .content-wrapper {
     flex-direction: column;
@@ -138,6 +138,26 @@ const props = defineProps({
     max-width: 100%;
     min-width: auto;
   }
+  .card-container {
+    margin-bottom: 40px;
+  }
+
+
 }
+
+@media (max-width: 500px) {
+  .functionality {
+    padding: 10px;
+  }
+  .text-content h1 {
+    font-size: clamp(1.3rem, 2.6vw, 20rem);
+  }
+
+  .text-content p {
+    font-size: clamp(0.5rem, 1vw, 10rem);
+  }
+}
+
+
 
 </style>

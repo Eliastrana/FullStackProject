@@ -64,6 +64,7 @@ const showDropdown = () => {
   isDropdownVisible.value = true;
 };
 
+
 /**
  * Hides the dropdown
  */

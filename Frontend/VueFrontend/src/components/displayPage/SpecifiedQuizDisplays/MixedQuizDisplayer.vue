@@ -1,5 +1,11 @@
 //MixedQuizDisplayer.vue
 <template>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
   <div class="quiz-container">
     <!-- Overlay for Quiz Completion -->
     <div v-if="quizCompleted" class="overlay"></div>
@@ -15,7 +21,7 @@
       <h1>{{ quizTitle }}</h1>
 
       <!-- Submit/Complete Quiz Button -->
-      <button @click="openResults" class="icon-button" aria-label="Submit" :disabled="!quizStarted">
+      <button @click="openResults" class="icon-button" aria-label="Submit">
         <i class="fas fa-check"></i>
       </button>
     </div>
@@ -27,19 +33,21 @@
 
     <!-- Navigation Buttons and Progress Bar -->
     <div class="navigation">
-      <button class="navigation-button" @click="prevQuestion" :disabled="currentQuestionIndex === 0">← Previous</button>
+      <button class="navigation-button" @click="prevQuestion" :disabled="currentQuestionIndex === 0">
+        <span class="material-icons">arrow_back</span>
+      </button>
       <div class="progress-bar-container">
         <div class="progress-bar" :style="{ width: progressBarWidth }"></div>
       </div>
-      <button class="navigation-button"
-              @click="nextQuestion"
-              :disabled="currentQuestionIndex === (questions.value?.length ?? 0) - 1">
-        Next →
+      <button class="navigation-button" @click="nextQuestion" :disabled="currentQuestionIndex === (questions.value?.length ?? 0) - 1">
+        <span class="material-icons">arrow_forward</span>
       </button>
+
     </div>
 
+
     <!-- Questions Display -->
-    <div v-if="questions.length > 0">
+    <div v-if="questions.length > 0" class="questions">
       <transition name="slide" mode="out-in">
         <!-- Dynamically display the current question component -->
         <component :is="currentQuizComponent"
@@ -49,6 +57,8 @@
       </transition>
     </div>
 
+
+
     <!-- Quiz Completion Display -->
     <div v-if="quizCompleted" class="results-window">
       <h2>Quiz Completed!</h2>
@@ -57,16 +67,21 @@
         <!-- Display each question's result -->
         <li v-for="(question, index) in questions" :key="index" :class="{'correct': question.correct, 'incorrect': question.answered && !question.correct}">
           Q{{ index + 1 }}: {{ question.text }} - <strong>
-          {{ question.questionType === 'STUDY' ? 'Study Note' : (question.correct ? 'Correct' : 'Incorrect') }}
+          {{ question.questionType === 'STUDY' ? 'Study Note' : (question.correct ? 'Correct' : 'Incorrect')}}
+
         </strong>
         </li>
       </ul>
       <div class="buttonbox">
         <!-- Restart and Profile Navigation Buttons -->
         <button @click="restartQuiz">Try Again</button>
-        <button @click="goToProfile">More Quizzes</button>
+        <button @click="goToProfile">Your profile</button>
       </div>
     </div>
+
+
+
+
   </div>
 </template>
 
@@ -110,8 +125,6 @@ const currentQuizComponent = computed(() =>
 );
 
 watch(quizData, (newQuizData) => {
-  console.log('new quiz data: ')
-  console.log(newQuizData)
   if (newQuizData) {
     questions.value = [...newQuizData.questions];
   }
@@ -188,13 +201,11 @@ const progressBarWidth = computed(() => {
 
 watch(quizCompleted, async (newValue) => {
   if (newValue === true) {
-    console.log('Quiz completed, submitting attempt...');
     await submitAttempt();
   }
 });
 
 const submitAttempt = async () => {
-  console.log('Submitting attempt...');
   const attemptDetails = {
     quizId: quizId.value,
     userId: store.getters['user/userId'],
@@ -203,7 +214,6 @@ const submitAttempt = async () => {
     correctAnswers: questions.value.filter(q => q.correct).length,
   };
 
-  console.log(attemptDetails)
 
   try {
     await AttemptService.create(attemptDetails);
@@ -211,6 +221,15 @@ const submitAttempt = async () => {
     console.error('Failed to save quiz attempt:', error);
   }
 };
+
+import { onMounted } from 'vue';
+// Import other dependencies and setup code...
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+
+  // Your existing onMounted logic...
+});
 
 </script>
 
@@ -418,6 +437,33 @@ body {
   color: #a0a0a0;
   cursor: not-allowed;
 }
+
+@media (max-width: 600px) {
+  .quiz-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .quiz-header button {
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+
+  .questions {
+    max-width: 100%;
+    width: 100%;
+    overflow-x: auto; /* Allows horizontal scrolling if the content is too wide */
+    box-sizing: border-box; /* Ensures padding and border are included in the width */
+  }
+
+  .results-window {
+    min-width: 80%;
+    max-height: 50%;
+  }
+
+
+}
+
+
 
 
 
