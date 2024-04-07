@@ -33,6 +33,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,7 @@ public class CompleteQuizService {
     private final QuestionMapper questionMapper;
     private final AnswerMapper answerMapper;
     private final ImageRepository imageRepository;
+    private final Logger logger = LoggerFactory.getLogger(CompleteQuizService.class);
 
     @Autowired
     public CompleteQuizService(
@@ -100,8 +103,9 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
             quiz.setCreator(creator);
             quiz.setCategory(category);
             quiz.setDifficulty(completeQuizDTO.getDifficulty());
-            quiz.setPublic(completeQuizDTO.isPublic());
-
+            quiz.setPublic(completeQuizDTO.getIsPublic());
+            logger.info(String.valueOf(quiz.isPublic()));
+            logger.info(String.valueOf(completeQuizDTO.getIsPublic()));
     
     Image image = processImage(completeQuizDTO.getImageName(), completeQuizDTO.getImageType(), completeQuizDTO.getImageData());
     if (image != null) {
@@ -129,8 +133,8 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
         answerRepository.save(answer);
         });
     });
-    
-    return savedQuiz.getId(); // Return the ID of the saved quiz
+    logger.info(String.valueOf(savedQuiz.isPublic()));
+    return savedQuiz.getId();
 }
 
     
@@ -156,6 +160,7 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
                 .orElseThrow(() -> new CategoryNotFoundException("Category with ID: " + completeQuizDTO.getCategoryId() + " not found."));
         quiz.setCategory(category);
         quiz.setDifficulty(completeQuizDTO.getDifficulty());
+        quiz.setPublic(completeQuizDTO.getIsPublic());
 
         Image image = processImage(completeQuizDTO.getImageName(), completeQuizDTO.getImageType(), completeQuizDTO.getImageData());
         quiz.setImage(image);

@@ -31,7 +31,7 @@ public class CompleteQuizDTO {
     private Difficulty difficulty;
 
     @Schema(description = "A boolean value indicating whether the quiz is public or private.", example = "true")
-    private boolean isPublic;
+    private Boolean isPublic;
     
     @Schema(description = "A set of questions included in the quiz.")
     private Set<CompleteQuestionDTO> questions;

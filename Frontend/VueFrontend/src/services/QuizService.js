@@ -23,6 +23,7 @@ export const QuizService = {
     modifiedQuizDetails.questions = transformQuestionAnswers(modifiedQuizDetails.questions);
 
     try {
+      console.log(modifiedQuizDetails)
       const response = await axios.post(`${COMPLETE_API_URL}`, modifiedQuizDetails);
       return response.data;
     } catch (error) {
@@ -60,6 +61,16 @@ export const QuizService = {
       return response.data;
     } catch (error) {
       console.error('Error fetching all quizzes:', error);
+      throw error;
+    }
+  },
+
+  async getPublicQuizzes() {
+    try {
+      const response = await axios.get(`${QUIZ_API_URL}/public`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching public quizzes:', error);
       throw error;
     }
   },

@@ -128,4 +128,17 @@ public class QuizController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @Operation(summary = "Fetch all public quizzes", description = "Retrieves all available public quizzes")
+    @ApiResponse(responseCode = "200", description = "Successfully fetched public quizzes")
+    @GetMapping("/public")
+    public ResponseEntity<List<QuizDTO>> getAllPublicQuizzes() {
+        try {
+            List<QuizDTO> quizzes = quizService.getPublicQuizzes();
+            return ResponseEntity.ok(quizzes);
+        } catch (Exception e) {
+            logger.error("Error fetching public quizzes: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
