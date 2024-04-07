@@ -28,15 +28,10 @@ import edu.ntnu.idatt2105.SpringbootBackend.mapper.QuizMapper;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -147,154 +142,123 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
     
         return quizMapper.toCompleteQuizDTO(quiz);
     }
-    
+
 
     @Transactional
-    public void updateCompleteQuiz(UUID quizId, CompleteQuizDTO completeQuizDTO) throws QuizNotFoundException {
-        // Fetch the existing quiz
+    public void updateCompleteQuiz(UUID quizId, CompleteQuizDTO completeQuizDTO) {
         Quiz quiz = quizRepository.findById(quizId)
-            .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + quizId));
+                .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + quizId));
 
         // Update quiz details
         quiz.setTitle(completeQuizDTO.getTitle());
         quiz.setDescription(completeQuizDTO.getDescription());
-        quiz.setCategory(categoryRepository.findById(completeQuizDTO.getCategoryId()).orElse(null));
+        Category category = categoryRepository.findById(completeQuizDTO.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Category with ID: " + completeQuizDTO.getCategoryId() + " not found."));
+        quiz.setCategory(category);
         quiz.setDifficulty(completeQuizDTO.getDifficulty());
 
-        if (completeQuizDTO.getImageData() != null && !completeQuizDTO.getImageData().isEmpty()) {
-            byte[] decodedImg = Base64.getDecoder().decode(completeQuizDTO.getImageData());
-            Image image = Image.builder()
-                    .filename(completeQuizDTO.getImageName())
-                    .fileType(completeQuizDTO.getImageType())
-                    .size(decodedImg.length)
-                    .data(decodedImg)
-                    .build();
-        image = imageRepository.save(image);
-        }
+        Image image = processImage(completeQuizDTO.getImageName(), completeQuizDTO.getImageType(), completeQuizDTO.getImageData());
+        quiz.setImage(image);
 
+        // Existing questions handling
+        List<UUID> updatedQuestionIds = completeQuizDTO.getQuestions().stream()
+                .map(CompleteQuestionDTO::getId)
+                .collect(Collectors.toList());
+
+        // Remove questions not included in the updated DTO
+        quiz.getQuestions().removeIf(question -> !updatedQuestionIds.contains(question.getId()));
+
+        // Update and add questions
         completeQuizDTO.getQuestions().forEach(questionDTO -> {
-            Question question = questionMapper.toEntity(questionDTO, quiz);
-            questionRepository.save(question); // Save as a new question.
-            
-            // Process and save answers for the new question.
-            questionDTO.getAnswers().forEach(answerDTO -> {
-                Answer answer = answerMapper.toEntity(answerDTO, question);
-                answerRepository.save(answer); // Save each new answer.
-            });
+            if(questionDTO.getId() != null) {
+                questionRepository.findById(questionDTO.getId()).ifPresent(question -> {
+                    updateExistingQuestionFromDTO(question, questionDTO);
+                });
+            } else {
+                // Add new question
+                Question newQuestion = questionMapper.toEntity(questionDTO, quiz);
+                questionRepository.save(newQuestion);
+            }
         });
 
-    quizRepository.save(quiz);
-}
-
-
-
-
-
-@Transactional
-public void updateExistingQuestions(List<CompleteQuestionDTO> questionDTOs, UUID quizId) {
-    List<Question> existingQuestions = questionRepository.findAllByQuizId(quizId);
-
-    for (CompleteQuestionDTO dto : questionDTOs) {
-        // Find an existing question based on some unique attributes
-        Question question = findMatchingQuestion(existingQuestions, dto)
-            .orElseThrow(() -> new QuestionNotFoundException("Question not found"));
-
-        // Proceed with updates as before
-        updateQuestionDetails(question, dto);
-    }
-}
-
-private Optional<Question> findMatchingQuestion(List<Question> questions, CompleteQuestionDTO dto) {
-    return questions.stream()
-        .filter(q -> q.getText().equals(dto.getText()) && q.getMultimediaLink().equals(dto.getMultimediaLink()))
-        .findFirst();
-}
-
-private void updateQuestionDetails(Question question, CompleteQuestionDTO dto) {
-    question.setText(dto.getText());
-    question.setQuestionType(dto.getQuestionType());
-    question.setMultimediaLink(dto.getMultimediaLink());
-
-    // Update or create image for the question
-    if (dto.getImageData() != null && !dto.getImageData().isEmpty()) {
-        Image image = processImage(dto.getImageName(), dto.getImageType(), dto.getImageData());
-        question.setImage(image);
+        quizRepository.save(quiz);
     }
 
-    // Handle tags: find or create by name
-    dto.getTags().stream()
-                              .map(tagName -> tagRepository.findByName(tagName)
-                                         .orElseGet(() -> {
-                                             Tag newTag = new Tag();
-                                             newTag.setName(tagName);
-                                             return tagRepository.save(newTag);
-                                         }))
-                              .collect(Collectors.toSet());
 
-    // Update answers
-    updateAnswers(question, dto.getAnswers());
-    
-}
+    private void updateExistingQuestionFromDTO(Question question, CompleteQuestionDTO dto) {
+        question.setText(dto.getText());
+        question.setQuestionType(dto.getQuestionType());
+        question.setMultimediaLink(dto.getMultimediaLink());
 
-private void updateAnswers(Question question, Set<AnswerCreateDTO> dtoAnswers) {
-    // Map existing answers for easy lookup
-    Map<String, Answer> existingAnswers = question.getAnswers().stream()
-                                                  .collect(Collectors.toMap(Answer::getText, answer -> answer));
-    Set<Answer> updatedAnswers = new HashSet<>();
+        // Clear previous answers and tags before updating
+        question.getAnswers().clear();
+        question.getTags().clear();
 
-    for (AnswerCreateDTO dtoAnswer : dtoAnswers) {
-        Answer answer = existingAnswers.getOrDefault(dtoAnswer.getText(),
-                        new Answer()); // Create new if not found by text
-        answer.setText(dtoAnswer.getText());
-        answer.setCorrect(dtoAnswer.isCorrect());
-        answer.setQuestion(question);
-        updatedAnswers.add(answer);
+        // Process tags
+        Set<Tag> tags = dto.getTags().stream()
+                .map(tagName -> tagRepository.findByName(tagName)
+                        .orElseGet(() -> Tag.builder().name(tagName).build()))
+                .collect(Collectors.toSet());
+        question.setTags(tags);
+
+        // Process answers
+        dto.getAnswers().forEach(answerDTO -> {
+            Answer answer = new Answer();
+            answer.setText(answerDTO.getText());
+            answer.setCorrect(answerDTO.isCorrect());
+            answer.setQuestion(question);
+            question.getAnswers().add(answer);
+        });
+
+        questionRepository.save(question);
     }
 
-    // Remove answers that are not in the updated list
-    question.getAnswers().retainAll(updatedAnswers);
-    question.getAnswers().addAll(updatedAnswers);
-}
-
-
-
-@Transactional
-public void deleteCompleteQuiz(UUID quizId) throws QuizNotFoundException {
-    Quiz quiz = quizRepository.findById(quizId).orElseThrow(() ->
-            new QuizNotFoundException("Quiz not found with id: " + quizId));
-
-    quiz.getQuestions().forEach(question -> 
-            answerRepository.deleteAll(question.getAnswers()));
-
-    quizRepository.delete(quiz);
-    }
 
     private Image processImage(String imageName, String imageType, String imageData) {
-        if (imageName != null && imageType != null && imageData != null && !imageData.isEmpty()) {
-            byte[] decodedImg = Base64.getDecoder().decode(imageData);
-            return imageRepository.save(Image.builder()
-                    .filename(imageName)
-                    .fileType(imageType)
-                    .size(decodedImg.length)
-                    .data(decodedImg)
-                    .build());
+        if (imageName == null || imageType == null || imageData == null) {
+            return null; // If any parameter is missing, return null
         }
-        return null;
+
+        // Decode the image data from Base64
+        byte[] decodedImg = Base64.getDecoder().decode(imageData);
+
+        // Create a new Image entity or update the existing one
+        Image image = new Image();
+        image.setFilename(imageName);
+        image.setFileType(imageType);
+        image.setData(decodedImg);
+        image.setSize(decodedImg.length);
+
+        // Save the image entity to the database
+        return imageRepository.save(image);
     }
+
+
+    @Transactional
+    public void deleteCompleteQuiz(UUID quizId) throws QuizNotFoundException {
+        Quiz quiz = quizRepository.findById(quizId).orElseThrow(() ->
+                new QuizNotFoundException("Quiz not found with id: " + quizId));
+
+        quiz.getQuestions().forEach(question ->
+                answerRepository.deleteAll(question.getAnswers()));
+
+        quizRepository.delete(quiz);
+    }
+
 
     public List<CompleteQuizDTO> getCompleteQuizzesByTag(String tag) throws TagNotFoundException {
         Tag tagEntity = tagRepository.findByName(tag)
                 .orElseThrow(() -> new TagNotFoundException(tag));
-    
+
         // Stream over the questions, map each question to its quiz, and collect unique quizzes
         Set<Quiz> quizzes = tagEntity.getQuestions().stream()
                 .map(Question::getQuiz)
                 .collect(Collectors.toSet());
-    
+
         if (quizzes.isEmpty()) {
             throw new QuizNotFoundException("No quizzes found with tag: " + tag);
         }
-    
+
         // Map each quiz to CompleteQuizDTO
         return quizzes.stream()
                 .map(quizMapper::toCompleteQuizDTO)

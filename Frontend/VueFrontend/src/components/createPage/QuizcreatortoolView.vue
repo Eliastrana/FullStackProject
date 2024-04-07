@@ -9,9 +9,12 @@ import CreateStudyCard from '@/components/createPage/createQuizComponents/Create
 import { QuizService } from '@/services/QuizService.js'
 import router from '@/router/index.js'
 import { CategoryService } from '@/services/CategoryService.js'
+import { useRoute } from 'vue-router'
 
 
 const store = useStore();
+
+const route = useRoute();
 
 const quizTitle = ref('');
 const quizDescription = ref('');
@@ -24,6 +27,20 @@ const questions = computed(() => store.state.quizzes.quizDetails.questions);
 console.log('Questions:', questions.value);
 
 onMounted(async () => {
+  const quizId = route.params.quizId;
+  if (quizId) {
+    await store.dispatch('quizzes/addImageToQuiz', { quizId });
+    const quizDetails = await QuizService.getQuizById(quizId);
+    console.log(quizDetails)
+    quizTitle.value = quizDetails.title;
+    quizDescription.value = quizDetails.description;
+    quizCategory.value = quizDetails.categoryId;
+    quizDifficulty.value = quizDetails.difficulty;
+    if (quizDetails.imageName) {
+      coverImage.value = `data:image/${quizDetails.imageType};base64,${quizDetails.imageData}`;
+    }
+    store.commit('quizzes/SET_QUIZ_DETAILS', quizDetails);
+  } else {
   try {
     const quizDetails = store.state.quizzes.quizDetails;
     quizTitle.value = quizDetails.title;
@@ -33,11 +50,11 @@ onMounted(async () => {
     if (quizDetails.coverImage) {
       coverImage.value = `data:image/${quizDetails.imageType};base64,${quizDetails.imageData}`;
     }
-    categories.value = await CategoryService.getAllCategories();
-    console.log('Categories:', categories.value);
   } catch (error) {
     console.error('Error fetching categories:', error);
   }
+  }
+  categories.value = await CategoryService.getAllCategories();
 
 });
 
@@ -142,17 +159,30 @@ function updateQuizDetails() {
   });
 }
 
-async function createQuiz() {
+async function saveQuiz()
+{
   const quizDetails = store.state.quizzes.quizDetails;
-  try {
-    const response = await QuizService.create(quizDetails);
-    store.commit('quizzes/CLEAR_QUIZZES');
-    console.log('Quiz created successfully:', response);
-    await router.push('/');
-  } catch (error) {
-    console.error('Error creating quiz:', error);
+  const quizId = route.params.quizId;
+  if (quizId) {
+    try {
+      console.log(quizDetails)
+      await QuizService.updateQuiz(quizId, quizDetails);
+      store.commit('quizzes/CLEAR_QUIZZES')
+      await router.push('/');
+    } catch (error) {
+      console.error('Error updating quiz:', error);
+    }
+  } else {
+    try {
+      await QuizService.create(quizDetails)
+      store.commit('quizzes/CLEAR_QUIZZES');
+      await router.push('/');
+    } catch (error) {
+      console.error('Error creating quiz:', error);
+    }
   }
 }
+
 
 // Inside your parent component's <script setup>
 function removeQuestionFromStore(uuid) {
@@ -308,7 +338,7 @@ function moveQuestionDown(index) {
       </div>
 
       <!--      <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>-->
-      <button class="compileButton" @click="createQuiz">Create Quiz</button>
+      <button class="compileButton" @click="saveQuiz">Save Quiz</button>
     </div>
 
     <button class="scroll-to-top" @click="scrollToTop">
