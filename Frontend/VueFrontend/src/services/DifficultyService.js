@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8080/api/difficulties/';
+const API_URL = 'http://localhost:8080/api/difficulties';
 
 export const DifficultyService = {
   async getAllDifficulties() {
