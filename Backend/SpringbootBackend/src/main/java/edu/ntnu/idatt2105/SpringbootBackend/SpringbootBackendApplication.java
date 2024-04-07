@@ -3,6 +3,8 @@ package edu.ntnu.idatt2105.SpringbootBackend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 /**
  * Main application class for the Spring Boot backend API.
  * This class serves as the entry point for the Spring Boot application,
@@ -26,6 +28,11 @@ public class SpringbootBackendApplication {
 	 * @param args Command-line arguments passed to the application.
 	 */
 	public static void main(String[] args) {
+		Dotenv dotenv = Dotenv.configure()
+			.directory("......./") 
+			.load();
+		System.setProperty("SECRET_KEY", dotenv.get("SECRET_KEY"));
+		System.out.println("Secret key: " + System.getProperty("SECRET_KEY"));
 		SpringApplication.run(SpringbootBackendApplication.class, args);
 	}
 }
