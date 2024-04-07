@@ -8,8 +8,6 @@ import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AuthenticationService;
 import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +34,7 @@ import lombok.RequiredArgsConstructor;
  * @since 0.1
  * @version 0.1
  */
-@Tag(name = "User Authentication")
+@Tag(name = "User Authentication" , description = "API for user authentication")
 @CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor

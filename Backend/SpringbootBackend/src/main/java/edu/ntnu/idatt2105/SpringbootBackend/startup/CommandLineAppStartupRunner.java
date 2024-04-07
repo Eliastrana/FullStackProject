@@ -44,6 +44,11 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
       userRoleService.assignRoleToUser(admin.getUsername(), "ADMIN");
     });
 
+    userRepository.findByUsername("user").ifPresentOrElse(user -> logger.info("User user already exists"), () -> {
+      UserCreationDTO userCreationDTO = new UserCreationDTO("user", "user", "user@email.com");
+      authenticationService.register(userCreationDTO);
+    });
+
     // Categories to add
     String[] categories = {"Gaming", "Sports", "Science", "Music", "History", "Geography", "General Knowledge"};
     String[] descriptions = {

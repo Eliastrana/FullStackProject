@@ -6,6 +6,7 @@ import edu.ntnu.idatt2105.SpringbootBackend.exception.QuestionNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,10 +37,10 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @Operation(summary = "Create a new question", description = "Create a new question for a specific quiz")
-    @ApiResponse(responseCode = "201", description = "Question created", content = @Content(schema = @Schema(implementation = QuestionDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Quiz not found")
-    @ApiResponse(responseCode = "400", description = "Bad request")
+    @Operation(summary = "Create a new question", description = "Create a new question for a specific quiz", responses = {
+        @ApiResponse(responseCode = "201", description = "Question created", content = @Content(schema = @Schema(implementation = QuestionDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Quiz not found"),
+        @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<QuestionDTO> createQuestion(@RequestBody QuestionCreateDTO questionCreateDTO, @RequestParam UUID quizId) {
@@ -55,10 +56,10 @@ public class QuestionController {
         }
     }
 
-    @Operation(summary = "Get question by id", description = "Get a question by its unique identifier")
-    @ApiResponse(responseCode = "200", description = "Question found", content = @Content(schema = @Schema(implementation = QuestionDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Question not found")
-    @ApiResponse(responseCode = "400", description = "Bad request")
+    @Operation(summary = "Get question by id", description = "Get a question by its unique identifier", responses = {
+        @ApiResponse(responseCode = "200", description = "Question found", content = @Content(schema = @Schema(implementation = QuestionDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Question not found"),
+        @ApiResponse(responseCode = "400", description = "Bad request")})
     @GetMapping("/{id}")
     public ResponseEntity<QuestionDTO> getQuestionById(@PathVariable UUID id) {
         try {
@@ -70,9 +71,9 @@ public class QuestionController {
         }
     }
 
-    @Operation(summary = "Update question", description = "Update a question by its unique identifier")
-    @ApiResponse(responseCode = "200", description = "Question updated", content = @Content(schema = @Schema(implementation = QuestionDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Question not found")
+    @Operation(summary = "Update question", description = "Update a question by its unique identifier", responses = {
+        @ApiResponse(responseCode = "200", description = "Question updated", content = @Content(schema = @Schema(implementation = QuestionDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Question not found")})
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<QuestionDTO> updateQuestion(@PathVariable UUID id, @RequestBody QuestionDTO questionDTO) {
@@ -85,9 +86,9 @@ public class QuestionController {
         }
     }
 
-    @Operation(summary = "Delete question", description = "Delete a question by its unique identifier")
-    @ApiResponse(responseCode = "204", description = "Question deleted")
-    @ApiResponse(responseCode = "404", description = "Question not found")
+    @Operation(summary = "Delete question", description = "Delete a question by its unique identifier", responses = {
+        @ApiResponse(responseCode = "204", description = "Question deleted"),
+        @ApiResponse(responseCode = "404", description = "Question not found")})
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteQuestion(@PathVariable UUID id) {
@@ -100,11 +101,11 @@ public class QuestionController {
         }
     }
 
-    @Operation(summary = "Get questions by quiz id", description = "Get all questions for a specific quiz")
-    @ApiResponse(responseCode = "200", description = "Questions found", content = @Content(schema = @Schema(implementation = QuestionDTO.class)))
-    @ApiResponse(responseCode = "404", description = "Questions not found")
-    @ApiResponse(responseCode = "400", description = "Bad request")
-    @GetMapping("/quiz/{quizId}")
+@Operation(summary = "Get questions by quiz id", description = "Get all questions for a specific quiz", responses = {
+    @ApiResponse(responseCode = "200", description = "Questions found", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = QuestionDTO.class)))),
+    @ApiResponse(responseCode = "404", description = "Questions not found"),
+    @ApiResponse(responseCode = "400", description = "Bad request")})
+@GetMapping("/quiz/{quizId}")
     public ResponseEntity<List<QuestionDTO>> getQuestionsByQuizId(@PathVariable UUID quizId) {
         List<QuestionDTO> questions = questionService.getQuestionsByQuizId(quizId);
         return ResponseEntity.ok(questions);
