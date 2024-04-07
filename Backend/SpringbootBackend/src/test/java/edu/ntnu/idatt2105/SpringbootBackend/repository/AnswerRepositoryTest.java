@@ -1,10 +1,14 @@
 package edu.ntnu.idatt2105.SpringbootBackend.repository;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.Answer;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Question;
 import edu.ntnu.idatt2105.SpringbootBackend.model.QuestionType;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.AnswerRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.QuestionRepository;
+
+import org.apache.commons.lang3.builder.Diff;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -28,15 +32,31 @@ public class AnswerRepositoryTest {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private QuizRepository quizRepository;
+
     @Test
     public void testSaveAndRetrieveAnswer() {
         // Setup
+        UUID quizUuid = UUID.randomUUID();
+        Quiz quiz = new Quiz();
+        quiz.setId(quizUuid);
+        quiz.setCategory(null);
+        quiz.setTitle("Test Quiz");
+        quiz.setDescription("This is a test quiz.");
+        quiz.setDifficulty(Difficulty.EASY);
+
+        quiz = quizRepository.save(quiz);
+
         UUID questionId = UUID.randomUUID();
         Question question = new Question();
         question.setId(questionId);
         question.setCreationDate(LocalDateTime.now());
         question.setImage(null);
         question.setQuestionType(QuestionType.MULTIPLE_CHOICE);
+        question.setText("Is this a test question?");
+
+        question.setQuiz(quiz);
         question = questionRepository.save(question);
 
         Answer answer = new Answer();

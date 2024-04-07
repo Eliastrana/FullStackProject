@@ -1,6 +1,5 @@
 package edu.ntnu.idatt2105.SpringbootBackend.model;
 
-import edu.ntnu.idatt2105.SpringbootBackend.model.Answer;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;

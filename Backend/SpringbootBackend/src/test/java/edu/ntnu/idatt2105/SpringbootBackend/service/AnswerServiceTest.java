@@ -75,6 +75,31 @@ void createAnswer_Success() throws Exception {
     assertEquals(newAnswerDTO.isCorrect(), createdAnswerDTO.isCorrect());
 }
 
+@Test
+void updateAnswer_Success() throws Exception {
+    // Given
+    UUID answerId = answer.getId();
+    AnswerDTO updatedAnswerDTO = new AnswerDTO(answerId, "Updated Answer Text", false);
+    when(answerRepository.findById(answerId)).thenReturn(Optional.of(answer));
 
+    // When
+    AnswerDTO resultDTO = answerService.updateAnswer(answerId, updatedAnswerDTO);
 
+    // Then
+    assertNotNull(resultDTO);
+    assertEquals(updatedAnswerDTO.getText(), resultDTO.getText());
+    assertEquals(updatedAnswerDTO.isCorrect(), resultDTO.isCorrect());
+}
+@Test
+void deleteAnswer_Success() throws Exception {
+    // Given
+    UUID answerId = answer.getId();
+    when(answerRepository.existsById(answerId)).thenReturn(true);
+
+    // When
+    answerService.deleteAnswer(answerId);
+
+    // Then
+    verify(answerRepository, times(1)).deleteById(answerId);
+    }
 }
