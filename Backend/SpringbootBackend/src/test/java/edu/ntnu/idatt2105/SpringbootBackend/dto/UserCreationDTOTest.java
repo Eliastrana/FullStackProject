@@ -1,11 +1,9 @@
 package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 class UserCreationDTOTest {
 
     @Test

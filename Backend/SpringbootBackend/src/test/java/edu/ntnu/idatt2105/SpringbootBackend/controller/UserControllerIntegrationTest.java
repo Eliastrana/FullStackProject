@@ -21,6 +21,8 @@ import org.springframework.test.context.ActiveProfiles;
   import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
   import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
   import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+  import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 
 import java.util.UUID;
 
@@ -34,12 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private UserService userService; // If you need to set up users before tests
-
-    @Autowired
-    private UserRepository userRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -57,14 +53,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
       String usernameString = username.toString();
       UUID email = UUID.randomUUID();
       String emailString = email.toString();
-      UserCreationDTO userCreationDTO = new UserCreationDTO(usernameString, "testpassword", "sffr@example.com");
+      UserCreationDTO userCreationDTO = new UserCreationDTO(usernameString, "testpassword", emailString + "@example.com");
 
       mockMvc.perform(post("/api/user/register")
-                      .contentType(MediaType.APPLICATION_JSON)
-                      .content(objectMapper.writeValueAsString(userCreationDTO))
-                      .with(csrf())) // Apply CSRF token for POST requests
-              .andExpect(status().isOk())
-              .andExpect(jsonPath("$.token", notNullValue())); // Verify that a token is present
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(userCreationDTO))
+        .with(csrf()))
+        .andDo(print()) // Prints the request and response details
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.token", notNullValue()));
+
     }
 
     @Test

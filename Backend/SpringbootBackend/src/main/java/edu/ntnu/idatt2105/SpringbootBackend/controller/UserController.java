@@ -67,6 +67,7 @@ public class UserController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("Error registering user: " + e.getMessage());
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

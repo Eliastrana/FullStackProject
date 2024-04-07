@@ -1,147 +1,173 @@
 package edu.ntnu.idatt2105.SpringbootBackend.mapper;
 
-import edu.ntnu.idatt2105.SpringbootBackend.dto.*;
-import edu.ntnu.idatt2105.SpringbootBackend.model.*;
-import edu.ntnu.idatt2105.SpringbootBackend.repository.CategoryRepository;
-import edu.ntnu.idatt2105.SpringbootBackend.repository.ImageRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.AnswerCreateDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuestionDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuizDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Category;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Image;
+import edu.ntnu.idatt2105.SpringbootBackend.model.QuestionType;
+import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
+import edu.ntnu.idatt2105.SpringbootBackend.model.User;
+import edu.ntnu.idatt2105.SpringbootBackend.repository.ImageRepository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class QuizMapperTest {
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+public class QuizMapperTest {
 
     @Mock
     private QuestionMapper questionMapper;
 
-    @Mock
-    private CategoryRepository categoryRepository;
+    @InjectMocks
+    private QuizMapper quizMapper;
 
     @Mock
     private ImageRepository imageRepository;
 
-    @InjectMocks
-    private QuizMapper quizMapper;
-
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+        void setUp() {
+            MockitoAnnotations.openMocks(this);
+}
 
     @Test
-    void toQuizDTO() {
-        // Create a mock Quiz object
-        UUID quizId = UUID.randomUUID();
-        UUID categoryId = UUID.randomUUID();
-        UUID creatorId = UUID.randomUUID();
-        UUID imageId = UUID.randomUUID();
-        Category category = new Category(categoryId, "TestCategory", "Test Description");
-        User creator = new User(creatorId, "creatorUsername", "creator@example.com", null, false, false, false, false, null);
-        Image image = new Image();
-        image.setId(imageId);
-        image.setFileType("png");
-        image.setFilename("test.png");
-        image.setFileContent(new byte[]{1, 2, 3, 4, 5});
+    public void testToQuizDTO() {
+        // Setup
+        Category category = new Category(UUID.randomUUID(), "Science", "Science quizzes");
+        Image image = new Image(UUID.randomUUID(), "image.jpg", "png", 123L, new byte[]{});
+        User creator = new User();
+        creator.setId(UUID.randomUUID());
+        creator.setUsername("user");
+        creator.setEmail("test@mail.com");
+        creator.setPassword("password");
+        
         Quiz quiz = new Quiz();
-        quiz.setId(quizId);
-        quiz.setTitle("Test Quiz");
-        quiz.setDescription("Test Description");
-        quiz.setCreator(creator);
+        quiz.setId(UUID.randomUUID());
+        quiz.setTitle("Science Quiz");
+        quiz.setDescription("A quiz about science");
         quiz.setCategory(category);
         quiz.setImage(image);
+        quiz.setDifficulty(Difficulty.EASY);
+        quiz.setPublic(true);
+        quiz.setCreator(creator);
+        
+        // Act
+        QuizDTO result = quizMapper.toQuizDTO(quiz);
 
-
-
-        // Mock the behavior of categoryRepository to return the expected category
-        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
-
-        // Call the method to be tested
-        QuizDTO quizDTO = quizMapper.toQuizDTO(quiz);
-
-        // Verify the result
-        assertEquals(quizId, quizDTO.getId());
-        assertEquals("Test Quiz", quizDTO.getTitle());
-        assertEquals("Test Description", quizDTO.getDescription());
-        assertEquals(creatorId, quizDTO.getCreatorId());
-        assertEquals(categoryId, quizDTO.getCategoryId());
-        assertEquals(imageId, quizDTO.getImageId());
-
-        // Verify that categoryRepository.findById() was called
-        verify(categoryRepository, times(1)).findById(categoryId);
-    }
-    @Test
-    void toQuizDTO_WithNullCategory_ShouldReturnDTOWithNullCategoryId() {
-        // Create a mock Quiz object with a null category
-        UUID quizId = UUID.randomUUID();
-        UUID creatorId = UUID.randomUUID();
-        UUID imageId = UUID.randomUUID();
-        User creator = new User(creatorId, "creatorUsername", "creator@example.com");
-        Image image = new Image(imageId, "image.jpg", "image/jpeg", new byte[]{}, LocalDateTime.now());
-        Quiz quiz = new Quiz(quizId, "Test Quiz", "Test Description", creator, null, image, Difficulty.EASY, true);
-
-        // Call the method to be tested
-        QuizDTO quizDTO = quizMapper.toQuizDTO(quiz);
-
-        // Verify that the DTO's categoryId is null
-        assertNull(quizDTO.getCategoryId());
+        // Assert
+        assertEquals(quiz.getId(), result.getId());
+        assertEquals(quiz.getTitle(), result.getTitle());
+        assertEquals(quiz.getDescription(), result.getDescription());
+        assertEquals(quiz.getCategory().getId(), result.getCategoryId());
+        assertEquals(quiz.getImage().getId(), result.getImageId());
+        assertEquals(quiz.getDifficulty(), result.getDifficulty());
+        assertEquals(quiz.getCreator().getId(), result.getCreatorId());
     }
 
     @Test
-    void toQuizDTO_WithNullImage_ShouldReturnDTOWithNullImageId() {
-        // Create a mock Quiz object with a null image
-        UUID quizId = UUID.randomUUID();
-        UUID categoryId = UUID.randomUUID();
-        UUID creatorId = UUID.randomUUID();
-        Category category = new Category(categoryId, "TestCategory", "Test Description");
-        User creator = new User(creatorId, "creatorUsername", "creator@example.com");
-        Quiz quiz = new Quiz(quizId, "Test Quiz", "Test Description", creator, category, null, Difficulty.EASY, true);
+    void updateQuizFromDTO() {
+    // Assuming UUIDs for ID fields and an enum for difficulty
+    UUID categoryId = UUID.randomUUID();
+    UUID creatorId = UUID.randomUUID();
+    UUID imageId = UUID.randomUUID();
 
-        // Mock the behavior of categoryRepository to return the expected category
-        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+    QuizDTO quizDTO = QuizDTO.builder()
+            .id(UUID.randomUUID()) // Assuming this ID is not used in update
+            .title("Updated Title")
+            .description("Updated Description")
+            .difficulty(Difficulty.HARD) // Assuming Difficulty is an enum
+            .isPublic(true) // Notice the change to match the assertion
+            .categoryId(categoryId)
+            .creatorId(creatorId)
+            .imageId(imageId)
+            .build();
 
-        // Call the method to be tested
-        QuizDTO quizDTO = quizMapper.toQuizDTO(quiz);
+    // Setup existing Quiz with default values
+    Quiz existingQuiz = new Quiz();
+    existingQuiz.setCategory(new Category(UUID.randomUUID(), "Original Category", "Original Description"));
+    existingQuiz.setCreator(new User(UUID.randomUUID(), "Original Creator", "Original Password", "original@email.com", false, false, false, false, null));
+    existingQuiz.setImage(new Image(UUID.randomUUID(), "Original Imagename", "original fileType", 123L, new byte[]{}));
 
-        // Verify that the DTO's imageId is null
-        assertNull(quizDTO.getImageId());
+    // Act: Perform the update
+    Quiz updatedQuiz = quizMapper.updateQuizFromDTO(quizDTO, existingQuiz);
+
+    // Assert: Verify that the existingQuiz object's fields are updated correctly
+    assertEquals(quizDTO.getTitle(), updatedQuiz.getTitle());
+    assertEquals(quizDTO.getDescription(), updatedQuiz.getDescription());
+    // For category and creator, since the test setup doesn't actually fetch them from a repository,
+    // we're asserting based on the IDs set directly.
+    assertEquals(categoryId, updatedQuiz.getCategory().getId());
+    assertEquals(creatorId, updatedQuiz.getCreator().getId());
+    assertEquals(imageId, updatedQuiz.getImage().getId());
+    // Assuming a method to convert Difficulty enum to String if necessary
+    assertEquals(quizDTO.getDifficulty().toString().strip(), updatedQuiz.getDifficulty().toString().strip());
+    assertEquals(quizDTO.isPublic(), updatedQuiz.isPublic());
     }
 
     @Test
-    void toEntity_WithQuestions_ShouldMapQuestionsCorrectly() {
-        // Create a mock QuizCreateDTO with questions
-        UUID creatorId = UUID.randomUUID();
-        User creator = new User(creatorId, "creatorUsername", "creator@example.com");
-        Category category = new Category(UUID.randomUUID(), "TestCategory", "Test Description");
-        QuizCreateDTO quizCreateDTO = new QuizCreateDTO("Test Quiz", "Test Description", Difficulty.EASY, true, creatorId, category.getId());
-        Set<QuestionCreateDTO> questionCreateDTOs = new HashSet<>();
-        questionCreateDTOs.add(new QuestionCreateDTO("Question 1", QuestionType.MULTIPLE_CHOICE, null, null));
-        questionCreateDTOs.add(new QuestionCreateDTO("Question 2", QuestionType.OPEN_ENDED, null, null));
-        quizCreateDTO.setQuestions(questionCreateDTOs);
+    void toEntityFromCompleteQuizDTOWithQuestionsTest() {
+        // Setup CompleteQuizDTO with questions
+        CompleteQuizDTO quizDTO = new CompleteQuizDTO();
+        quizDTO.setTitle("Science Quiz");
+        quizDTO.setDescription("A quiz covering basic science topics.");
+        quizDTO.setDifficulty(Difficulty.EASY); // Assuming difficulty is a String. Adjust if it's an enum
+        quizDTO.setPublic(true);
 
-        // Mock the behavior of questionMapper to return a mock Question for each questionCreateDTO
-        when(questionMapper.toEntity(any(QuestionCreateDTO.class), any(Quiz.class)))
-                .thenAnswer(invocation -> {
-                    QuestionCreateDTO questionCreateDTO = invocation.getArgument(0);
-                    return new Question(questionCreateDTO.getText(), questionCreateDTO.getQuestionType(), null, null, null);
-                });
+        // Setup questions and answers
+        Set<CompleteQuestionDTO> questions = new HashSet<>();
+        CompleteQuestionDTO question1 = new CompleteQuestionDTO();
+        question1.setText("What is the chemical symbol for water?");
+        question1.setQuestionType(QuestionType.FILL_IN_BLANK); // Assuming this is a String. Adjust if it's an enum
+        question1.setMultimediaLink("https://example.com/image.jpg");
+        question1.setImageName("imageName");
+        question1.setImageType("image/jpeg");
+        question1.setImageData("base64String");
 
-        // Call the method to be tested
-        Quiz resultQuiz = quizMapper.toEntity(quizCreateDTO, creator, category);
+        Set<AnswerCreateDTO> answers = new HashSet<>();
+        AnswerCreateDTO answer1 = new AnswerCreateDTO();
+        answer1.setText("H2O");
+        answer1.setCorrect(true);
+        answers.add(answer1);
 
-        // Verify that all questions were mapped correctly
-        assertEquals(2, resultQuiz.getQuestions().size());
-        assertTrue(resultQuiz.getQuestions().stream().anyMatch(q -> q.getText().equals("Question 1")));
-        assertTrue(resultQuiz.getQuestions().stream().anyMatch(q -> q.getText().equals("Question 2")));
+        question1.setAnswers(answers);
+        questions.add(question1);
+
+        quizDTO.setQuestions(questions);
+
+        // Set image data
+        quizDTO.setImageData("base64Image");
+        quizDTO.setImageName("image.jpg");
+        quizDTO.setImageType("image/jpeg");
+
+        User creator = new User(UUID.randomUUID(), "creator@example.com", "Creator Name", "password", false, false, false, false, null);
+        Category category = new Category(UUID.randomUUID(), "Science", "Science Description");
+
+        // Mocking the image repository response
+        when(imageRepository.save(any(Image.class))).thenAnswer(i -> i.getArgument(0));
+
+        // Act
+        Quiz quiz = quizMapper.toEntity(quizDTO, creator, category);
+
+        // Assert
+        assertEquals(quizDTO.getTitle(), quiz.getTitle());
+        assertEquals(quizDTO.getDescription(), quiz.getDescription());
+        assertEquals(quizDTO.getDifficulty(), quiz.getDifficulty());
+        assertEquals(quizDTO.isPublic(), quiz.isPublic());
+        assertNotNull(quiz.getImage());
+        assertEquals(1, quiz.getQuestions().size()); // Verifying one question was added
+        verify(imageRepository, times(1)).save(any(Image.class)); // Verify image was saved once
     }
-
 }

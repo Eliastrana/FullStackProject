@@ -34,10 +34,5 @@ public class Image {
     @Lob
     @Column(nullable = false, columnDefinition = "LONGBLOB")
     private byte[] data;
-
-    public void setFileContent(byte[] bs) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFileContent'");
-    }
     
 }

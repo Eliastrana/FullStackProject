@@ -27,7 +27,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserCreationDTO {
     @NotBlank(message = "Username is required")
-    @NotEmpty(message = "Username cannot be empty")
     @Schema(required = true, example = "johnDoe", description = "Username of the new user")
     private String username;
 

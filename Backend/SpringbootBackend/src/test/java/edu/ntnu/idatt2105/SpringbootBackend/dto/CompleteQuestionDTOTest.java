@@ -2,6 +2,7 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.QuestionType;
 import org.junit.jupiter.api.Test;
+
 import java.util.HashSet;
 import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;

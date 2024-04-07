@@ -23,18 +23,12 @@ class CompleteQuizDTOTest {
         Set<CompleteQuestionDTO> questions = new HashSet<>();
         questions.add(new CompleteQuestionDTO()); // Add a mock question
 
-        CompleteQuizDTO quiz = new CompleteQuizDTO(
-                "Sport Quiz",
-                "A quiz covering various topics in sports.",
-                creatorId,
-                "Sport",
-                Difficulty.EASY,
-                true,
-                questions,
-                "quiz_cover.png",
-                "png",
-                "base64ImageData"
-        );
+        CompleteQuizDTO quiz = new CompleteQuizDTO();
+        quiz.setTitle("Sport Quiz");
+        quiz.setCreatorId(creatorId);
+        quiz.setDifficulty(Difficulty.EASY);
+        quiz.setPublic(true);
+        quiz.setQuestions(questions);
 
         assertNotNull(quiz);
         assertEquals("Sport Quiz", quiz.getTitle());
