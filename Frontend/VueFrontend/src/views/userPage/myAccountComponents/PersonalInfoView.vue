@@ -1,47 +1,69 @@
+//PersonalInfoView.vue
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, computed } from 'vue'
+import router from '@/router/index.js'
+import { UserService } from '@/services/UserService.js'
+import store from '@/store/index.js'
 
 /**
  * User information
  * @type {import('vue').Ref<Object>}
  */
-const userInfo = ref(null);
 
-/**
- * Fetches user information from the API when the component is mounted
- */
+const userInfo = ref(null);
+const totalQuizzesDone = computed(() => store.getters['quizAttempt/totalQuizzesDone']);
+
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/user/user.json');
-    userInfo.value = response.data;
+    const userDetails = await UserService.getUserDetails();
+    userInfo.value = userDetails;
+
   } catch (error) {
     console.error('Failed to load user info:', error);
+    // Handle unauthorized access or redirect to login
+    router.push({ name: 'login' });
   }
 });
+
+
+
+const updateUsername = () => {
+
+
+
+};
+
+const updatePassword = () => {
+
+}
+
 </script>
 
 <template>
   <div class="user-info-container" v-if="userInfo">
     <h1>Your Info</h1>
     <h2>This is you</h2>
-    <img :src="userInfo.photo" alt="User photo" class="user-photo"/>
+    <img :src="'/images/profilepic.png'" alt="User photo" class="user-photo"/>
     <div class="basic-info">
-      <p><strong>Name:</strong> {{ userInfo.name }}</p>
+      <p><strong>Name:</strong> {{ userInfo.username }}</p>
       <p><strong>Email:</strong> {{ userInfo.email }}</p>
     </div>
+
+    <div class="updateinfo">
+      <button class="updateusername" @click="updateUsername">
+        <i class="fas fa-user-edit"></i>
+        <p>Update Info</p>
+      </button>
+
+      <button class="updatepassword" @click="updatePassword">
+        <i class="fas fa-user-edit"></i>
+        <p>Update Info</p>
+      </button>
+    </div>
     <div class="level-info">
-      <p><strong>Level:</strong> <span class="highlight">{{ userInfo.level }}</span></p>
-      <p><strong>Total Quizzes Done:</strong> <span class="highlight">{{ userInfo.totalQuizzesDone }}</span></p>
+      <p><strong>Total Quizzes Done:</strong> {{totalQuizzesDone}}</p>
     </div>
-    <div class="achievements">
-      <h3>Achievements:</h3>
-      <ul>
-        <li v-for="achievement in userInfo.achievements" :key="achievement.title">
-          <strong>{{ achievement.title }}:</strong> {{ achievement.description }}
-        </li>
-      </ul>
-    </div>
+
   </div>
 </template>
 
@@ -52,11 +74,42 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   max-width: 90%;
-  margin: 5% auto;
+  min-height: 83vh;
+  margin:  auto;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   background-color: #ececec;
+}
+
+.updateinfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  margin: 10px auto;
+}
+
+.updateusername, .updatepassword {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  max-width: 30%;
+  max-height: 30px;
+  margin: 10px ;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  background-color: #ececec;
+  border: none;
+  font-size: 1rem;
+}
+
+.updateusername:hover, .updatepassword:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
 }
 
 .basic-info, .level-info, .achievements {

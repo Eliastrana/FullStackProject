@@ -1,41 +1,85 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { AttemptService } from '@/services/AttemptService.js';
+import store from '@/store/index.js'
+import { QuestionService as questionService } from '@/services/QuestionService.js';
 
 /**
- * Achievements data
+ * Quiz attempts data
  * @type {import('vue').Ref<Array>}
  */
-const achievements = ref([]);
+const quizAttempts = ref([]);
+
+const userInfo = ref(null);
+
+const totalQuizzesDone = ref(0); // New ref for storing total quizzes done
+
+
+
 
 /**
- * Fetches achievements data from the API when the component is mounted
+ * Fetches quiz attempts data from the API when the component is mounted
  */
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/statistics/achievements/achievements.json');
-    achievements.value = response.data;
+    // Ensure that you are retrieving the userId correctly from the Vuex store
+    const userId = store.getters['user/userId']; // Adjust this path based on your store structure
+    if (!userId) {
+      console.error('UserId is undefined. Make sure the user is logged in.');
+      return;
+    }
+
+    const attempts = await AttemptService.getAttemptByUserId(userId);
+
+    totalQuizzesDone.value = attempts.length; // Assuming each attempt represents a quiz done
+
+// Assuming each attempt represents a quiz done
+
+    // Inside your onMounted lifecycle hook
+    quizAttempts.value = attempts;
+
+    store.dispatch('quizAttempt/updateTotalQuizzesDone', attempts.length);
+
+
+
+
+    store.dispatch('quizAttempt/updateTotalQuizzesDone', totalQuizzesDone.value); // Update the total quizzes done in the Vuex store
+
+
+    console.log('Total quizzes done:', totalQuizzesDone.value)
+
+
   } catch (error) {
-    console.error('Failed to load achievements:', error);
+    console.error('Failed to load quiz attempts:', error);
   }
 });
+
+
+
 </script>
+
 
 <template>
   <div class="achievements-container">
-    <h1>Your statistics</h1>
-    <h2>Keep working hard!</h2>
+  <div class="attempts-container">
+    <h1>Your Quiz Attempts</h1>
+    <h2>Review your progress</h2>
     <div class="tiles">
-      <div class="tile" v-for="(achievement, index) in achievements" :key="index"
-           :class="{'gold-background': achievement.progress === 100}">
-        <h3>{{ achievement.title }}</h3>
-        <p>{{ achievement.description }}</p>
+      <div class="tile" v-for="(attempt, index) in quizAttempts" :key="index">
+
+<!--        <h2>{{userInfo.username}}</h2>-->
+        <h3>{{ attempt.id}}</h3>
+        <h4>Correct answers: {{attempt.score}}</h4>
+        <p>{{attempt.userId}}</p>
+        <p>{{attempt.quizId}}</p>
         <div class="progress-bar-container">
-          <div class="progress-bar" :style="{ width: achievement.progress + '%' }"></div>
+          <div class="progress-bar" :style="{ width: (attempt.score / questionService.getQuestionsByQuizId(attempt.quizId)) * 100 + '%' }"></div>
         </div>
       </div>
     </div>
   </div>
+
+</div>
 </template>
 
 
@@ -53,25 +97,21 @@ h2 {
 .achievements-container {
   background-color: #ececec;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
-  max-width: 800px;
+  flex-direction: column; /* Align children vertically */
+  align-items: stretch; /* Stretch items to fill the horizontal space */
+  min-width: 96%;
+  margin-top: -2%;
   padding: 20px;
-  margin-top: 5%;
-  margin-left: auto;
-  margin-right: auto;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust based on content */
   gap: 20px;
-  width: 100%;
-  padding: 0 20px;
+  width: 100%; /* Fill the width of its parent */
+  margin: 0; /* Remove any default margins */
 }
 
 .tile {
@@ -100,24 +140,15 @@ h2 {
   border-radius: 20px;
 }
 
-.gold-background {
-  background-color: gold !important;
-  border: 4px solid goldenrod;
-}
-
-.gold-background:hover {
-  background-color: goldenrod !important;
-}
-
 @media (max-width: 480px) {
   .tiles {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Ensure single column layout on smaller screens */
   }
 
   h1, h2 {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 10px; /* Adjust margins for smaller screens */
   }
 }
-
 </style>
+
+

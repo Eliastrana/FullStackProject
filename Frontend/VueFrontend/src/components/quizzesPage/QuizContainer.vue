@@ -10,24 +10,29 @@
       <div class="filters">
         <select v-model="selectedDifficulty">
           <option value="">All Difficulties</option>
-          <option v-for="difficulty in uniqueDifficulties" :key="difficulty" :value="difficulty">{{ difficulty }}</option>
+          <option v-for="difficulty in difficulties" :key="difficulty" :value="difficulty">{{ difficulty }}</option>
         </select>
         <select v-model="selectedCategory">
           <option value="">All Categories</option>
-          <option v-for="category in uniqueCategories" :key="category" :value="category">{{ category }}</option>
+          <option v-for="(categoryName, id) in categories" :key="id" :value="id">{{ categoryName }}</option>
         </select>
       </div>
     </div>
 
 
-
     <div class="quiz-container">
       <div v-for="quiz in filteredQuizzes" :key="quiz.id" class="quiz-box" @click="handleQuizClick(quiz)">
-        <img :src="quiz.image" alt="Quiz Image">
+        <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image">
         <h2>{{ quiz.title }}</h2>
         <p>{{ quiz.description }}</p>
-        <p class="category-badge">#{{ quiz.category_id }}</p>
-        <!-- Optionally display difficulty if present in your data -->
+
+        <div class="quiz-info">
+          <!-- Displaying Category -->
+          <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
+          <!-- Displaying Difficulty -->
+          <p :class="['difficulty-badge', difficultyClass(quiz.difficulty)]">{{ quiz.difficulty }}</p>
+        </div>
+
       </div>
     </div>
   </div>
@@ -35,56 +40,79 @@
 
 
 <script setup>
+import { computed, defineEmits, onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
+import { CategoryService } from '@/services/CategoryService.js'
+import { DifficultyService } from '@/services/DifficultyService.js'
+import { TagService } from '@/services/TagService.js'
+import { QuestionService } from '@/services/QuestionService.js' // Adjust import paths as needed
 
-import { computed, defineEmits, onMounted, ref } from 'vue'
-import { QuizService } from '@/services/QuizService.js'
-
+const store = useStore();
 const emit = defineEmits(['select-quiz']);
-const quizzes = ref([]);
 const searchQuery = ref('');
 
 const selectedDifficulty = ref('');
 const selectedCategory = ref('');
-
-
-// Assuming QuizContainer directly manages individual quiz items
-
-const handleQuizClick = (quiz) => {
-  console.log('Selected quiz:', quiz)
-  emit('select-quiz', quiz);
-};
-
-
-const filteredQuizzes = computed(() => {
-  return quizzes.value.filter((quiz) => {
-    return quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
-      (selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value) &&
-      (selectedCategory.value === '' || quiz.category_id === selectedCategory.value);
-  });
-});
-
+const categories = ref({});
+const difficulties = ref([]);
+const allTags = ref([]);
+const quizToTagsMap = ref({});
 
 onMounted(async () => {
-  try {
-    quizzes.value = await QuizService.getAllQuizzes();
-  } catch (error) {
-    console.error('Error while fetching quizzes', error);
+  await store.dispatch('quizzes/fetchAllQuizzes');
+  await store.dispatch('quizzes/fetchQuizImages');
+  allTags.value = await TagService.getAllTags();
+
+  const allCategories = await CategoryService.getAllCategories();
+  categories.value = allCategories.reduce((acc, current) => {
+    acc[current.id] = current.categoryName;
+    return acc;
+  }, {});
+
+  difficulties.value = await DifficultyService.getAllDifficulties();
+
+  // Assuming each quiz is uniquely identified by its id
+  for (const quiz of store.state.quizzes.quizzes) {
+    const questions = await QuestionService.getQuestionsByQuizId(quiz.id);
+    const tagsForQuiz = allTags.value.filter(tag =>
+      tag.questionIds.some(id => questions.map(q => q.id).includes(id))
+    );
+    quizToTagsMap.value[quiz.id] = tagsForQuiz.map(t => t.name);
   }
 });
 
-const uniqueDifficulties = computed(() => {
-  const difficulties = quizzes.value.map(quiz => quiz.difficulty);
-  return Array.from(new Set(difficulties)).sort(); // Deduplicate and sort
+const quizzes = computed(() => store.state.quizzes.quizzes);
+
+const filteredQuizzes = computed(() => {
+  const searchLower = searchQuery.value.toLowerCase();
+  return quizzes.value.filter(quiz => {
+    const titleMatch = quiz.title.toLowerCase().includes(searchLower);
+    const tagMatch = quizToTagsMap.value[quiz.id]?.some(tagName => tagName.toLowerCase().includes(searchLower));
+    const difficultyMatch = selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value;
+    const categoryMatch = selectedCategory.value === '' || quiz.categoryId === selectedCategory.value;
+
+    return (titleMatch || tagMatch) && difficultyMatch && categoryMatch;
+  });
 });
 
-const uniqueCategories = computed(() => {
-  const categories = quizzes.value.map(quiz => quiz.category);
-  return Array.from(new Set(categories)).sort(); // Deduplicate and sort
-});
+function handleQuizClick(quiz) {
+  emit('select-quiz', quiz);
+}
 
-
-
+function difficultyClass(difficulty) {
+  switch (difficulty.toLowerCase()) {
+    case 'easy':
+      return 'difficulty-easy';
+    case 'medium':
+      return 'difficulty-medium';
+    case 'hard':
+      return 'difficulty-hard';
+    default:
+      return '';
+  }
+}
 </script>
+
 
 
 
@@ -254,6 +282,55 @@ select {
       margin: 10px 0; /* Adjust margin for vertical stacking */
     }
 
+}
+
+.category-badge {
+  display: inline-block; /* Treat the <p> tag more like an inline element */
+  background-color: #007bff;
+  color: #ffffff; /* Text color */
+  padding: 5px 15px; /* Vertical and horizontal padding */
+  border-radius: 20px; /* Rounded corners */
+  font-size: 0.8rem; /* Adjust font size as needed */
+  margin: 0; /* Remove default <p> margin if needed */
+}
+
+.difficulty-easy {
+  background-color: #28a745; /* Green for easy */
+    display: inline-block;
+    color: #ffffff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin: 5px 0;
+}
+
+.difficulty-medium {
+  background-color: #f3dc5e; /* Yellow for medium */
+  display: inline-block;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+
+.difficulty-hard {
+  background-color: #dc3545; /* Red for hard */
+  display: inline-block;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+
+
+
+.quiz-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
 @media (max-width: 668px) {
   .quiz-box {

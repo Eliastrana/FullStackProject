@@ -1,3 +1,4 @@
+//QuiacreatortoolView.vue
 <script setup>
 import { v4 as uuidv4 } from 'uuid';
 import { computed, onMounted, ref, nextTick } from 'vue'
@@ -6,6 +7,8 @@ import CreateMultipleChoice from '@/components/createPage/createQuizComponents/C
 import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
 import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
 import { QuizService } from '@/services/QuizService.js'
+import router from '@/router/index.js'
+import { CategoryService } from '@/services/CategoryService.js'
 
 
 const store = useStore();
@@ -15,16 +18,27 @@ const quizDescription = ref('');
 const quizCategory = ref('');
 const quizDifficulty = ref('');
 const coverImage = ref(null);
+const categories = ref([]);
 
 const questions = computed(() => store.state.quizzes.quizDetails.questions);
+console.log('Questions:', questions.value);
 
-onMounted(() => {
-  const quizDetails = store.state.quizzes.quizDetails;
-  quizTitle.value = quizDetails.title;
-  quizDescription.value = quizDetails.description;
-  quizCategory.value = quizDetails.category;
-  quizDifficulty.value = quizDetails.difficulty;
-  coverImage.value = quizDetails.coverImage;
+onMounted(async () => {
+  try {
+    const quizDetails = store.state.quizzes.quizDetails;
+    quizTitle.value = quizDetails.title;
+    quizDescription.value = quizDetails.description;
+    quizCategory.value = quizDetails.categoryId;
+    quizDifficulty.value = quizDetails.difficulty;
+    if (quizDetails.coverImage) {
+      coverImage.value = `data:image/${quizDetails.imageType};base64,${quizDetails.imageData}`;
+    }
+    categories.value = await CategoryService.getAllCategories();
+    console.log('Categories:', categories.value);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+  }
+
 });
 
 const quizTypes = ref([
@@ -39,14 +53,6 @@ const difficulties = ref([
   { value: 'HARD', text: 'Hard' },
 ]);
 
-// async function createQuiz(quizData) {
-//   try {
-//     const response = await axios.post('https://api/completeQuiz', quizData);
-//     console.log('Quiz opprettet:', response.data);
-//   } catch (error) {
-//     console.error('Feil ved oppretting av quiz:', error);
-//   }
-// }
 
 function scrollToBottom() {
   nextTick(() => {
@@ -59,12 +65,10 @@ function scrollToBottom() {
 
 function scrollToTop() {
   window.scrollTo({
-    top: 700,
+    top: 0,
     behavior: 'smooth',
   });
 }
-
-
 
 function addQuestionType(type) {
   console.log('Adding question type:', type);
@@ -78,7 +82,10 @@ function addQuestionType(type) {
     text: '', // Default text for the question
     questionType: '', // To be set based on type
     tags: [], // Assuming tags might be optional or provided later
-    answers: [] // Default answers array
+    answers: [], // Default answers array
+    image: null,
+    imageFront: null,
+    imageBack: null,
   };
 
   // Customize the question template based on the type
@@ -129,7 +136,7 @@ function updateQuizDetails() {
   store.commit('quizzes/SET_QUIZ_DETAILS', {
     title: quizTitle.value,
     description: quizDescription.value,
-    category: quizCategory.value,
+    categoryId: quizCategory.value,
     difficulty: quizDifficulty.value,
     coverImage: coverImage.value,
   });
@@ -138,9 +145,10 @@ function updateQuizDetails() {
 async function createQuiz() {
   const quizDetails = store.state.quizzes.quizDetails;
   try {
-    console.log('Creating quiz:', quizDetails)
     const response = await QuizService.create(quizDetails);
+    store.commit('quizzes/CLEAR_QUIZZES');
     console.log('Quiz created successfully:', response);
+    await router.push('/');
   } catch (error) {
     console.error('Error creating quiz:', error);
   }
@@ -153,30 +161,22 @@ function removeQuestionFromStore(uuid) {
   // Or use store.commit if directly committing a mutation
 }
 
-// async function compileQuizToJson() {
-//   // Assuming store dispatch or commit has already been done to update quizDetails
-//   const quizData = store.state.quizzes.quizDetails; // Adjust path as necessary
-//
-//   try {
-//     const response = await QuizService.create(quizData);
-//     console.log('Quiz created successfully', response);
-//   } catch (error) {
-//     console.error('Error creating quiz', error);
-//   }
-// }
-
-
 function handleFileUpload(event) {
-  const file = event.target.files[0]; // Get the uploaded file
-
+  const file = event.target.files[0];
   if (file) {
-    const reader = new FileReader(); // Create a FileReader to read the file
-
+    const reader = new FileReader();
     reader.onload = (e) => {
-      coverImage.value = e.target.result; // Set the coverImage ref to the data URL
+      coverImage.value = e.target.result; // Directly using the result as the image source
+      // Update quizDetails with new image info
+      const [imageType, imageData] = e.target.result.split(';base64,');
+      store.commit('quizzes/SET_QUIZ_DETAILS', {
+        ...store.state.quizzes.quizDetails,
+        imageName: file.name,
+        imageType: imageType.split(':')[1],
+        imageData: imageData,
+      });
     };
-
-    reader.readAsDataURL(file); // Read the file as a Data URL
+    reader.readAsDataURL(file);
   }
 }
 
@@ -202,26 +202,6 @@ function moveQuestionDown(index) {
     store.dispatch('quizzes/updateQuestionsOrder', questions.value);
   }
 }
-
-
-
-
-
-function handleDrag(event) {
-  // Example of additional logic: validation
-  if (event.moved.newIndex === 0) {
-    console.log('Item moved to the first position');
-  }
-
-  // Update Vuex store
-  this.$store.dispatch('updateQuestionsOrder', this.questions);
-
-  // Emit an event to parent
-  this.$emit('orderChanged', this.questions);
-}
-
-
-
 </script>
 
 
@@ -235,7 +215,6 @@ function handleDrag(event) {
 
     <div class="top-container">
       <h1>Quiz Creator Tool</h1>
-      <!-- Image Preview -->
       <!-- Image Preview with Remove Button -->
       <div v-if="coverImage" class="image-preview">
         <img :src="coverImage" alt="Cover Image Preview" />
@@ -254,8 +233,8 @@ function handleDrag(event) {
         <!-- Quiz Category Dropdown -->
         <select v-model="quizCategory" @change="updateQuizDetails">
           <option disabled value="">Choose category</option>
-          <option v-for="category in categories" :key="category.value" :value="category.value">
-            {{ category.text }}
+          <option v-for="category in categories" :key="category.id" :value="category.id">
+            {{ category.categoryName }}
           </option>
         </select>
 
@@ -278,21 +257,6 @@ function handleDrag(event) {
 
     <div class="quiz-container">
 
-
-      <div class="quiz-type-selector">
-        <h2>Choose question type:</h2>
-        <div class="quiz-type-buttons">
-          <button
-            v-for="quizType in quizTypes"
-            :key="quizType.id"
-            @click="addQuestionType(quizType.id)"
-            :style="{ backgroundColor: quizType.color }"
-            class="quiz-type-button"
-          >
-            + {{ quizType.name }}
-          </button>
-        </div>
-      </div>
 
       <h2>Your Questions:</h2>
 
@@ -324,7 +288,20 @@ function handleDrag(event) {
         </div>
       </div>
 
-
+      <div class="quiz-type-selector">
+        <h2>Choose question type:</h2>
+        <div class="quiz-type-buttons">
+          <button
+            v-for="quizType in quizTypes"
+            :key="quizType.id"
+            @click="addQuestionType(quizType.id)"
+            :style="{ backgroundColor: quizType.color }"
+            class="quiz-type-button"
+          >
+            + {{ quizType.name }}
+          </button>
+        </div>
+      </div>
 
       <!--      <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>-->
       <button class="compileButton" @click="createQuiz">Create Quiz</button>

@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    build:
-      context: ./Backend/SpringbootBackend
-      dockerfile: Dockerfile
+    image: sanderskofsrud/fullstackproject-backend:latest # Use image from Docker Hub
     ports:
       - "8080:8080"
     environment:
@@ -23,9 +21,7 @@ services:
       - "3307:3306"
 
   frontend:
-    build:
-      context: ./Frontend/VueFrontend
-      dockerfile: Dockerfile
+    image: sanderskofsrud/fullstackproject-frontend:latest # Use image from Docker Hub
     ports:
       - "80:80"
     depends_on:

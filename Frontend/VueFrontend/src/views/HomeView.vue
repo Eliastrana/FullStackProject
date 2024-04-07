@@ -3,6 +3,11 @@
 import WelcomeIntro from '@/components/displayPage/WelcomeIntro.vue'
 import FunctionalityDisplayer from '@/components/displayPage/FunctionalityDisplayer.vue'
 import FlipcardDisplayer from '@/components/displayPage/FlipcardDisplayer.vue'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  window.scrollTo(0, 0)
+})
 
 </script>
 
