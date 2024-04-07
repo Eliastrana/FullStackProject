@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { UserService } from '@/services/UserService.js';
-import ConfirmationModal from '@/components/util/ConfirmationModal.vue'; // Antar denne komponenten er opprettet
+import ConfirmationModal from '@/components/util/ConfirmationModal.vue';
 
 const users = ref([]);
 const showConfirmationModal = ref(false);
@@ -13,21 +13,34 @@ onMounted(async () => {
 });
 
 
+/**
+ * Fetches all users from the API and updates the users ref.
+ */
 const fetchUsers = async () => {
   users.value = await UserService.getAllUsers();
 };
 
+/**
+ * Promotes a user to admin status.
+ * @param {string} username - The username of the user to promote.
+ */
 const askDeleteUser = (username) => {
   pendingDeleteUsername.value = username;
   showConfirmationModal.value = true;
 };
 
+/**
+ * Deletes a user after confirmation.
+ */
 const confirmDeleteUser = async () => {
   await UserService.deleteUser(pendingDeleteUsername.value);
   await fetchUsers();
   showConfirmationModal.value = false;
 };
 
+/**
+ * Cancels the user deletion.
+ */
 const cancelDelete = () => {
   showConfirmationModal.value = false;
 };
