@@ -27,33 +27,86 @@
   </div>
 </template>
 
+
+
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
+/**
+ * Username for registration form
+ * @type {import('vue').Ref<string>}
+ */
 const username = ref('');
+
+/**
+ * Email for registration form
+ * @type {import('vue').Ref<string>}
+ */
 const email = ref('');
+
+/**
+ * Password for registration form
+ * @type {import('vue').Ref<string>}
+ */
 const password = ref('');
+
+/**
+ * Password confirmation for registration form
+ * @type {import('vue').Ref<string>}
+ */
 const passwordConfirmation = ref('');
+
+/**
+ * Error message for registration form
+ * @type {import('vue').Ref<string>}
+ */
 const errorMessage = ref('');
 
+/**
+ * Vue Router instance
+ * @type {import('vue-router').Router}
+ */
 const router = useRouter();
+
+/**
+ * Vuex Store instance
+ * @type {import('vuex').Store}
+ */
 const store = useStore();
 
-const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/; // Simple regex for email validation
-const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Regex for password validation
+/**
+ * Regular expression for email validation
+ * @type {RegExp}
+ */
+const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
+/**
+ * Regular expression for password validation
+ * @type {RegExp}
+ */
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+/**
+ * Function to register a new user
+ * This function validates the user input and then dispatches a Vuex action to register the user.
+ * If the registration is successful, it redirects the user to the home page.
+ * If there is an error during registration, it sets the error message.
+ */
 const registerUser = async () => {
   errorMessage.value = '';
+
   if (!emailRegex.test(email.value)) {
     errorMessage.value = "Please enter a valid email address.";
     return;
   }
+
   if (!passwordRegex.test(password.value)) {
     errorMessage.value = "Password must be at least 8 characters long and include a letter and a number.";
     return;
   }
+
   if (password.value !== passwordConfirmation.value) {
     errorMessage.value = "Passwords do not match.";
     return;
@@ -74,6 +127,7 @@ const registerUser = async () => {
   }
 };
 </script>
+```
 
 <style scoped>
 
