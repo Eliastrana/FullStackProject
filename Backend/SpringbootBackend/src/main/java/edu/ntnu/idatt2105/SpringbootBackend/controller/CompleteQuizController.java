@@ -46,6 +46,7 @@ public class CompleteQuizController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> createCompleteQuiz(@RequestBody CompleteQuizDTO completeQuizDTO) {
     try {
+        logger.info(String.valueOf(completeQuizDTO.getIsPublic()));
         UUID createdQuizId = completeQuizService.createCompleteQuiz(completeQuizDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", createdQuizId, "message", "Complete quiz created successfully."));
     } catch (Exception e) {
@@ -113,7 +114,7 @@ public class CompleteQuizController {
         }
     }
 
-    @Operation(summary = "Gets a omplete Quiz by its tag", description = "Fetches a complete quiz with questions and answers by its tag.")
+    @Operation(summary = "Gets a complete Quiz by its tag", description = "Fetches a complete quiz with questions and answers by its tag.")
     @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.")
     @ApiResponse(responseCode = "404", description = "Quiz not found.")
     @GetMapping("/tag/{tag}")
