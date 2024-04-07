@@ -72,6 +72,18 @@
         </strong>
         </li>
       </ul>
+      <div class="rating">
+        <input v-model="selectedRating" value="5" name="rating" id="star5" type="radio" @change="rateQuiz(5)">
+        <label for="star5"></label>
+        <input v-model="selectedRating" value="4" name="rating" id="star4" type="radio" @change="rateQuiz(4)">
+        <label for="star4"></label>
+        <input v-model="selectedRating" value="3" name="rating" id="star3" type="radio" @change="rateQuiz(3)">
+        <label for="star3"></label>
+        <input v-model="selectedRating" value="2" name="rating" id="star2" type="radio" @change="rateQuiz(2)">
+        <label for="star2"></label>
+        <input v-model="selectedRating" value="1" name="rating" id="star1" type="radio" @change="rateQuiz(1)">
+        <label for="star1"></label>
+      </div>
       <div class="buttonbox">
         <!-- Restart and Profile Navigation Buttons -->
         <button @click="restartQuiz">Try Again</button>
@@ -87,13 +99,15 @@
 
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import FillInTheBlankDisplayer from '@/components/displayPage/displayQuiz/FillintheblankDisplayer.vue';
 import MultipleChoiceDisplayer from '@/components/displayPage/displayQuiz/MultiplechoiceDisplayer.vue';
 import StudyCardDisplayer from '@/components/displayPage/displayQuiz/StudycardDisplayer.vue';
 import router from '@/router/index.js';
 import { AttemptService } from '@/services/AttemptService.js'
+import { RatingService } from '@/services/RatingService.js';
+
 
 const store = useStore();
 
@@ -106,6 +120,7 @@ const currentQuestionIndex = ref(0);
 const currentScore = ref(0);
 const quizStarted = ref(false);
 const quizCompleted = ref(false);
+const selectedRating = ref('');
 
 // Maintain a separate ref for the total number of questions for scoring,
 // excluding study cards since they don't count towards the score.
@@ -222,20 +237,27 @@ const submitAttempt = async () => {
   }
 };
 
-import { onMounted } from 'vue';
-// Import other dependencies and setup code...
 
 onMounted(() => {
   window.scrollTo(0, 0);
-
-  // Your existing onMounted logic...
 });
+
+async function rateQuiz(rating) {
+  const ratingDTO = {
+    userId: store.getters['user/userId'],
+    quizId: quizId.value,
+    rating: rating
+  };
+
+  try {
+    await RatingService.saveOrUpdateRating(ratingDTO);
+  } catch (error) {
+    console.error('Failed to save quiz rating:', error);
+  }
+}
 
 </script>
 
-
-
-<!-- Add styles as needed -->
 <style scoped>
 
 .quiz-container {
@@ -304,22 +326,18 @@ h1 {
 }
 
 
-/* Enter and leave-active transitions */
 .slide-enter-active, .slide-leave-active {
   transition: transform 0.4s ease;
 }
 
-/* When a new question enters, it should come from the right */
 .slide-enter-from {
   transform: translateX(100%);
 }
 
-/* When the current question leaves, it should move to the left */
 .slide-leave-to {
   transform: translateX(-100%);
 }
 
-/* Final state for entering and starting state for leaving (usually centered) */
 .slide-enter-to, .slide-leave-from {
   transform: translateX(0);
 }
@@ -337,12 +355,12 @@ h1 {
   min-height: 40%;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  z-index: 101; /* Above other content */
+  z-index: 101;
   text-align: center;
 }
 
 body {
-  overflow: hidden; /* Prevent scrolling when results window is open */
+  overflow: hidden;
 }
 
 .results-window h2 {
@@ -380,11 +398,11 @@ body {
 }
 
 .correct {
-  color: #4CAF50; /* Green for correct answers */
+  color: #4CAF50;
 }
 
 .incorrect {
-  color: #F44336; /* Red for incorrect answers */
+  color: #F44336;
 }
 
 
@@ -400,8 +418,8 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-  z-index: 100; /* Ensure it's below the results window but above other content */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
 }
 
 
@@ -414,7 +432,6 @@ body {
 
 .quiz-header h1 {
   margin: 0;
-  /* Adjust the font size as needed to fit your design */
   font-size: 2rem;
 }
 
@@ -438,6 +455,34 @@ body {
   cursor: not-allowed;
 }
 
+.rating {
+  display: inline-block;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  float: right;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s;
+}
+
+.rating label:before {
+  content: '\2605';
+  font-size: 30px;
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+  color: #dcb21f;
+  transition: color 0.3s;
+}
+
+
 @media (max-width: 600px) {
   .quiz-header h1 {
     font-size: 1.5rem;
@@ -451,8 +496,8 @@ body {
   .questions {
     max-width: 100%;
     width: 100%;
-    overflow-x: auto; /* Allows horizontal scrolling if the content is too wide */
-    box-sizing: border-box; /* Ensures padding and border are included in the width */
+    overflow-x: auto;
+    box-sizing: border-box;
   }
 
   .results-window {
@@ -460,11 +505,5 @@ body {
     max-height: 50%;
   }
 
-
 }
-
-
-
-
-
 </style>

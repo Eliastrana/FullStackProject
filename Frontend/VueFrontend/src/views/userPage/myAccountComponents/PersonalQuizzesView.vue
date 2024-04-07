@@ -10,6 +10,8 @@ import ConfirmationModal from '@/components/util/ConfirmationModal.vue'
 import { CategoryService } from '@/services/CategoryService.js'
 import { useRouter } from 'vue-router'
 import store from '@/store/index.js'
+import { RatingService } from '@/services/RatingService.js'
+import StarRating from '@/components/util/StarRating.vue'
 
 // Stateful references used by the component.
 const allQuizzes = ref([]);
@@ -21,6 +23,16 @@ const difficulties = ref([]);
 const router = useRouter();
 const showConfirmationModal = ref(false);
 const pendingDeleteQuizId = ref(null);
+
+/**
+ * Fetches the average ratings for the quizzes.
+ * @param {Array} quizzes - The array of quizzes to fetch ratings for.
+ */
+const fetchAverageRatings = async (quizzes) => {
+  for (const quiz of quizzes) {
+    quiz.averageRating = await RatingService.getAverageRating(quiz.id);
+  }
+};
 
 /**
  * Fetches quizzes created by the current user, along with their categories and any associated images,
@@ -53,6 +65,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('Failed to load quizzes:', error);
   }
+  await fetchAverageRatings(allQuizzes.value);
 });
 
 /**
@@ -195,6 +208,7 @@ const startQuiz = async (quiz) => {
               <span class="material-icons delete-quiz-icon">delete</span>
             </div>
             </div>
+          <StarRating :rating="quiz.averageRating" />
         </div>
       </div>
       <button v-if="displayedQuizzes.length < allQuizzes.length" @click="loadMoreQuizzes" class="view-more-button">View More</button>
