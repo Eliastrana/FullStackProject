@@ -117,7 +117,6 @@ const deleteQuiz = async (quizId) => {
 
   if (isConfirmed) {
     try {
-      console.log('Deleting quiz with ID:', quizId);
       await QuizService.deleteQuiz(quizId);
       allQuizzes.value = allQuizzes.value.filter(quiz => quiz.id !== quizId);
       updateDisplayedQuizzes();
