@@ -79,6 +79,7 @@ public class QuestionMapper {
         }
         
         Question question = new Question();
+        question.setId(dto.getId());
         question.setQuiz(quiz);
         question.setText(dto.getText());
         question.setQuestionType(dto.getQuestionType());
@@ -123,6 +124,7 @@ public class QuestionMapper {
             return null;
         }
         CompleteQuestionDTO dto = new CompleteQuestionDTO();
+        dto.setId(question.getId());
         dto.setText(question.getText());
         dto.setQuestionType(question.getQuestionType());
         dto.setMultimediaLink(question.getMultimediaLink());

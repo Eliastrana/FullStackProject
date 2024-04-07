@@ -16,6 +16,7 @@ export default {
       coverImage: null,
       imageName: '',
       imageType: '',
+      isPublic: false,
     },
     quizzes: [],
   }),
@@ -41,6 +42,7 @@ export default {
         coverImage: null,
         imageName: '',
         imageType: '',
+        isPublic: false,
       };
     },
     SET_QUIZ_DETAILS(state, details) {
@@ -127,16 +129,26 @@ export default {
     },
     async fetchQuizImages({ commit, state }) {
       for (let quiz of state.quizzes) {
-        console.log(quiz)
         if (quiz.imageId) {
           try {
             const imageData = await QuizService.getImageById(quiz.imageId);
             commit('SET_QUIZ_IMAGE', { quizId: quiz.id, imageData });
-            console.log(imageData)
           } catch (error) {
             console.error('Error fetching image for quiz', quiz.id, error);
           }
         }
+      }
+    },
+    async addImageToQuiz({ commit, state }, { quizId }) {
+      try {
+        for (let quiz of state.quizzes) {
+          if (quiz.id === quizId) {
+            const imageData = await QuizService.getImageById(quiz.imageId);
+            commit('SET_QUIZ_IMAGE', { quizId, imageData });
+          }
+        }
+      } catch (error) {
+        console.error('Error adding image to quiz:', error);
       }
     },
     addQuestionsByType({ dispatch }, { type, numberOfQuestions = 5 }) {

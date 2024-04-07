@@ -1,12 +1,11 @@
 <script setup>
-import { ref, onMounted, defineProps } from 'vue'
-import { QuizService } from '@/services/QuizService.js'; // Import QuizService
-import { UserService } from '@/services/UserService.js';
-import user from '@/store/modules/user.js';
+import { defineProps, onMounted, ref } from 'vue'
+import { QuizService } from '@/services/QuizService.js' // Import QuizService
+import { UserService } from '@/services/UserService.js'
 import ConfirmationModal from '@/components/util/ConfirmationModal.vue'
 import { CategoryService } from '@/services/CategoryService.js'
+import { useRouter } from 'vue-router'
 import store from '@/store/index.js'
-import router from '@/router/index.js'
 
 const allQuizzes = ref([]); // Stores all quizzes
 const displayLimit = ref(3); // Initial display limit
@@ -14,6 +13,8 @@ const displayedQuizzes = ref([]); // Quizzes to be displayed
 
 const categories = ref({});
 const difficulties = ref([]);
+
+const router = useRouter();
 
 // Fetch quizzes data from the API when the component is mounted
 
@@ -37,7 +38,7 @@ onMounted(async () => {
 
 
     // Load image data for each quiz
-    const quizzesWithImages = await Promise.all(quizzesData.map(async (quiz) => {
+    allQuizzes.value = await Promise.all(quizzesData.map(async (quiz) => {
       if (quiz.imageId) {
         quiz.imageData = await loadImageData(quiz.imageId);
       } else {
@@ -45,8 +46,6 @@ onMounted(async () => {
       }
       return quiz;
     }));
-
-    allQuizzes.value = quizzesWithImages;
     // Initially display all (or a subset of) filtered quizzes
     displayedQuizzes.value = allQuizzes.value.slice(0, displayLimit.value);
   } catch (error) {
@@ -85,9 +84,8 @@ const cancelDelete = () => {
 
 
 // Edit quiz function
-const editQuiz = (id) => {
-  alert(`Edit quiz with ID: ${id} `);
-
+const editQuiz = async (quizId) => {
+  await router.push({ name: 'QuizcreatorTool', params: { quizId } });
 };
 
 const deleteQuiz = async (quizId) => {
@@ -150,7 +148,7 @@ const startQuiz = async (quiz) => {
     <h2>These are your personal quizzes</h2>
     <div class="quizzes">
       <div class="quiz" v-for="(quiz, index) in displayedQuizzes" :key="quiz.id">
-        <div class="quiz-info" @click.stop="() => startQuiz(quiz)">
+        <div class="quiz-info">
           <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image" class="quiz-image"/>
 
           <div class="quiz-text">
@@ -160,13 +158,19 @@ const startQuiz = async (quiz) => {
           </div>
 
           <div class="action-icons">
+            <div @click="startQuiz(quiz)" class="delete-icon">
+              <span class="material-icons play-icon">play_arrow</span>
+            </div>
+
             <div @click="editQuiz(quiz.id)" class="delete-icon">
               <span class="material-icons">edit</span>
             </div>
 
             <div @click="askDeleteQuiz(quiz.id)" class="delete-icon">
-              <span class="material-icons">delete</span>
+              <span class="material-icons delete-quiz-icon">delete</span>
             </div>
+
+
 
 
 
@@ -321,6 +325,15 @@ h2 {
   font-size: 0.8rem; /* Adjust font size as needed */
   margin: 0; /* Remove default <p> margin if needed */
 }
+
+.play-icon {
+  color: #3ad83a;
+}
+
+.delete-quiz-icon {
+  color: #f40404;
+}
+
 
 @media (max-width: 768px) {
   .quiz-info {
