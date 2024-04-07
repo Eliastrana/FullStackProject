@@ -16,7 +16,7 @@ const store = useStore();
 const quizTitle = ref('');
 const quizDescription = ref('');
 const quizCategory = ref('');
-const quizDifficulty = ref('');
+const quizDifficulty = ref(''); // Ensure this matches the value for "Easy"
 const coverImage = ref(null);
 const categories = ref([]);
 
@@ -249,6 +249,7 @@ function moveQuestionDown(index) {
 
 
       </div>
+
     </div>
 
 
@@ -257,11 +258,7 @@ function moveQuestionDown(index) {
 
     <div class="quiz-container">
 
-
       <h2>Your Questions:</h2>
-
-
-
 
       <div v-for="(question, index) in questions" :key="question.uuid" class="question-container">
         <!-- Move Buttons -->
@@ -276,7 +273,7 @@ function moveQuestionDown(index) {
           </button>
 
         </div>
-        <!-- Question Editor -->
+
         <div class="question-editor">
           <component
             :is="getComponent(question.questionType)"
@@ -345,7 +342,7 @@ h2 {
   font-size: 3rem;
   margin-right: 10px;
   text-align: center;
-  //margin-bottom: 40px;
+  margin-bottom: 20px;
 
 }
 
@@ -376,7 +373,7 @@ h2 {
   margin-right: 10px;
   text-align: center;
   margin-top: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 20px; /* Assuming you want a 20px margin */
   background-color: #007bff;
 }
 
@@ -418,13 +415,7 @@ h2 {
   box-shadow: 0 0 0 2px #62B6CB; /* Adds a custom focus style */
 }
 
-#bottom-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px; /* Adjust as needed for spacing */
-}
+
 
 
 #quiz-title-input {
@@ -460,13 +451,18 @@ textarea {
   max-height: 200px; /* Sett en maksimal høyde for forhåndsvisning */
   object-fit: cover; /* Sørge for at bildet dekker området proporsjonalt */
 }
+
+
 #bottom-container{
   display: flex;
-  flex-direction: row;
+  flex-direction: row; /* This ensures they are side by side on larger screens */
+  justify-content: space-between;
   align-items: center;
+  padding: 20px; /* Adjust as needed for spacing */
   background-color: rgb(249, 249, 249);
   max-width: 70vw;
   text-align: center;
+
 }
 
 
@@ -564,6 +560,7 @@ textarea {
   display: flex;
   align-items: flex-start; /* Align items at the start of the container */
   gap: 10px; /* Space between move buttons and the question editor */
+  padding-bottom: 40px; /* Adjust as needed */
 }
 
 .move-buttons {
@@ -617,6 +614,71 @@ textarea {
   opacity: 0;
 }
 
+
+
+@media (max-width: 768px) {
+  .top-container,
+  #bottom-container,
+  .quiz-container {
+    max-width: 90vw; /* Adjust the width to fit the viewport */
+    padding: 10px; /* Reduce padding */
+    margin-top: 20px; /* Adjust margins as needed */
+  }
+
+  #bottom-container {
+    flex-direction: column; /* Stack elements vertically on smaller screens */
+    align-items: stretch; /* Stretch elements to fill the container width */
+  }
+
+  #bottom-container select {
+    width: 100%; /* Ensure selects take up full width */
+    margin-bottom: 10px; /* Add some space between the dropdowns */
+  }
+
+  #quiz-title-input,
+  textarea {
+    width: 80vw; /* Make inputs take up most of the viewport width */
+    font-size: 16px; /* Adjust font size for readability */
+  }
+
+  .quiz-type-buttons .quiz-type-button {
+    padding: 10px; /* Reduce padding for the buttons */
+    font-size: 16px; /* Reduce font size for button text */
+    margin: 5px; /* Reduce margin to fit more content */
+  }
+
+  .question-container {
+    flex-direction: column; /* Stack the move buttons and editor vertically */
+  }
+
+  .move-buttons,
+  .question-editor {
+    width: 100%; /* Make use of the full width */
+    padding: 0 5px; /* Adjust padding */
+  }
+
+  .scroll-to-top {
+    width: 40px; /* Reduce the size of the scroll-to-top button */
+    height: 40px; /* Match the width for a circular shape */
+    right: 10px; /* Adjust positioning */
+    bottom: 10px;
+  }
+
+  .image-preview img {
+    max-width: 80vw; /* Ensure image preview does not overflow screen width */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  .uploadimagebutton {
+    width: 100%; /* Make the button take up most of the screen width */
+    font-size: 16px; /* Adjust font size for better legibility */
+  }
+
+  .compileButton {
+    width: 50%; /* Make buttons wider to fit the text comfortably */
+    font-size: 14px; /* Adjust font size for better legibility */
+  }
+}
 
 
 
