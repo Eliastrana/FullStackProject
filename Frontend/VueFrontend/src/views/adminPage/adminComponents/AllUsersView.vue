@@ -12,6 +12,7 @@ onMounted(async () => {
   await fetchUsers();
 });
 
+
 const fetchUsers = async () => {
   users.value = await UserService.getAllUsers();
 };
