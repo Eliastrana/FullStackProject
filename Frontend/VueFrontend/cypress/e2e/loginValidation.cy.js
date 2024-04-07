@@ -34,7 +34,7 @@ describe('Login Validation', () => {
     cy.visit('/login');
 
     cy.get('input[type="text"]').type('test');
-    cy.get('input[type="password"]').type('test');
+    cy.get('input[type="password"]').type('testpassord1');
     cy.get('form').submit();
     
     cy.url().should('include', '/MyAccount');
