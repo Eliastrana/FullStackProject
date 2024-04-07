@@ -54,6 +54,11 @@ const content = ref('');
 const openMailClient = () => {
   const mailtoLink = `mailto:support@qanda.no?subject=${encodeURIComponent(subject.value)}&body=Name: ${encodeURIComponent(name.value)}%0D%0A%0D%0AContent:%0D%0A${encodeURIComponent(content.value)}`;
   window.location.href = mailtoLink;
+
+  name.value = '';
+  subject.value = '';
+  content.value = '';
+
 };
 
 </script>
