@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.AnswerCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuestionDTO;

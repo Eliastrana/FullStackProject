@@ -1,6 +1,5 @@
 package edu.ntnu.idatt2105.SpringbootBackend.model;
 
-import edu.ntnu.idatt2105.SpringbootBackend.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

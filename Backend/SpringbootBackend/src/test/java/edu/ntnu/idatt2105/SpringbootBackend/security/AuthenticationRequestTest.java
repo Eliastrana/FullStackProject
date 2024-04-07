@@ -2,7 +2,6 @@ package edu.ntnu.idatt2105.SpringbootBackend.security;
 
 import org.junit.jupiter.api.Test;
 
-import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
