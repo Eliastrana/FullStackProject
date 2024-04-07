@@ -38,14 +38,14 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
   @Override
   public void run(String... args) {
     userRepository.findByUsername("admin").ifPresentOrElse(admin -> logger.info("Admin user already exists"), () -> {
-      UserCreationDTO userCreationDTO = new UserCreationDTO("admin", "admin", "admin@email.com");
+      UserCreationDTO userCreationDTO = new UserCreationDTO("admin", "Password123", "admin@email.com");
       authenticationService.register(userCreationDTO);
       User admin = userRepository.findByUsername("admin").orElseThrow();
       userRoleService.assignRoleToUser(admin.getUsername(), "ADMIN");
     });
 
     userRepository.findByUsername("user").ifPresentOrElse(user -> logger.info("User user already exists"), () -> {
-      UserCreationDTO userCreationDTO = new UserCreationDTO("user", "user", "user@email.com");
+      UserCreationDTO userCreationDTO = new UserCreationDTO("user", "Password123", "user@email.com");
       authenticationService.register(userCreationDTO);
     });
 
