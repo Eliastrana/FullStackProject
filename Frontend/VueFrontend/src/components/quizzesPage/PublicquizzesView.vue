@@ -30,7 +30,6 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error while fetching quizzes', error);
   }
-  console.log('Quizzes:', quizzes.value);
 });
 </script>
 
