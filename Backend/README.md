@@ -16,6 +16,7 @@ ___
 
 ## Basic Setup Guide
 
+If you want to run the project individually, you can follow the steps below:
 ## Recommended IDE Setup
 
 To run the backend individually, you will need:
@@ -33,11 +34,9 @@ To run the backend individually, you will need:
 - [git](https://git-scm.com/downloads)
 ---
 ## Project Setup
-### Commands
+## Commands
 
-If yoy want to run the project individually, you can follow the steps below:
-Inside the SpringbootBackend folder of the project:
-
+Inside the springbootBackend folder, you can run the following commands:
 ### compile and run the project
 ```bash
 mvn clean install
