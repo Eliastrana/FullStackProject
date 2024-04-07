@@ -15,7 +15,7 @@
           <div @click="navigateAfterClose('/Quizzes')"
                :class="{'alternativeRouter': true, 'active-link': route.path === '/Quizzes'}">Quizzes</div>
           <div @click="navigateAfterClose('/Create')"
-               :class="{'alternativeRouter': true, 'active-link': route.path === '/Create'}">Create</div>
+               :class="{'alternativeRouter': true, 'active-link': route.path === '/Create'}">CreateQuiz</div>
           <div @click="navigateAfterClose('/Login')" class="alternativeRouter" v-if="!isAuthenticated">Sign in</div>
           <template v-if="isAuthenticated">
             <div v-if="screenWidth <= 768 && isNavbarOpen" @click.stop="toggleNavbar" class="smallermenu">

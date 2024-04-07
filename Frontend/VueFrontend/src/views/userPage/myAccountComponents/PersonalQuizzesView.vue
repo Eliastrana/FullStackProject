@@ -1,10 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineProps } from 'vue'
 import { QuizService } from '@/services/QuizService.js'; // Import QuizService
 import { UserService } from '@/services/UserService.js';
 import user from '@/store/modules/user.js';
 import ConfirmationModal from '@/components/util/ConfirmationModal.vue'
 import { CategoryService } from '@/services/CategoryService.js'
+import store from '@/store/index.js'
+import router from '@/router/index.js'
 
 const allQuizzes = ref([]); // Stores all quizzes
 const displayLimit = ref(3); // Initial display limit
@@ -119,6 +121,22 @@ const loadImageData = async (imageId) => {
 };
 
 
+const props = defineProps({
+  quiz: Object,
+});
+
+const startQuiz = async (quiz) => {
+  try {
+    const quizData = await QuizService.getQuizById(quiz.id);
+    // Include the quiz ID in the payload
+    await store.dispatch('quizAttempt/setQuizData', { quizData, quizId: quiz.id });
+    await router.push({ name: 'QuizDisplayer' });
+  } catch (error) {
+    console.error('Failed to fetch and store quiz data:', error);
+  }
+};
+
+
 </script>
 
 
@@ -132,15 +150,13 @@ const loadImageData = async (imageId) => {
     <h2>These are your personal quizzes</h2>
     <div class="quizzes">
       <div class="quiz" v-for="(quiz, index) in displayedQuizzes" :key="quiz.id">
-        <div class="quiz-info">
+        <div class="quiz-info" @click.stop="() => startQuiz(quiz)">
           <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image" class="quiz-image"/>
 
-<!--          <img :src="quiz.image" :alt="quiz.title" class="quiz-image"/>-->
           <div class="quiz-text">
             <h3>{{ quiz.title }}</h3>
             <p>{{ quiz.description }}</p>
             <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
-<!--            <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>-->
           </div>
 
           <div class="action-icons">
