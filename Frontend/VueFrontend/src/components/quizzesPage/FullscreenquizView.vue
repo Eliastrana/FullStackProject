@@ -292,6 +292,43 @@ button:hover {
     align-items: flex-start; /* Align items to the start */
   }
 
+  .quiz-content {
+    position: relative;
+    background-color: white;
+    color: black;
+    text-align: left;
+    max-width: 600px;
+    width: 100%; /* Ensure it takes up to 100% of its parent width */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+
+    margin: 20px; /* This helps ensure there's a bit of margin around the content */
+  }
+
+  .quiz-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 10px; /* Ensure padding does not cause overflow */
+    box-sizing: border-box; /* Include padding in width calculation */
+    overflow: hidden;
+
+  }
+
+
+
+
 
 }
 
