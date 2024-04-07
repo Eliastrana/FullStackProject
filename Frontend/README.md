@@ -93,7 +93,7 @@ npm run lint
 
 ### User
 - Username: user
-- Password: user
+- Password: Password123
 ---
 ## Contact Information
 
