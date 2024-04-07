@@ -43,6 +43,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+/**
+ * Provides comprehensive services for handling the lifecycle of quizzes, including their creation,
+ * retrieval, updating, and deletion. This service facilitates the management of quizzes and their
+ * related entities such as questions and answers, ensuring a cohesive quiz management experience.
+ *
+ * @author Vegard Johnsen, Sander rom skofsrud
+ * @version 0.1
+ * @since 0.1
+ * @see Quiz
+ * @see QuizRepository
+ */
 @Service
 public class CompleteQuizService {
 
@@ -89,6 +100,14 @@ public class CompleteQuizService {
 
     }
 
+    /**
+     * Creates a complete quiz based on the provided {@link CompleteQuizDTO}, including its questions
+     * and potential answers. This method orchestrates the creation of a quiz and its related entities,
+     * ensuring consistency across the quiz structure.
+     *
+     * @param completeQuizDTO The {@link CompleteQuizDTO} containing the quiz details.
+     * @return The unique identifier ({@link UUID}) of the created quiz.
+     */
 @Transactional
 public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
     User creator = userRepository.findById(completeQuizDTO.getCreatorId())
@@ -138,7 +157,15 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
     return savedQuiz.getId(); // Return the ID of the saved quiz
 }
 
-    
+
+    /**
+     * Retrieves the details of a complete quiz identified by its UUID, including its questions
+     * and answers, encapsulated in a {@link CompleteQuizDTO}.
+     *
+     * @param quizId The UUID of the quiz to retrieve.
+     * @return A {@link CompleteQuizDTO} representing the retrieved quiz.
+     * @throws QuizNotFoundException If the quiz is not found.
+     */
 
     @Transactional(readOnly = true)
     public CompleteQuizDTO getCompleteQuizById(UUID quizId) throws QuizNotFoundException {
@@ -147,8 +174,16 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
     
         return quizMapper.toCompleteQuizDTO(quiz);
     }
-    
 
+
+    /**
+     * Updates an existing quiz, identified by its UUID, with new information provided in a
+     * {@link CompleteQuizDTO}. This includes updates to the quiz's questions and answers.
+     *
+     * @param quizId The UUID of the quiz to update.
+     * @param completeQuizDTO The {@link CompleteQuizDTO} containing the new quiz details.
+     * @throws QuizNotFoundException If the quiz to update is not found.
+     */
     @Transactional
     public void updateCompleteQuiz(UUID quizId, CompleteQuizDTO completeQuizDTO) throws QuizNotFoundException {
         // Fetch the existing quiz
@@ -257,6 +292,14 @@ private void updateAnswers(Question question, Set<AnswerCreateDTO> dtoAnswers) {
 }
 
 
+
+    /**
+     * Deletes an existing quiz and its related entities, such as questions and answers,
+     * identified by its UUID.
+     *
+     * @param quizId The UUID of the quiz to delete.
+     * @throws QuizNotFoundException If the quiz to delete is not found.
+     */
 
 @Transactional
 public void deleteCompleteQuiz(UUID quizId) throws QuizNotFoundException {

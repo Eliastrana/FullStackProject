@@ -16,6 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 
+/**
+ * The {@code UserRoleService} class is responsible for managing the association
+ * between {@link User} entities and {@link Role} entities. It provides methods
+ * to assign, update, and remove roles for users, ensuring proper access control
+ * and authorization within the system.
+ *
+ * @see User
+ * @see Role
+ * @see UserRole
+ * @author Vegard Johnsen
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 public class UserRoleService {
     private final UserRoleRepository userRoleRepository;
@@ -28,6 +41,19 @@ public class UserRoleService {
         this.roleRepository = roleRepository;
     }
 
+    /**
+     * Assigns a specified role to a user identified by their username. This method
+     * ensures that the user is an owner before assigning the role, checks if the
+     * role already exists for the user, and then creates the {@link UserRole} association.
+     *
+     * @param username The username of the user.
+     * @param roleName The name of the role to be assigned.
+     * @return {@code true} if the role is successfully assigned.
+     * @throws UserNotFoundException If the user cannot be found.
+     * @throws NotOwnerException If the user is not an owner.
+     * @throws RoleNotFoundException If the role cannot be found.
+     * @throws RoleAlreadyAssignedException If the user already has the role.
+     */
 @Transactional
 public boolean assignRoleToUser(String username, String roleName) {
     User user = userRepository.findByUsername(username)
@@ -59,6 +85,13 @@ public boolean assignRoleToUser(String username, String roleName) {
 
 
 
+    /**
+     * Updates the roles of a user by replacing all existing roles with a new role.
+     *
+     * @param username The username of the user.
+     * @param newRoleName The name of the new role to assign.
+     * @return {@code true} if the role is successfully updated.
+     */
     @Transactional
     public boolean updateRoleForUser(String username, String newRoleName) {
         // Assuming you want to replace all existing roles with a new single role
@@ -72,6 +105,13 @@ public boolean assignRoleToUser(String username, String roleName) {
         return assignRoleToUser(username, newRoleName);
     }
 
+    /**
+     * Removes a specified role from a user identified by their username.
+     *
+     * @param username The username of the user.
+     * @param roleName The name of the role to be removed.
+     * @return {@code true} if the role is successfully removed.
+     */
     @Transactional
     public boolean removeRoleFromUser(String username, String roleName) {
         User user = userRepository.findByUsername(username).orElse(null);

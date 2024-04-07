@@ -8,6 +8,16 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * The UserQuizAttemptDTO class is a Data Transfer Object that encapsulates the details of a user's attempt at a quiz.
+ * It includes information such as the unique identifiers for the attempt, the user, and the quiz, as well as the user's
+ * score and the status of the attempt. This class facilitates the transfer of user quiz attempt data between the client
+ * and the server, enabling the tracking and analysis of quiz attempts within the application.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

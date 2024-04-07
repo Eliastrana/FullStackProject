@@ -23,6 +23,20 @@ import java.util.List;
 import java.util.UUID;
 
 
+/**
+ * The {@code QuizController} class handles HTTP requests related to quiz management.
+ * It supports creating, retrieving, updating, and deleting quizzes. This class
+ * interacts with {@link QuizService} for quiz operations and {@link UserService}
+ * for retrieving user details.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see QuizService
+ * @see UserService
+ * @see QuizDTO
+ * @see QuizCreateDTO
+ */
 @Tag(name = "Quiz Management")
 @CrossOrigin(origins = "*")
 @RestController
@@ -33,6 +47,14 @@ public class QuizController {
     private final QuizService quizService;
     private final Logger logger = LoggerFactory.getLogger(QuizController.class);
 
+    /**
+     * Creates a new quiz with details provided in {@link QuizCreateDTO}. The quiz
+     * is associated with the currently authenticated user. Upon successful creation,
+     * returns the created quiz details as {@link QuizDTO}.
+     *
+     * @param quizCreateDTO The quiz creation details.
+     * @return A {@link ResponseEntity} containing the created {@link QuizDTO}.
+     */
     @Operation(summary = "Create a new quiz", description = "Creates a new quiz with the provided details")
     @ApiResponse(responseCode = "200", description = "Successfully created the quiz")
     @ApiResponse(responseCode = "400", description = "Error creating the quiz")
@@ -56,6 +78,12 @@ public class QuizController {
     }
 
 
+    /**
+     * Retrieves all available quizzes. This method queries all quizzes without any filters
+     * and returns a list of {@link QuizDTO} representing each quiz.
+     *
+     * @return A {@link ResponseEntity} containing a list of all {@link QuizDTO}.
+     */
     @Operation(summary = "Fetch all quizzes", description = "Retrieves all available quizzes")
     @ApiResponse(responseCode = "200", description = "Successfully fetched quizzes")
     @GetMapping
@@ -69,6 +97,13 @@ public class QuizController {
         }
     }
 
+    /**
+     * Retrieves a specific quiz by its unique identifier ({@code id}). If the quiz is found,
+     * its details are returned as {@link QuizDTO}; otherwise, a not found status is returned.
+     *
+     * @param id The unique identifier of the quiz to retrieve.
+     * @return A {@link ResponseEntity} with the {@link QuizDTO} if found, or a not found status.
+     */
     @Operation(summary = "Fetch a specific quiz", description = "Retrieves a quiz by its unique identifier")
     @ApiResponse(responseCode = "200", description = "Successfully fetched the quiz")
     @ApiResponse(responseCode = "404", description = "Quiz not found")
@@ -92,6 +127,16 @@ public class QuizController {
         }
     }
 
+    /**
+     * Updates an existing quiz identified by its unique identifier ({@code id}). The updated
+     * quiz details are provided in a {@link QuizDTO}. If the quiz is found, it is updated with
+     * the new details and the updated {@link QuizDTO} is returned; otherwise, a not found status
+     * is returned.
+     *
+     * @param id The unique identifier of the quiz to update.
+     * @param quizUpdateDTO The updated quiz details.
+     * @return A {@link ResponseEntity} with the updated {@link QuizDTO} if found, or a not found status.
+     */
     @Operation(summary = "Update an existing quiz", description = "Updates quiz details by its unique identifier")
     @ApiResponse(responseCode = "200", description = "Successfully updated the quiz")
     @ApiResponse(responseCode = "404", description = "Quiz not found")
@@ -111,6 +156,14 @@ public class QuizController {
         }
     }
 
+    /**
+     * Deletes a quiz by its unique identifier ({@code id}). If the quiz is found, it is deleted
+     * and a no content status is returned; otherwise, a not found status is returned.
+     *
+     * @param id The unique identifier of the quiz to delete.
+     * @return A {@link ResponseEntity} with a no content status if the quiz is successfully deleted,
+     * or a not found status if the quiz is not found.
+     */
     @Operation(summary = "Delete a quiz", description = "Deletes a quiz by its unique identifier")
     @ApiResponse(responseCode = "204", description = "Successfully deleted the quiz")
     @ApiResponse(responseCode = "404", description = "Quiz not found")
