@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import store from '@/store/index.js'
 import NotFound from '../views/NotFound.vue';
+import { RoleService } from '@/services/RoleService.js'
 
 
 
@@ -42,6 +43,11 @@ const router = createRouter({
       component: () => import('../views/loginView/CreateUserView.vue') // Adjust the path as necessary
     },
     {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: () => import('../views/loginView/ResetPasswordView.vue') // Adjust the path as necessary
+    },
+    {
       path: '/quizcreator',
       name: 'Quizcreator',
       component: () => import('../components/createPage/QuizcreatortoolView.vue'),
@@ -74,7 +80,8 @@ const router = createRouter({
     {
       path: '/Admin',
       name: 'Admin',
-      component: () => import('../views/adminPage/AdminView.vue')
+      component: () => import('../views/adminPage/AdminView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
       path: '/Contact',
@@ -100,15 +107,27 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
   const isAuthenticated = store.getters['user/isAuthenticated'];
+  const username = store.getters['user/userName'];
 
   if (requiresAuth && !isAuthenticated) {
     next({ name: 'login' });
-  } else {
-    next();
+    return;
   }
+
+  if (requiresAdmin) {
+    const hasAdminRole = await RoleService.userHasRoleAdmin(username);
+    if (!hasAdminRole) {
+      next({ name: 'home' });
+      return;
+    }
+  }
+
+  next();
 });
+
 
 export default router

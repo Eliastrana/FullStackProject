@@ -4,10 +4,14 @@ import { QuizService } from '@/services/QuizService.js'; // Import QuizService
 import { UserService } from '@/services/UserService.js';
 import user from '@/store/modules/user.js';
 import ConfirmationModal from '@/components/util/ConfirmationModal.vue'
+import { CategoryService } from '@/services/CategoryService.js'
 
 const allQuizzes = ref([]); // Stores all quizzes
 const displayLimit = ref(3); // Initial display limit
 const displayedQuizzes = ref([]); // Quizzes to be displayed
+
+const categories = ref({});
+const difficulties = ref([]);
 
 // Fetch quizzes data from the API when the component is mounted
 
@@ -22,6 +26,13 @@ onMounted(async () => {
 
     // Filter quizzes based on the userId
     quizzesData = quizzesData.filter(quiz => quiz.creatorId === userId);
+
+    const allCategories = await CategoryService.getAllCategories();
+    categories.value = allCategories.reduce((acc, current) => {
+      acc[current.id] = current.categoryName;
+      return acc;
+    }, {});
+
 
     // Load image data for each quiz
     const quizzesWithImages = await Promise.all(quizzesData.map(async (quiz) => {
@@ -128,7 +139,7 @@ const loadImageData = async (imageId) => {
           <div class="quiz-text">
             <h3>{{ quiz.title }}</h3>
             <p>{{ quiz.description }}</p>
-            <p>Category: <strong>{{ quiz.category }}</strong></p>
+            <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
 <!--            <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>-->
           </div>
 
@@ -166,20 +177,14 @@ const loadImageData = async (imageId) => {
 <style scoped>
 
 .quizzes-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 800px;
+  max-width: 800px; /* or your desired width */
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
   padding: 20px;
-  margin: 5% auto;
-  margin-right: 2%;
-  margin-left: 2%;
-
-  border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  background-color: #ececec;
+  /* other styles */
 }
+
 
 .edit-icon {
   cursor: pointer;
@@ -290,6 +295,16 @@ h2 {
   background-color: #0056b3;
 }
 
+
+.category-badge {
+  display: inline-block; /* Treat the <p> tag more like an inline element */
+  background-color: #007bff; /* Example background color */
+  color: #ffffff; /* Text color */
+  padding: 5px 15px; /* Vertical and horizontal padding */
+  border-radius: 20px; /* Rounded corners */
+  font-size: 0.8rem; /* Adjust font size as needed */
+  margin: 0; /* Remove default <p> margin if needed */
+}
 
 @media (max-width: 768px) {
   .quiz-info {

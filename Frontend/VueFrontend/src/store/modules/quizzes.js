@@ -1,5 +1,4 @@
 // store/modules/quizzes.js
-import router from '@/router/index.js'
 import { v4 as uuidv4 } from 'uuid';
 import { QuizService } from '@/services/QuizService.js'
 
@@ -53,12 +52,12 @@ export default {
         state.quizDetails.questions.splice(index, 1);
       }
     },
-    UPDATE_QUESTION_IMAGE(state, { uuid, imageData }) {
-      const questionIndex = state.quizDetails.questions.findIndex(question => question.uuid === uuid);
-      if (questionIndex !== -1) {
-        state.quizDetails.questions[questionIndex].image = imageData;
-      }
-    },
+    // UPDATE_QUESTION_IMAGE(state, { uuid, imageData }) {
+    //   const questionIndex = state.quizDetails.questions.findIndex(question => question.uuid === uuid);
+    //   if (questionIndex !== -1) {
+    //     state.quizDetails.questions[questionIndex].image = imageData;
+    //   }
+    // },
     SET_QUESTION_ORDER(state, questions) {
       state.questions = questions;
     },
@@ -67,6 +66,12 @@ export default {
     },
     SET_QUIZ_ARRAY(state, quizzes) {
       state.quizzes = quizzes;
+    },
+    UPDATE_QUESTION_TAGS(state, { uuid, newTags }) {
+      const questionIndex = state.quizDetails.questions.findIndex(q => q.uuid === uuid);
+      if (questionIndex !== -1) {
+        state.quizDetails.questions[questionIndex].tags = newTags;
+      }
     },
     SET_QUIZ_IMAGE(state, { quizId, imageData }) {
       const quizIndex = state.quizzes.findIndex(quiz => quiz.id === quizId);
@@ -85,13 +90,13 @@ export default {
       } else {
         commit('ADD_QUESTION', questionData);
       }
-      if (questionData.coverImage) {
-        commit('SET_QUIZ_COVER_IMAGE', {
-          imageName: questionData.imageName,
-          imageType: questionData.imageType,
-          coverImage: questionData.coverImage
-        });
-      }
+      // if (questionData.coverImage) {
+      //   commit('SET_QUIZ_COVER_IMAGE', {
+      //     imageName: questionData.imageName,
+      //     imageType: questionData.imageType,
+      //     coverImage: questionData.coverImage
+      //   });
+      // }
     },
     setQuizDetails({ commit }, details) {
       commit('SET_QUIZ_DETAILS', details);
@@ -105,10 +110,13 @@ export default {
     clearQuizzes({ commit }) {
       commit('CLEAR_QUIZZES');
     },
-    updateQuestionImage({ commit }, { uuid, image, imageType }) {
-      // Find the question by UUID and update its image
-       commit('UPDATE_QUESTION_IMAGE', { uuid, image, imageType });
+    updateQuestionTags({ commit }, payload) {
+      commit('UPDATE_QUESTION_TAGS', payload);
     },
+    // updateQuestionImage({ commit }, { uuid, image, imageType }) {
+    //   // Find the question by UUID and update its image
+    //    commit('UPDATE_QUESTION_IMAGE', { uuid, image, imageType });
+    // },
     async fetchAllQuizzes({ commit }) {
       try {
         const quizzesData = await QuizService.getAllQuizzes();
@@ -145,7 +153,7 @@ export default {
               questionType: 'FILL_IN_BLANK',
               tags: [],
               answers: [{ text: '', correct: true }],
-              image: null,
+//              image: null,
             };
             break;
           case 'MULTIPLE_CHOICE':
@@ -155,7 +163,7 @@ export default {
               questionType: 'MULTIPLE_CHOICE',
               tags: [],
               answers: [{ text: '', correct: false }],
-              image: null,
+//              image: null,
             };
             break;
           case 'STUDY':
@@ -165,8 +173,8 @@ export default {
               questionType: 'STUDY',
               tags: [],
               answers: [{ text: '', correct: true }],
-              imageFront: null,
-              imageBack: null,
+//              imageFront: null,
+//              imageBack: null,
             };
             break;
           default:

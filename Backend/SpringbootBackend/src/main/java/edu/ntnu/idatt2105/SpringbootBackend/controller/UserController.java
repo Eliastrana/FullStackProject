@@ -7,9 +7,13 @@ import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AuthenticationService;
 import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -115,5 +119,37 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userDetails);
+    }
+
+    @Operation(summary = "Get all users", description = "Fetches all users in the system with their details")
+    @ApiResponse(responseCode = "200", description = "Users fetched successfully")
+    @ApiResponse(responseCode = "404", description = "No users found")
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Iterable<UserDetailsDTO>> getAllUsers() {
+        logger.info("Fetching all users");
+        Iterable<UserDetailsDTO> users = userService.getAllUsers();
+
+        if (users == null) {
+            logger.error("No users found");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
+    }
+
+    @Operation(summary = "Delete user", description = "Deletes a user from the system")
+    @ApiResponse(responseCode = "200", description = "User deleted successfully")
+    @ApiResponse(responseCode = "404", description = "User not found")
+    @DeleteMapping("/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        logger.info("Deleting user with username: " + username);
+        boolean isDeleted = userService.deleteUser(username);
+
+        if (!isDeleted) {
+            logger.error("User not found: " + username);
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
     }
 }

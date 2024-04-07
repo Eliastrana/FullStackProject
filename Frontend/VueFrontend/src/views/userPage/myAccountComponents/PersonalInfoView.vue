@@ -1,25 +1,31 @@
+//PersonalInfoView.vue
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, computed } from 'vue'
 import router from '@/router/index.js'
 import { UserService } from '@/services/UserService.js'
+import store from '@/store/index.js'
 
 /**
  * User information
  * @type {import('vue').Ref<Object>}
  */
+
 const userInfo = ref(null);
+const totalQuizzesDone = computed(() => store.getters['quizAttempt/totalQuizzesDone']);
 
 onMounted(async () => {
   try {
     const userDetails = await UserService.getUserDetails();
     userInfo.value = userDetails;
+
   } catch (error) {
     console.error('Failed to load user info:', error);
     // Handle unauthorized access or redirect to login
     router.push({ name: 'login' });
   }
 });
+
+
 
 const updateUsername = () => {
 
@@ -35,16 +41,19 @@ const updatePassword = () => {
 
 <template>
   <div class="user-info-container" v-if="userInfo">
-    <h1>Your Info</h1>
-    <h2>This is you</h2>
-    <img :src="userInfo.photo" alt="User photo" class="user-photo"/>
+
+    <div class="title">
+      <h1>Your Info</h1>
+      <h2>This is you</h2>
+      <img :src="'/images/profilepic.png'" alt="User photo" class="user-photo"/>
+    </div>
+
     <div class="basic-info">
       <p><strong>Name:</strong> {{ userInfo.username }}</p>
       <p><strong>Email:</strong> {{ userInfo.email }}</p>
     </div>
 
     <div class="updateinfo">
-
       <button class="updateusername" @click="updateUsername">
         <i class="fas fa-user-edit"></i>
         <p>Update Info</p>
@@ -54,37 +63,64 @@ const updatePassword = () => {
         <i class="fas fa-user-edit"></i>
         <p>Update Info</p>
       </button>
-
     </div>
-
-
     <div class="level-info">
-      <p><strong>Level:</strong> <span class="highlight">{{ userInfo.level }}</span></p>
-      <p><strong>Total Quizzes Done:</strong> <span class="highlight">{{ userInfo.totalQuizzesDone }}</span></p>
+      <p><strong>Total Quizzes Done:</strong> {{totalQuizzesDone}}</p>
     </div>
-    <div class="achievements">
-      <h3>Achievements:</h3>
-      <ul>
-        <li v-for="achievement in userInfo.achievements" :key="achievement.title">
-          <strong>{{ achievement.title }}:</strong> {{ achievement.description }}
-        </li>
-      </ul>
-    </div>
+
   </div>
 </template>
 
 <style scoped>
 
 .user-info-container {
-  display: flex;
+  max-width: 800px; /* or your desired width */
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
+  padding: 20px;
+  /* other styles */
+}
+
+.user-info-container {
+  max-width: 800px; /* or your desired width */
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
+  padding: 20px;
+  /* other styles */
+
   flex-direction: column;
   align-items: center;
-  max-width: 90%;
-  margin: 5% auto;
-  padding: 20px;
+  min-height: 83vh;
+  margin-top: 5%;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  background-color: #ececec;
+}
+
+.title, .basic-info, .level-info, .achievements, .updateinfo {
+  text-align: center;
+  width: 100%; /* Ensures the container fills its parent's width */
+}
+
+/* Ensure buttons are centered by adjusting the .updateinfo class if they are not */
+.updateinfo {
+  justify-content: center; /* Centers flex items on the main axis (horizontally) */
+  flex-direction: column; /* Stacks flex items vertically */
+  gap: 20px; /* Adds space between vertically stacked items */
+}
+
+.updateusername, .updatepassword {
+  margin: 10px auto; /* Automatically margins on the sides center the buttons */
+}
+
+.user-photo {
+  display: block; /* Makes the <img> block level for margin auto to work */
+  margin: 20px auto; /* Centers the image */
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
 }
 
 .updateinfo {
@@ -132,12 +168,6 @@ h2 {
   color: #3232ff;
 }
 
-.user-photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin: 20px 0;
-}
 
 .highlight {
   font-size: 1.2em;

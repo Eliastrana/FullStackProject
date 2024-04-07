@@ -1,33 +1,35 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { UserService } from '@/services/UserService.js'; // Ensure this path matches your file structure
+import { UserService } from '@/services/UserService.js';
+import { RoleService } from '@/services/RoleService.js'
 
 const users = ref([]);
 
-const deleteUser = (userId) => {
-  alert(`Delete user with ID: ${userId}`);
-  // Implement deletion logic here
-
-
-};
-
-// Change `users` to a single user object
-const user = ref(null);
-
-onMounted(async () => {
+const fetchUsers = async () => {
   try {
-    // Fetch single user details and assign
-    const userDetails = await UserService.getUserDetails();
-    user.value = userDetails; // Assigning directly since it's a single object
-    console.log('User data loaded:', user.value);
+    const allUsers = await UserService.getAllUsers();
+    users.value = allUsers;
+    console.log('User data loaded:', users.value);
   } catch (error) {
     console.error('Failed to load user data:', error);
   }
-});
+};
+
+const deleteUser = async (username) => {
+  console.log('Deleting user with username:', username);
+  await UserService.deleteUser(username);
+  await fetchUsers();
+};
+
+const giveAdmin = async (username) => {
+  console.log('Giving admin to user with username:', username);
+  await RoleService.asignRoleToUser(username, 'ADMIN');
+  await fetchUsers();
+};
+
+onMounted(fetchUsers);
 
 </script>
-
-
 
 <template>
   <div class="user-container">
@@ -35,22 +37,17 @@ onMounted(async () => {
       <h1>All User Information</h1>
       <h2>View all users</h2>
     </div>
-    <!-- Display single user -->
-    <div v-if="user" class="profile">
+    <div v-for="user in users" :key="user.id" class="profile">
       <h3>Username: {{ user.username }}</h3>
-      <p>User ID: {{ user.id }}</p> <!-- Adjust according to your object's structure -->
+      <p>User ID: {{ user.id }}</p>
       <h4>Email: {{ user.email }}</h4>
 
-
-      <!-- Assuming quizzes is part of your user object and properly handled -->
-<!--      <h4>Quizzes: {{ user.quizzes.length }}</h4>-->
-
       <div class="action-icons">
-        <div @click="deleteUser(user.id)" class="delete-icon">
+        <div @click="deleteUser(user.username)" class="delete-icon">
           <span class="material-symbols-outlined">delete</span>
         </div>
-        <div @click="deleteUser(user.id)" class="block-icon">
-          <span class="material-symbols-outlined">do_not_disturb</span>
+        <div @click="giveAdmin(user.username)" class="block-icon">
+          <span class="material-symbols-outlined">admin_panel_settings</span>
         </div>
       </div>
     </div>

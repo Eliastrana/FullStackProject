@@ -12,6 +12,9 @@ const quizAttempts = ref([]);
 
 const userInfo = ref(null);
 
+const totalQuizzesDone = ref(0); // New ref for storing total quizzes done
+
+
 
 
 /**
@@ -27,7 +30,24 @@ onMounted(async () => {
     }
 
     const attempts = await AttemptService.getAttemptByUserId(userId);
+
+    totalQuizzesDone.value = attempts.length; // Assuming each attempt represents a quiz done
+
+// Assuming each attempt represents a quiz done
+
+    // Inside your onMounted lifecycle hook
     quizAttempts.value = attempts;
+
+    store.dispatch('quizAttempt/updateTotalQuizzesDone', attempts.length);
+
+
+
+
+    store.dispatch('quizAttempt/updateTotalQuizzesDone', totalQuizzesDone.value); // Update the total quizzes done in the Vuex store
+
+
+    console.log('Total quizzes done:', totalQuizzesDone.value)
+
 
   } catch (error) {
     console.error('Failed to load quiz attempts:', error);
@@ -40,6 +60,7 @@ onMounted(async () => {
 
 
 <template>
+  <div class="achievements-container">
   <div class="attempts-container">
     <h1>Your Quiz Attempts</h1>
     <h2>Review your progress</h2>
@@ -47,18 +68,17 @@ onMounted(async () => {
       <div class="tile" v-for="(attempt, index) in quizAttempts" :key="index">
 
 <!--        <h2>{{userInfo.username}}</h2>-->
-        <h3>{{ attempt.id}}</h3>
+        <h3>{{ attempt.quizTitle}}</h3>
         <h4>Correct answers: {{attempt.score}}</h4>
-        <p>{{attempt.userId}}</p>
-        <p>{{attempt.quizId}}</p>
         <div class="progress-bar-container">
           <div class="progress-bar" :style="{ width: (attempt.score / questionService.getQuestionsByQuizId(attempt.quizId)) * 100 + '%' }"></div>
         </div>
       </div>
     </div>
   </div>
-</template>
 
+</div>
+</template>
 
 
 <style scoped>
@@ -73,27 +93,27 @@ h2 {
 }
 
 .achievements-container {
-  background-color: #ececec;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
-  max-width: 800px;
-  padding: 20px;
-  margin-top: 5%;
-  margin-left: auto;
+  max-width: 800px; /* or your desired width */
+  margin-top: 2%;
   margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
+  padding: 20px;
+  /* other styles */
+
+  flex-direction: column; /* Align children vertically */
+  align-items: stretch; /* Stretch items to fill the horizontal space */
+  min-width: 96%;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust based on content */
   gap: 20px;
-  width: 100%;
-  padding: 0 20px;
+  width: 100%; /* Fill the width of its parent */
+  margin: 0; /* Remove any default margins */
 }
 
 .tile {
@@ -122,24 +142,15 @@ h2 {
   border-radius: 20px;
 }
 
-.gold-background {
-  background-color: gold !important;
-  border: 4px solid goldenrod;
-}
-
-.gold-background:hover {
-  background-color: goldenrod !important;
-}
-
 @media (max-width: 480px) {
   .tiles {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Ensure single column layout on smaller screens */
   }
 
   h1, h2 {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 10px; /* Adjust margins for smaller screens */
   }
 }
-
 </style>
+
+

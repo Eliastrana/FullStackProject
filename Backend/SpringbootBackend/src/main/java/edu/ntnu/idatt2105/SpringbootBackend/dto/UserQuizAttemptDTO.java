@@ -22,6 +22,11 @@ public class UserQuizAttemptDTO {
     @Schema(description = "Unique identifier for the quiz that the user attempted. This is typically a UUID.", 
             example = "123e4567-e89b-12d3-a456-426614174000") 
     private UUID quizId;
+
+        @Schema(description = "The title of the quiz that the user attempted.", 
+                example = "Sport Quiz")
+    private String quizTitle;
+    
     @Schema(description = "The score achieved by the user in the quiz attempt.", 
             example = "8") 
     private int score;

@@ -8,9 +8,12 @@ import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Service class for managing user-related operations.
@@ -67,5 +70,29 @@ public class UserService{
         return userRepository.findByUsername(username)
                              .map(userMapper::toUserDetails)
                              .orElse(null); // Or handle the absence of the user differently
+    }
+
+    /**
+     * Retrived the user detials of all users in the database.
+     * This method is used for loading user details for admin purposes.
+     * It returns a List of {@link UserDetailsDTO} object containing the user's identification details.
+     * @return A List of {@@link UserDetailsDTO} of all users
+     */
+    public Iterable<UserDetailsDTO> getAllUsers() {
+    Iterable<User> users = userRepository.findAll();
+
+        return StreamSupport.stream(users.spliterator(), false)
+                                                         .map(user -> userMapper.toUserDetails(user))
+                                                         .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public boolean deleteUser(String username) {
+        boolean userExists = userRepository.findByUsername(username).isPresent();
+        if (!userExists) {
+            return false;
+        }
+        userRepository.deleteByUsername(username);
+        return true;
     }
 }

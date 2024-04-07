@@ -4,6 +4,8 @@ import { QuizService } from '@/services/QuizService.js'; // Import QuizService
 import { UserService } from '@/services/UserService.js';
 import user from '@/store/modules/user.js';
 import ConfirmationModal from '@/components/util/ConfirmationModal.vue';
+import { CategoryService } from '@/services/CategoryService.js'
+import { DifficultyService } from '@/services/DifficultyService.js'
 
 const quizzes = ref([]);
 const showConfirmationModal = ref(false);
@@ -20,10 +22,21 @@ const loadImageData = async (imageId) => {
   }
 };
 
+const categories = ref({});
+const difficulties = ref([]);
+
 // Example of how you might use it within your component
 onMounted(async () => {
   try {
     const quizzesFetched = await QuizService.getAllQuizzes();
+
+    const allCategories = await CategoryService.getAllCategories();
+    categories.value = allCategories.reduce((acc, current) => {
+      acc[current.id] = current.categoryName;
+      return acc;
+    }, {});
+
+    difficulties.value = await DifficultyService.getAllDifficulties();
     for (const quiz of quizzesFetched) {
       if (quiz.imageId) {
         quiz.imageData = await loadImageData(quiz.imageId);
@@ -59,11 +72,26 @@ const cancelDelete = () => {
   showConfirmationModal.value = false;
 };
 
-// Edit quiz function
-const editQuiz = (id) => {
-  // Your edit logic here
-  console.log(`Edit quiz with ID: ${id}`);
+
+
+const downloadQuiz = async (quizId) => {
+  try {
+    const quiz = await QuizService.getQuizById(quizId);
+    const quizData = JSON.stringify(quiz);
+    const blob = new Blob([quizData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${quiz.title}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Failed to download quiz:', error);
+    // Optionally handle the error, e.g., show an error message to the user
+  }
 };
+
+
 
 </script>
 
@@ -90,7 +118,7 @@ const editQuiz = (id) => {
             <h3>{{quiz.title }}</h3>
             <p>Creator ID: {{ quiz.creatorId }}</p>
             <p>{{ quiz.description }}</p>
-            <p class="category-badge">#{{ quiz.category }}</p>
+            <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
 <!--            <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>-->
           </div>
 
@@ -101,7 +129,7 @@ const editQuiz = (id) => {
               <span class="material-icons">delete</span>
             </div>
 
-            <div @click="disableUser(quiz.id)" class="icon download-icon">
+            <div @click="downloadQuiz(quiz.id)" class="icon download-icon">
               <span class="material-symbols-outlined">download</span>
             </div>
 
@@ -192,7 +220,7 @@ const editQuiz = (id) => {
 
 .category-badge {
   display: inline-block; /* Treat the <p> tag more like an inline element */
-  background-color: rgb(23, 22, 22); /* Example background color */
+  background-color: #007bff; /* Example background color */
   color: #ffffff; /* Text color */
   padding: 5px 15px; /* Vertical and horizontal padding */
   border-radius: 20px; /* Rounded corners */
