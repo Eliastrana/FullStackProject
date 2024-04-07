@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,7 +65,7 @@ public class AuthenticationServiceTest {
         String expectedToken = "test.jwt.token";
     
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
-        when(roleRepository.findByRole("ROLE_USER")).thenReturn(Optional.of(defaultRole));
+        when(roleRepository.findByRole("ROLE_USER")).thenReturn(List.of(defaultRole));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(jwtService.generateToken(any(User.class))).thenReturn(expectedToken);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));

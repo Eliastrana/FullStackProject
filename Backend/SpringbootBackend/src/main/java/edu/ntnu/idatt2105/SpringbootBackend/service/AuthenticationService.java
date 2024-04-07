@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Provides services for user authentication, including registration and login.
@@ -74,15 +75,16 @@ public class AuthenticationService {
 
         logger.info("Registering user with username: " + user.getUsername());
 
-        Role defaultRole = roleRepository.findByRole("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Error: Default role is not found."));
+        List<Role> defaultRole = roleRepository.findByRole("ROLE_USER");
+        Role role = defaultRole.get(0);
 
-        logger.info("Default role is: " + defaultRole.getRole());
+
+        logger.info("Default role is: " + role.getRole());
 
         UserRole userRole = new UserRole();
         userRole.setUser(user);
         logger.info("User role is: " + userRole.getUser().getUsername());
-        userRole.setRole(defaultRole);
+        userRole.setRole(role);
         logger.info("Role is: " + userRole.getRole().getRole());
 
         if (user.getUserRoles() == null) {

@@ -37,8 +37,13 @@ public class AnswerServiceTest {
     @InjectMocks
     private AnswerService answerService;
 
+    @Autowired
     private Question question;
+
+    @Autowired
     private Answer answer;
+
+    @Autowired
     private AnswerDTO answerDTO;
 
     @BeforeEach

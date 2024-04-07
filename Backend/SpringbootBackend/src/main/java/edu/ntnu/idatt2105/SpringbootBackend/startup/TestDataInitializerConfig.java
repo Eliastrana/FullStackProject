@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2105.SpringbootBackend.config;
+package edu.ntnu.idatt2105.SpringbootBackend.startup;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.*;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.*;

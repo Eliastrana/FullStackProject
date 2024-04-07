@@ -22,7 +22,7 @@ class UserQuizAttemptDTOTest {
         int score = 85;
         String status = "completed";
 
-        UserQuizAttemptDTO attempt = new UserQuizAttemptDTO(id, userId, quizId, score, status);
+        UserQuizAttemptDTO attempt = new UserQuizAttemptDTO(id, userId, quizId, status, score, status);
 
         assertEquals(id, attempt.getId());
         assertEquals(userId, attempt.getUserId());

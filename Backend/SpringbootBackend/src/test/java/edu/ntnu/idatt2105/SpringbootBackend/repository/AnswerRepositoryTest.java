@@ -5,20 +5,15 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Question;
 import edu.ntnu.idatt2105.SpringbootBackend.model.QuestionType;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
-import edu.ntnu.idatt2105.SpringbootBackend.repository.AnswerRepository;
-import edu.ntnu.idatt2105.SpringbootBackend.repository.QuestionRepository;
 
-import org.apache.commons.lang3.builder.Diff;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,9 +33,7 @@ public class AnswerRepositoryTest {
     @Test
     public void testSaveAndRetrieveAnswer() {
         // Setup
-        UUID quizUuid = UUID.randomUUID();
         Quiz quiz = new Quiz();
-        quiz.setId(quizUuid);
         quiz.setCategory(null);
         quiz.setTitle("Test Quiz");
         quiz.setDescription("This is a test quiz.");
@@ -48,9 +41,7 @@ public class AnswerRepositoryTest {
 
         quiz = quizRepository.save(quiz);
 
-        UUID questionId = UUID.randomUUID();
         Question question = new Question();
-        question.setId(questionId);
         question.setCreationDate(LocalDateTime.now());
         question.setImage(null);
         question.setQuestionType(QuestionType.MULTIPLE_CHOICE);
@@ -60,7 +51,6 @@ public class AnswerRepositoryTest {
         question = questionRepository.save(question);
 
         Answer answer = new Answer();
-        answer.setId(UUID.randomUUID());
         answer.setText("Yes");
         answer.setCorrect(true);
         answer.setQuestion(question);
@@ -73,7 +63,7 @@ public class AnswerRepositoryTest {
 
         answer = answerRepository.save(answer);
         Optional<Answer> retrievedAnswers = answerRepository.findByQuestionAndText(question, answer.getText());
-        assertEquals(1, retrievedAnswers.get());
+        assertTrue(retrievedAnswers.isPresent());
         assertEquals(answer.getText(), retrievedAnswers.get().getText());
         assertEquals(answer.isCorrect(), retrievedAnswers.get().isCorrect());
         assertEquals(answer.getQuestion().getId(), retrievedAnswers.get().getQuestion().getId());

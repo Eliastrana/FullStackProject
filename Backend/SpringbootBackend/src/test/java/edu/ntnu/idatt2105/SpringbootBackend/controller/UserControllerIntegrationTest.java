@@ -1,27 +1,24 @@
-  package edu.ntnu.idatt2105.SpringbootBackend.controller;
+package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
-  import com.fasterxml.jackson.databind.ObjectMapper;
-  import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
-import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
-  import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
-  import org.junit.jupiter.api.BeforeEach;
-  import org.junit.jupiter.api.Test;
-  import org.springframework.beans.factory.annotation.Autowired;
-  import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-  import org.springframework.boot.test.context.SpringBootTest;
-  import org.springframework.http.MediaType;
-  import org.springframework.security.test.context.support.WithMockUser;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-  import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvc;
 
-  import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-  import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-  import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-  import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-  import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
 import java.util.UUID;
@@ -79,10 +76,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    @DirtiesContext
     void registerUser_WithExistingUsername_Failure() throws Exception {
-    // Assuming "testuser7" already exists
-    UserCreationDTO userCreationDTO = new UserCreationDTO("testuser", "password", "newemail@example.com");
+    UserCreationDTO userCreationDTO = new UserCreationDTO("testUser", "password", "newemail@example.com");
 
     mockMvc.perform(post("/api/user/register")
             .contentType(MediaType.APPLICATION_JSON)

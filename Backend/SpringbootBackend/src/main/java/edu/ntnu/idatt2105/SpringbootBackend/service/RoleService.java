@@ -31,9 +31,11 @@ public class RoleService {
             throw new IllegalArgumentException("Role cannot be null");
         }
         // Check if the role already exists
-        Optional<Role> existingRole = roleRepository.findByRole(role.getRole());
-        if (existingRole.isPresent()) {
-            throw new IllegalArgumentException("Role with name " + role.getRole() + " already exists");
+        List<Role> existingRole = roleRepository.findByRole(role.getRole());
+        for (Role r : existingRole) {
+            if (r.getRole().equals(role.getRole())) {
+                throw new IllegalArgumentException("Role already exists");
+            }
         }
         return roleRepository.save(role);
     }
@@ -46,7 +48,7 @@ public class RoleService {
         defaultRoles.forEach(roleName -> {
             // Check if the role already exists to avoid creating duplicates
             String roleWithPrefix = "ROLE_" + roleName; // Ensure the role name follows your naming convention
-            roleRepository.findByRole(roleWithPrefix).orElseGet(() -> {
+            roleRepository.findByRole(roleWithPrefix).stream().findFirst().orElseGet(() -> {
                 // Role doesn't exist, so create and save it
                 Role role = new Role();
                 role.setRole(roleWithPrefix);
