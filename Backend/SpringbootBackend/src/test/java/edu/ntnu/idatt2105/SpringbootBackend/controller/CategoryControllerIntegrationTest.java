@@ -46,7 +46,7 @@ public class CategoryControllerIntegrationTest {
     public void createCategory_ReturnsCreated_WhenSuccessful() throws Exception {
         when(categoryService.createCategory(any(CategoryDTO.class))).thenReturn(categoryDTO);
 
-        mockMvc.perform(post("/api/categories/")
+        mockMvc.perform(post("/api/categories")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(categoryDTO)))
                 .andExpect(status().isCreated());

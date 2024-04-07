@@ -58,7 +58,7 @@ public class AuthenticationServiceTest {
     @Test
     void register_Success() {
         // Arrange
-        UserCreationDTO userCreationDTO = new UserCreationDTO("newUser", "password", "newUser@example.com");
+        UserCreationDTO userCreationDTO = new UserCreationDTO("newUser", "password1234", "newUser@example.com");
         Role defaultRole = new Role();
         defaultRole.setId(UUID.randomUUID());
         defaultRole.setRole("USER");
