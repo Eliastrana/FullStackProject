@@ -49,10 +49,6 @@ public class CategoryController {
    * and the HTTP status {@link HttpStatus#CREATED} if the creation is successful;
    * otherwise, returns a response entity with an appropriate error status.
    *
-   * @see CategoryDTO
-   * @see ResponseEntity
-   * @see HttpStatus
-   * @see CategoryService
    */
   @Operation(summary = "Create a new category", description = "Creates a new category with the provided details")
   @ApiResponse(responseCode = "201", description = "Category created successfully")

@@ -17,15 +17,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 /**
- * The AnswerController class receives and handles HTTP requests related to answers.
- * This controller provides endpoints for creating, retrieving, updating, and deleting answers.
- * Each method in this controller is mapped to a specific HTTP endpoint and request method.
- * The controller is annotated with Swagger annotations to provide additional documentation.
+ * The {@code AnswerController} class provides RESTful endpoints for managing answers
+ * within the quiz system. It supports operations such as creating, retrieving,
+ * updating, and deleting answers. This controller ensures that answers are properly
+ * managed in relation to their associated questions.
  *
- * @author Vegard Johnsen, Sander R. Skofsrud
+ * @see AnswerService for the service layer used by this controller
+ * @see AnswerDTO for the data transfer object used in answer operations
+ * @author Vegard Johnsen, sander rom skofsrud
  * @version 0.1
  * @since 0.1
- * @see AnswerService
  */
 
 @Tag(name = "Answer Management")
@@ -47,14 +48,9 @@ public class AnswerController {
      * with a question based on the provided questionId. If the question is found,
      * the answer is created and saved, returning the created answer DTO.
      *
-     * @param questionId the UUID of the question to which the answer belongs
-     * @param answerDTO  the answer DTO containing answer details
-     * @return a {@link ResponseEntity} containing the created {@link AnswerDTO} and HTTP status CREATED
-     * if the question is found, or NOT_FOUND if the question does not exist
-     *
-     * @see AnswerDTO
-     * @see ResponseEntity
-     * @see QuestionNotFoundException
+     * @param questionId The UUID of the question to which the answer belongs.
+     * @param answerDTO The {@link AnswerDTO} containing the details of the answer.
+     * @return A {@link ResponseEntity<AnswerDTO>} with the created answer or an error status.
      */
     @Operation(summary = "Create a new answer", description = "Create a new answer for a specific question")
     @ApiResponse(responseCode = "201", description = "Answer created successfully", content = @Content(schema = @Schema(implementation = AnswerDTO.class)))
@@ -77,8 +73,6 @@ public class AnswerController {
      * @param answerId the UUID of the answer to retrieve
      * @return a {@link ResponseEntity} containing the {@link AnswerDTO} if found,
      * or NOT_FOUND if the answer does not exist
-     *
-     * @see HttpStatus
      */
     @Operation(summary = "Get an answer by ID", description = "Retrieves an answer by its unique identifier")
     @ApiResponse(responseCode = "200", description = "Answer retrieved successfully", content = @Content(schema = @Schema(implementation = AnswerDTO.class)))
@@ -125,8 +119,6 @@ public class AnswerController {
      * @param answerId the UUID of the answer to delete
      * @return a {@link ResponseEntity} with NO_CONTENT status if the answer is successfully deleted,
      * or NOT_FOUND if the answer does not exist
-     *
-     * @see ResponseEntity
      */
     @Operation(summary = "Delete an answer", description = "Deletes an answer by its unique identifier")
     @ApiResponse(responseCode = "204", description = "Answer deleted successfully")
