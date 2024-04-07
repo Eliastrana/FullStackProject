@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/difficulties")
 public class DifficultyController {
 
-    @GetMapping("/")
+    @GetMapping
     @Operation(summary = "List all difficulties", description = "Retrieves a list of all possible quiz difficulty levels.", responses = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of difficulties", 
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = Difficulty.class))))})

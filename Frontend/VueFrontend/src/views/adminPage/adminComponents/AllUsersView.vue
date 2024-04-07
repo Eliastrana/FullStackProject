@@ -1,34 +1,49 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { UserService } from '@/services/UserService.js';
-import { RoleService } from '@/services/RoleService.js'
+import ConfirmationModal from '@/components/util/ConfirmationModal.vue';
 
 const users = ref([]);
+const showConfirmationModal = ref(false);
+const pendingDeleteUsername = ref('');
 
+
+onMounted(async () => {
+  await fetchUsers();
+});
+
+
+/**
+ * Fetches all users from the API and updates the users ref.
+ */
 const fetchUsers = async () => {
-  try {
-    const allUsers = await UserService.getAllUsers();
-    users.value = allUsers;
-    console.log('User data loaded:', users.value);
-  } catch (error) {
-    console.error('Failed to load user data:', error);
-  }
+  users.value = await UserService.getAllUsers();
 };
 
-const deleteUser = async (username) => {
-  console.log('Deleting user with username:', username);
-  await UserService.deleteUser(username);
+/**
+ * Promotes a user to admin status.
+ * @param {string} username - The username of the user to promote.
+ */
+const askDeleteUser = (username) => {
+  pendingDeleteUsername.value = username;
+  showConfirmationModal.value = true;
+};
+
+/**
+ * Deletes a user after confirmation.
+ */
+const confirmDeleteUser = async () => {
+  await UserService.deleteUser(pendingDeleteUsername.value);
   await fetchUsers();
+  showConfirmationModal.value = false;
 };
 
-const giveAdmin = async (username) => {
-  console.log('Giving admin to user with username:', username);
-  await RoleService.asignRoleToUser(username, 'ADMIN');
-  await fetchUsers();
+/**
+ * Cancels the user deletion.
+ */
+const cancelDelete = () => {
+  showConfirmationModal.value = false;
 };
-
-onMounted(fetchUsers);
-
 </script>
 
 <template>
@@ -43,7 +58,7 @@ onMounted(fetchUsers);
       <h4>Email: {{ user.email }}</h4>
 
       <div class="action-icons">
-        <div @click="deleteUser(user.username)" class="delete-icon">
+        <div @click="askDeleteUser(user.username)" class="delete-icon">
           <span class="material-symbols-outlined">delete</span>
         </div>
         <div @click="giveAdmin(user.username)" class="block-icon">
@@ -51,6 +66,12 @@ onMounted(fetchUsers);
         </div>
       </div>
     </div>
+    <ConfirmationModal
+      :isVisible="showConfirmationModal"
+      message="Are you sure you want to delete this user?"
+      @confirm="confirmDeleteUser"
+      @cancel="cancelDelete"
+    />
   </div>
 </template>
 
@@ -130,5 +151,4 @@ h2 {
 }
 
 </style>
-
 

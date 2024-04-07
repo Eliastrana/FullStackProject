@@ -38,5 +38,10 @@ export const UserService = {
   async deleteUser(username) {
     const response = await axios.delete(`${API_URL}/${username}`);
     return response.data;
+  },
+  
+  updatePassword(passwordUpdateData) {
+    return axios.put(`${API_URL}/update/password`, passwordUpdateData);
   }
+
 };

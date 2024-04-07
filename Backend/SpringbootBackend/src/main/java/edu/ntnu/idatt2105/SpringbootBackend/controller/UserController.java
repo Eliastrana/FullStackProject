@@ -1,8 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
-import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDetailsDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.*;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AuthenticationService;
@@ -150,4 +148,14 @@ public class UserController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "Update password", description = "Updates a user's password")
+    @ApiResponse(responseCode = "200", description = "Password updated successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid password")
+    @PutMapping("/update/password")
+    public ResponseEntity<?> updatePassword(Authentication authentication, @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
+        userService.updatePassword(authentication.getName(), passwordUpdateDTO);
+        return ResponseEntity.ok().build();
+    }
+
 }
