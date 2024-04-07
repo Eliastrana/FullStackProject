@@ -33,7 +33,7 @@ public class CategoryController {
   @Operation(summary = "Create a new category", description = "Creates a new category with the provided details", responses = {
     @ApiResponse(responseCode = "201", description = "Category created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryDTO.class))),
     @ApiResponse(responseCode = "400", description = "Bad request when the category details are invalid")}, security = {@SecurityRequirement(name = "bearerAuth")})
-  @PostMapping("/")
+  @PostMapping
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<CategoryDTO> createCategory(
     @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Category details to be created", required = true, content = @Content(schema = @Schema(implementation = CategoryDTO.class)))
@@ -44,7 +44,7 @@ public class CategoryController {
 
   @Operation(summary = "Get all categories", description = "Retrieves all the categories", responses = {
     @ApiResponse(responseCode = "200", description = "Categories fetched successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CategoryDTO.class))))})
-  @GetMapping("/")
+  @GetMapping
   public ResponseEntity<List<CategoryDTO>> getAllCategories() {
     List<CategoryDTO> categories = categoryService.getAllCategories();
     return new ResponseEntity<>(categories, HttpStatus.OK);
