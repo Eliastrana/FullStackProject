@@ -12,5 +12,5 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.UserRole;
 public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
     void deleteAllByUser(User user);
     Optional<UserRole> findByUserUsername(String username);
-
+    boolean existsByUserUsernameAndRoleRole(String username, String role);
 }

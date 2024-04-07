@@ -8,8 +8,8 @@ import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -80,11 +80,19 @@ public class UserService{
      */
     public Iterable<UserDetailsDTO> getAllUsers() {
     Iterable<User> users = userRepository.findAll();
-    
-    List<UserDetailsDTO> userDetailsDTOs = StreamSupport.stream(users.spliterator(), false)
+
+        return StreamSupport.stream(users.spliterator(), false)
                                                          .map(user -> userMapper.toUserDetails(user))
                                                          .collect(Collectors.toList());
-    
-    return userDetailsDTOs;
-}
+    }
+
+    @Transactional
+    public boolean deleteUser(String username) {
+        boolean userExists = userRepository.findByUsername(username).isPresent();
+        if (!userExists) {
+            return false;
+        }
+        userRepository.deleteByUsername(username);
+        return true;
+    }
 }
