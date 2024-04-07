@@ -214,7 +214,7 @@ function moveQuestionDown(index) {
 
 
     <div class="top-container">
-      <h1>Quiz Creator Tool</h1>
+      <h1>Add your information</h1>
       <!-- Image Preview with Remove Button -->
       <div v-if="coverImage" class="image-preview">
         <img :src="coverImage" alt="Cover Image Preview" />
