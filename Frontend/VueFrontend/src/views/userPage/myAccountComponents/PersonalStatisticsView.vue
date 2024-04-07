@@ -22,40 +22,31 @@ const totalQuizzesDone = ref(0); // New ref for storing total quizzes done
  */
 onMounted(async () => {
   try {
-    // Ensure that you are retrieving the userId correctly from the Vuex store
-    const userId = store.getters['user/userId']; // Adjust this path based on your store structure
+    const userId = store.getters['user/userId'];
     if (!userId) {
       console.error('UserId is undefined. Make sure the user is logged in.');
       return;
     }
 
-    const attempts = await AttemptService.getAttemptByUserId(userId);
+    let attempts = await AttemptService.getAttemptByUserId(userId);
 
-    totalQuizzesDone.value = attempts.length; // Assuming each attempt represents a quiz done
+    // Fetch questions count for each attempt
+    attempts = await Promise.all(attempts.map(async (attempt) => {
+      const questionsCount = await questionService.getQuestionsByQuizId(attempt.quizId).then(response => response.length).catch(error => {
+        console.error('Failed to load questions for quiz:', error);
+        return 0; // Default to 0 if failed to fetch
+      });
+      return { ...attempt, questionsCount };
+    }));
 
-// Assuming each attempt represents a quiz done
-
-    // Inside your onMounted lifecycle hook
     quizAttempts.value = attempts;
+    totalQuizzesDone.value = attempts.length;
 
-    store.dispatch('quizAttempt/updateTotalQuizzesDone', attempts.length);
-
-
-
-
-    store.dispatch('quizAttempt/updateTotalQuizzesDone', totalQuizzesDone.value); // Update the total quizzes done in the Vuex store
-
-
-    console.log('Total quizzes done:', totalQuizzesDone.value)
-
-
+    store.dispatch('quizAttempt/updateTotalQuizzesDone', totalQuizzesDone.value);
   } catch (error) {
     console.error('Failed to load quiz attempts:', error);
   }
 });
-
-
-
 </script>
 
 
@@ -71,13 +62,13 @@ onMounted(async () => {
         <h3>{{ attempt.quizTitle}}</h3>
         <h4>Correct answers: {{attempt.score}}</h4>
         <div class="progress-bar-container">
-          <div class="progress-bar" :style="{ width: (attempt.score / questionService.getQuestionsByQuizId(attempt.quizId)) * 100 + '%' }"></div>
+          <div class="progress-bar" :style="{ width: (attempt.score / attempt.questionsCount) * 100 + '%' }"></div>
         </div>
       </div>
     </div>
   </div>
 
-</div>
+  </div>
 </template>
 
 
