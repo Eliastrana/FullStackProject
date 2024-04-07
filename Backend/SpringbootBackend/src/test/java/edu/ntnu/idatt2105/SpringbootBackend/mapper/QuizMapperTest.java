@@ -114,7 +114,7 @@ public class QuizMapperTest {
     assertEquals(imageId, updatedQuiz.getImage().getId());
     // Assuming a method to convert Difficulty enum to String if necessary
     assertEquals(quizDTO.getDifficulty().toString().strip(), updatedQuiz.getDifficulty().toString().strip());
-    assertEquals(quizDTO.isPublic(), updatedQuiz.isPublic());
+    assertEquals(quizDTO.getIsPublic(), updatedQuiz.isPublic());
     }
 
     @Test

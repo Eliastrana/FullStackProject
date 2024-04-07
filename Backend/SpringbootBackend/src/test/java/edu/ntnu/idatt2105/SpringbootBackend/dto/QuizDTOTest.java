@@ -32,7 +32,7 @@ class QuizDTOTest {
         assertEquals("General Knowledge", quizDTO.getTitle());
         assertEquals("A quiz covering a wide range of topics.", quizDTO.getDescription());
         assertEquals(Difficulty.EASY, quizDTO.getDifficulty());
-        assertTrue(quizDTO.isPublic());
+        assertTrue(quizDTO.getIsPublic());
         assertEquals(categoryId, quizDTO.getCategoryId());
         assertEquals(creatorId, quizDTO.getCreatorId());
         assertEquals(imageId, quizDTO.getImageId());
@@ -65,7 +65,7 @@ class QuizDTOTest {
         assertEquals("General Knowledge", quizDTO.getTitle());
         assertEquals("A quiz covering a wide range of topics.", quizDTO.getDescription());
         assertEquals(Difficulty.EASY, quizDTO.getDifficulty());
-        assertTrue(quizDTO.isPublic());
+        assertTrue(quizDTO.getIsPublic());
         assertEquals(categoryId, quizDTO.getCategoryId());
         assertEquals(creatorId, quizDTO.getCreatorId());
         assertEquals(imageId, quizDTO.getImageId());
@@ -103,12 +103,12 @@ class QuizDTOTest {
                 .isPublic(true)
                 .build();
 
-        assertTrue(quizDTO.isPublic());
+        assertTrue(quizDTO.getIsPublic());
 
         quizDTO = QuizDTO.builder()
                 .isPublic(false)
                 .build();
 
-        assertFalse(quizDTO.isPublic());
+        assertFalse(quizDTO.getIsPublic());
     }
 }
