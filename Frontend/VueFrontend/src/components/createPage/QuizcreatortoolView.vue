@@ -1,4 +1,13 @@
+//QuiacreatortoolView.vue
 <script setup>
+/**
+ * A component for creating and updating quizzes. It allows users to input quiz details,
+ * add questions of various types, upload a cover image, and set the quiz as public or private.
+ * The component makes use of Vuex for state management and Vue Router for navigation.
+ *
+ * @component
+ */
+
 import { v4 as uuidv4 } from 'uuid';
 import { computed, onMounted, ref, nextTick } from 'vue'
 import { useStore } from 'vuex';
@@ -6,40 +15,81 @@ import CreateMultipleChoice from '@/components/createPage/createQuizComponents/C
 import CreateFillInTheBlank from '@/components/createPage/createQuizComponents/CreateFillintheblank.vue';
 import CreateStudyCard from '@/components/createPage/createQuizComponents/CreateStudy.vue';
 import { QuizService } from '@/services/QuizService.js'
+import router from '@/router/index.js'
+import { CategoryService } from '@/services/CategoryService.js'
+import { useRoute } from 'vue-router'
 
-
+// Stateful references and their initial states.
 const store = useStore();
-
+const formSubmitted = ref(false);
+const route = useRoute();
 const quizTitle = ref('');
 const quizDescription = ref('');
 const quizCategory = ref('');
 const quizDifficulty = ref('');
 const coverImage = ref(null);
+const categories = ref([]);
 
+// Computed properties to validate form fields.
+const isTitleValid = computed(() => /^.{1,100}$/.test(quizTitle.value));
+const isDescriptionValid = computed(() => quizDescription.value.trim().length > 0);
+const isCategoryValid = computed(() => quizCategory.value.trim().length > 0);
+const isDifficultyValid = computed(() => ['EASY', 'MEDIUM', 'HARD'].includes(quizDifficulty.value));
+const isFormValid = computed(() => isTitleValid.value && isDescriptionValid.value && isCategoryValid.value && isDifficultyValid.value);
 const questions = computed(() => store.state.quizzes.quizDetails.questions);
 
-onMounted(() => {
-  const quizDetails = store.state.quizzes.quizDetails;
-  quizTitle.value = quizDetails.title;
-  quizDescription.value = quizDetails.description;
-  quizCategory.value = quizDetails.category;
-  quizDifficulty.value = quizDetails.difficulty;
-  coverImage.value = quizDetails.coverImage;
+
+/**
+ * Fetches quiz details and categories upon component mount. It also prepares the quiz for editing if a quizId is provided.
+ */
+onMounted(async () => {
+  const quizId = route.params.quizId;
+  if (quizId) {
+    await store.dispatch('quizzes/addImageToQuiz', { quizId });
+    const quizDetails = await QuizService.getQuizById(quizId);
+    quizTitle.value = quizDetails.title;
+    quizDescription.value = quizDetails.description;
+    quizCategory.value = quizDetails.categoryId;
+    quizDifficulty.value = quizDetails.difficulty;
+    if (quizDetails.imageName) {
+      coverImage.value = `data:image/${quizDetails.imageType};base64,${quizDetails.imageData}`;
+    }
+    store.commit('quizzes/SET_QUIZ_DETAILS', quizDetails);
+  } else {
+  try {
+    const quizDetails = store.state.quizzes.quizDetails;
+    quizTitle.value = quizDetails.title;
+    quizDescription.value = quizDetails.description;
+    quizCategory.value = quizDetails.categoryId;
+    quizDifficulty.value = quizDetails.difficulty;
+    if (quizDetails.coverImage) {
+      coverImage.value = `data:image/${quizDetails.imageType};base64,${quizDetails.imageData}`;
+    }
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+  }
+  }
+  categories.value = await CategoryService.getAllCategories();
+
 });
 
+// Definitions of quiz types and their properties.
 const quizTypes = ref([
   { id: 'multipleChoice', name: 'Multiple Choice', color: "#CAE9FF" },
   { id: 'fillInTheBlank', name: 'Fill in the Blank', color: "#62B6CB" },
   { id: 'study', name: 'Study', color: "#BEE9E8" }
 ]);
 
+// Difficulty levels for the quiz.
 const difficulties = ref([
   { value: 'EASY', text: 'Easy' },
   { value: 'MEDIUM', text: 'Medium' },
   { value: 'HARD', text: 'Hard' },
 ]);
 
-
+/**
+ * Scrolls the window to the bottom of the page. Used after adding a new question to the quiz.
+ */
 function scrollToBottom() {
   nextTick(() => {
     window.scrollTo({
@@ -49,58 +99,68 @@ function scrollToBottom() {
   });
 }
 
+/**
+ * Scrolls the window to the top of the page.
+ */
+
 function scrollToTop() {
   window.scrollTo({
-    top: 700,
+    top: 0,
     behavior: 'smooth',
   });
 }
 
+/**
+ * Adds a new question to the quiz. The question type is determined by the type parameter.
+ * @param {string} type - The type of question to add.
+ */
+
 function addQuestionType(type) {
-  console.log('Adding question type:', type);
-  const uuid = uuidv4(); // Generate a unique identifier for the question
-
+  const uuid = uuidv4();
   nextTick(scrollToBottom);
-
-
   let questionTemplate = {
     uuid,
-    text: '', // Default text for the question
-    questionType: '', // To be set based on type
-    tags: [], // Assuming tags might be optional or provided later
-    answers: [] // Default answers array
+    text: '',
+    questionType: '',
+    tags: [],
+    answers: [],
+    image: null,
+    imageFront: null,
+    imageBack: null,
   };
 
-  // Customize the question template based on the type
   switch (type) {
     case 'multipleChoice':
       questionTemplate.questionType = 'MULTIPLE_CHOICE';
-      // Initialize with one default answer option
       questionTemplate.answers = [{ text: '', correct: false }];
       break;
     case 'fillInTheBlank':
       questionTemplate.questionType = 'FILL_IN_BLANK';
-      // Fill in the blank might only need one correct answer
       questionTemplate.answers = [{ text: '', correct: true }];
       break;
     case 'study':
       questionTemplate.questionType = 'STUDY';
-      // Study card might not have traditional answers but handled as one correct concept or explanation
       questionTemplate.answers = [{ text: '', correct: true }];
       break;
   }
-
-  // Dispatch the action to add this new question to the Vuex store
   store.dispatch('quizzes/addOrUpdateQuestion', questionTemplate);
-  console.log(questions)
-
 }
 
 
+/**
+ * Handles the data submitted by a question component and updates the store with the new question.
+ * @param {Object} data - The data submitted by the question component.
+ */
 function handleQuizData(data) {
   store.dispatch('quizzes/addOrUpdateQuestion', data);
 }
 
+
+/**
+ * Returns the component corresponding to the question type.
+ * @param {string} type - The type of question.
+ * @returns {Object} - The component corresponding to the question type.
+ */
 function getComponent(type) {
   switch (type) {
     case 'MULTIPLE_CHOICE':
@@ -114,131 +174,190 @@ function getComponent(type) {
   }
 }
 
+/**
+ * Updates the quiz details in the store with the current values of the form fields.
+ */
+
 function updateQuizDetails() {
-  console.log('Updating quiz details')
   store.commit('quizzes/SET_QUIZ_DETAILS', {
     title: quizTitle.value,
     description: quizDescription.value,
-    category: quizCategory.value,
+    categoryId: quizCategory.value,
     difficulty: quizDifficulty.value,
     coverImage: coverImage.value,
   });
+  formSubmitted.value = true;
 }
 
-async function createQuiz() {
+
+/**
+ * Saves the quiz to the database. If a quizId is provided, the quiz is updated, otherwise a new quiz is created.
+ */
+async function saveQuiz() {
+  formSubmitted.value = true;
+  if (!isTitleValid.value) {
+    console.error('The quiz title is invalid.');
+    return;
+  }
   const quizDetails = store.state.quizzes.quizDetails;
-  try {
-    console.log('Creating quiz:', quizDetails)
-    const response = await QuizService.create(quizDetails);
-    console.log('Quiz created successfully:', response);
-  } catch (error) {
-    console.error('Error creating quiz:', error);
+  const quizId = route.params.quizId;
+  if (quizId) {
+    try {
+      await QuizService.updateQuiz(quizId, quizDetails);
+      store.commit('quizzes/CLEAR_QUIZZES')
+      await router.push('/');
+    } catch (error) {
+      console.error('Error updating quiz:', error);
+    }
+  } else {
+    try {
+      await QuizService.create(quizDetails)
+      store.commit('quizzes/CLEAR_QUIZZES');
+      await router.push('/');
+    } catch (error) {
+      console.error('Error creating quiz:', error);
+    }
   }
 }
 
-// Inside your parent component's <script setup>
+
+/**
+ * Removes a question from the store.
+ * @param {string} uuid - The UUID of the question to remove.
+ */
 function removeQuestionFromStore(uuid) {
-  // Assuming you have a Vuex action or mutation named 'removeQuestion'
   store.dispatch('quizzes/removeQuestion', uuid);
-  // Or use store.commit if directly committing a mutation
 }
 
+/**
+ * Handles the file upload event and updates the store with the image data.
+ * @param {Event} event - The file upload event.
+ */
 function handleFileUpload(event) {
-  const file = event.target.files[0]; // Get the uploaded file
-
+  const file = event.target.files[0];
   if (file) {
-    const reader = new FileReader(); // Create a FileReader to read the file
-
+    const reader = new FileReader();
     reader.onload = (e) => {
-      coverImage.value = e.target.result; // Set the coverImage ref to the data URL
+      coverImage.value = e.target.result;
+      const [imageType, imageData] = e.target.result.split(';base64,');
+      store.commit('quizzes/SET_QUIZ_DETAILS', {
+        ...store.state.quizzes.quizDetails,
+        imageName: file.name,
+        imageType: imageType.split(':')[1],
+        imageData: imageData,
+      });
     };
-
-    reader.readAsDataURL(file); // Read the file as a Data URL
+    reader.readAsDataURL(file);
   }
 }
 
+
+/**
+ * Removes the cover image from the quiz.
+ */
 function removeImage() {
-  coverImage.value = null; // Clears the image, effectively removing it
+  coverImage.value = null;
 }
 
-
+/**
+ * Moves a question up in the list of questions.
+ * @param {number} index - The index of the question to move.
+ */
 function moveQuestionUp(index) {
   if (index > 0) {
     const questionToMove = questions.value.splice(index, 1)[0];
     questions.value.splice(index - 1, 0, questionToMove);
-    // Trigger Vuex store update
     store.dispatch('quizzes/updateQuestionsOrder', questions.value);
   }
 }
 
+/**
+ * Moves a question down in the list of questions.
+ * @param {number} index - The index of the question to move.
+ */
 function moveQuestionDown(index) {
   if (index < questions.value.length - 1) {
     const questionToMove = questions.value.splice(index, 1)[0];
     questions.value.splice(index + 1, 0, questionToMove);
-    // Trigger Vuex store update
     store.dispatch('quizzes/updateQuestionsOrder', questions.value);
   }
 }
+
+/**
+ * Toggles the public/private status of the quiz.
+ */
+const isPublicCheckbox = computed({
+  get: () => store.state.quizzes.quizDetails.isPublic,
+  set: (value) => {
+    store.commit('quizzes/SET_QUIZ_DETAILS', { ...store.state.quizzes.quizDetails, isPublic: value });
+  },
+});
+
 </script>
 
-
 <template>
-
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-
   <div class="app-container">
-
-
     <div class="top-container">
-      <h1>Quiz Creator Tool</h1>
-      <!-- Image Preview -->
-      <!-- Image Preview with Remove Button -->
+      <h1>Add your information</h1>
+      <div>
+        <input type="checkbox" id="lock" v-model="isPublicCheckbox" />
+        <label for="lock" class="lock-label">
+      <span class="lock-wrapper">
+        <span class="shackle"></span>
+        <svg class="lock-body" width="" height="" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 5C0 2.23858 2.23858 0 5 0H23C25.7614 0 28 2.23858 28 5V23C28 25.7614 25.7614 28 23 28H5C2.23858 28 0 25.7614 0 23V5ZM16 13.2361C16.6137 12.6868 17 11.8885 17 11C17 9.34315 15.6569 8 14 8C12.3431 8 11 9.34315 11 11C11 11.8885 11.3863 12.6868 12 13.2361V18C12 19.1046 12.8954 20 14 20C15.1046 20 16 19.1046 16 18V13.2361Z" fill="white"></path>
+        </svg>
+      </span>
+      </label>
+      </div>
       <div v-if="coverImage" class="image-preview">
         <img :src="coverImage" alt="Cover Image Preview" />
         <div class="remove-image" @click="removeImage">&times;</div>
       </div>
-
       <div v-if="!coverImage">
         <input type="file" id="upload" hidden @change="handleFileUpload" accept="image/*"/>
         <label class="uploadimagebutton" for="upload">Upload Cover Image</label>
       </div>
-
-      <input id="quiz-title-input" v-model="quizTitle" @blur="updateQuizDetails" placeholder="Enter title of your quiz" />
-      <textarea v-model="quizDescription" @blur="updateQuizDetails" placeholder="Enter description of your quiz"></textarea>
-
+      <input id="quiz-title-input"
+             v-model="quizTitle"
+             placeholder="Enter title of your quiz"
+             @blur="updateQuizDetails" />
+      <p v-if="!isTitleValid && formSubmitted" style="color: red;">
+        Title must be between 1 and 100 characters long.
+      </p>
+      <textarea v-model="quizDescription"
+                @blur="updateQuizDetails"
+                placeholder="Enter description of your quiz"></textarea>
+      <p v-if="!isDescriptionValid && formSubmitted" style="color: red;">
+        Description is required.
+      </p>
       <div id="bottom-container">
-        <!-- Quiz Category Dropdown -->
-        <select v-model="quizCategory" @change="updateQuizDetails">
+        <select v-model="quizCategory"
+                @change="updateQuizDetails"
+                @blur="updateQuizDetails"
+                :class="{'select-invalid': !isCategoryValid && formSubmitted}">
           <option disabled value="">Choose category</option>
-          <option v-for="category in categories" :key="category.value" :value="category.value">
-            {{ category.text }}
+          <option v-for="category in categories" :key="category.id" :value="category.id">
+            {{ category.categoryName }}
           </option>
         </select>
-
-        <!-- Quiz Difficulty Dropdown -->
-        <select v-model="quizDifficulty" @change="updateQuizDetails">
+        <select v-model="quizDifficulty"
+                @change="updateQuizDetails"
+                @blur="updateQuizDetails"
+                :class="{'select-invalid': !isDifficultyValid && formSubmitted}">
           <option disabled value="">Choose difficulty</option>
           <option v-for="difficulty in difficulties" :key="difficulty.value" :value="difficulty.value">
             {{ difficulty.text }}
           </option>
         </select>
-
-
-
       </div>
     </div>
-
-
-
-
-
     <div class="quiz-container">
 
-
-      <div class="quiz-type-selector">
+      <div class="quiz-type-selector" v-if="questions.length === 0">
         <h2>Choose question type:</h2>
-        <div class="quiz-type-buttons">
+        <div class="quiz-type-buttons" >
           <button
             v-for="quizType in quizTypes"
             :key="quizType.id"
@@ -252,25 +371,17 @@ function moveQuestionDown(index) {
       </div>
 
       <h2>Your Questions:</h2>
-
-
-
-
+      <transition-group name="fade" tag="div" class="quiz-type-buttons">
       <div v-for="(question, index) in questions" :key="question.uuid" class="question-container">
-        <!-- Move Buttons -->
         <div class="move-buttons">
-
           <button @click="moveQuestionUp(index)" :disabled="index === 0" class="move-button">
             <span class="material-icons">arrow_upward</span>
           </button>
-
           <button @click="moveQuestionDown(index)" :disabled="index === questions.length - 1" class="move-button">
             <span class="material-icons">arrow_downward</span>
           </button>
-
         </div>
-        <!-- Question Editor -->
-        <div class="question-editor">
+      <div class="question-editor">
           <component
             :is="getComponent(question.questionType)"
             :uuid="question.uuid"
@@ -280,21 +391,37 @@ function moveQuestionDown(index) {
           />
         </div>
       </div>
+      </transition-group>
+      <div class="quiz-type-selector" v-if="questions.length > 0">
+        <h2>Add another question!</h2>
+
+        <div class="quiz-type-buttons">
+          <button
+            v-for="quizType in quizTypes"
+            :key="quizType.id"
+            @click="addQuestionType(quizType.id)"
+            :style="{ backgroundColor: quizType.color }"
+            class="quiz-type-button"
+          >
+            + {{ quizType.name }}
+          </button>
+        </div>
 
 
-
-      <!--      <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>-->
-      <button class="compileButton" @click="createQuiz">Create Quiz</button>
+      </div>
+      <button class="compileButton" @click="saveQuiz" :disabled="!isFormValid">Save Quiz</button>
     </div>
-
     <button class="scroll-to-top" @click="scrollToTop">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12l1.41 1.41L12 6.83l6.59 6.58L20 12l-8-8-8 8z"/></svg>
     </button>
-
   </div>
 </template>
 
 <style scoped>
+
+.select-invalid {
+  border: 2px solid red;
+}
 
 body {
   font-family: 'DM Sans', sans-serif;
@@ -320,12 +447,12 @@ h2 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s, transform 0.2s;
   cursor: pointer;
-  color: #171616; /* Ensure text is readable on colored backgrounds */
+  color: #171616;
   font-family: 'DM Sans', sans-serif;
   font-size: 3rem;
   margin-right: 10px;
   text-align: center;
-  //margin-bottom: 40px;
+  margin-bottom: 20px;
 
 }
 
@@ -350,19 +477,25 @@ h2 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s, transform 0.2s;
   cursor: pointer;
-  color: #ffffff; /* Ensure text is readable on colored backgrounds */
+  color: #ffffff;
   font-family: 'DM Sans', sans-serif;
   font-size: 1rem;
   margin-right: 10px;
   text-align: center;
   margin-top: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   background-color: #007bff;
 }
 
 .compileButton:hover {
   transform: translateY(-2px);
   background-color: #47a0d5;
+}
+
+.compileButton:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
 }
 
 
@@ -390,22 +523,13 @@ h2 {
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  width: auto; /* Adjusted to fit content */
+  width: auto;
 }
 
 .top-container select:focus {
-  outline: none; /* Removes default focus outline */
-  box-shadow: 0 0 0 2px #62B6CB; /* Adds a custom focus style */
+  outline: none;
+  box-shadow: 0 0 0 2px #62B6CB;
 }
-
-#bottom-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px; /* Adjust as needed for spacing */
-}
-
 
 #quiz-title-input {
   margin: 0 0 0 0;
@@ -415,8 +539,8 @@ h2 {
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-
 }
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -436,46 +560,49 @@ textarea {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .image-preview img {
-  max-width: 100%; /* Begrense bredden til bildet for forhåndsvisning */
-  max-height: 200px; /* Sett en maksimal høyde for forhåndsvisning */
-  object-fit: cover; /* Sørge for at bildet dekker området proporsjonalt */
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: cover;
 }
+
+
 #bottom-container{
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+  padding: 20px;
   background-color: rgb(249, 249, 249);
   max-width: 70vw;
   text-align: center;
+
 }
 
 
 .image-preview {
-  position: relative; /* Required for absolute positioning of children */
-  margin: 20px 0; /* Adjust margin as needed */
-  /* Keep existing styles */
+  position: relative;
+  margin: 20px 0;
 }
 
 .remove-image {
   position: absolute;
   top: 0;
   right: 0;
-  background-color: rgba(0,0,0,0.6); /* Semi-transparent black */
-  color: white; /* White text color */
+  background-color: rgba(0,0,0,0.6);
+  color: white;
   padding: 0 5px;
   cursor: pointer;
-  border-radius: 0 0 0 10px; /* Rounded corners on the top right */
+  border-radius: 0 0 0 10px;
 }
 
-/* Adjustments for better visibility */
 .remove-image:hover {
-  background-color: rgba(0,0,0,0.8); /* Slightly darker on hover */
+  background-color: rgba(0,0,0,0.8);
 }
 
 
 .uploadimagebutton {
-  display: inline-block; /* Change to inline-block for better control */
-  margin: 20px 0; /* Increase margin to prevent overlap */
+  display: inline-block;
+  margin: 20px 0;
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
@@ -494,7 +621,7 @@ textarea {
   position: fixed;
   right: 20px;
   bottom: 20px;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  background-color: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
   border-radius: 50%;
@@ -508,15 +635,14 @@ textarea {
 }
 
 .scroll-to-top:hover {
-  background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .scroll-to-top svg {
-  fill: white; /* SVG icon color */
+  fill: white;
   width: 24px;
   height: 24px;
 }
-
 
 .move-buttons {
   display: flex;
@@ -542,22 +668,30 @@ textarea {
 
 .question-container {
   display: flex;
-  align-items: flex-start; /* Align items at the start of the container */
-  gap: 10px; /* Space between move buttons and the question editor */
+  align-items: flex-start;
+  gap: 10px;
+  padding-bottom: 40px;
+}
+
+quiz-type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .move-buttons {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center the buttons vertically */
-  align-items: center; /* Align buttons in the middle of the 'move-buttons' container */
-  padding-right: 10px; /* Optional: Adds some space between buttons and question content */
+  justify-content: center;
+  align-items: center;
+  padding-right: 10px;
   border: none;
 
 }
 
 .question-editor {
-  flex-grow: 1; /* Ensure the question editor occupies the remaining space */
+  flex-grow: 1;
 }
 
 
@@ -573,8 +707,8 @@ textarea {
 }
 
 .material-icons {
-  font-size: 24px; /* Adjust icon size as needed */
-  color: #000; /* Icon color, change as required */
+  font-size: 24px;
+  color: #000;
 }
 
 .move-button:disabled {
@@ -592,12 +726,161 @@ textarea {
 }
 
 /* Enter-to and leave-from styles */
-.slide-enter, .slide-leave-to /* Starting state for enter/ending state for leave */ {
+.slide-enter, .slide-leave-to  {
   transform: translateY(50px);
   opacity: 0;
 }
 
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-leave-to {
+  opacity: 0;
+}
+
+.question-editor > * {
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+#lock {
+  display: none;
+}
+.lock-label {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e81717;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.lock-wrapper {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.shackle {
+  background-color: transparent;
+  height: 9px;
+  width: 14px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top: 3px solid white;
+  border-left: 3px solid white;
+  border-right: 3px solid white;
+  transition: all 0.3s;
+}
+.lock-body {
+  width: 15px;
+}
+#lock:checked + .lock-label .lock-wrapper .shackle {
+  transform: rotateY(150deg) translateX(3px);
+  transform-origin: right;
+}
+#lock:checked + .lock-label {
+  background-color: #007bff;
+}
+.lock-label:active {
+  transform: scale(0.9);
+}
+
+.select-invalid {
+  border: 2px solid red;
+}
 
 
+@media (max-width: 768px) {
+  .top-container,
+  #bottom-container,
+  .quiz-container {
+    max-width: 90vw;
+    padding: 10px;
+    margin-top: 20px;
+  }
 
+  #bottom-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #bottom-container select {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  #quiz-title-input,
+  textarea {
+    width: 80vw;
+    font-size: 16px;
+  }
+
+  .quiz-type-buttons .quiz-type-button {
+    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
+  }
+
+  .question-container {
+    flex-direction: column;
+  }
+
+  .move-buttons,
+  .question-editor {
+    width: 100%;
+    padding: 0 5px;
+  }
+
+  .scroll-to-top {
+    width: 40px;
+    height: 40px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .image-preview img {
+    max-width: 80vw;
+    height: auto;
+  }
+
+  .uploadimagebutton {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .compileButton {
+    width: 50%;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+
+
+  .quiz-type-buttons .quiz-type-button {
+    padding: 10px;
+    font-size: 14px;
+    margin: 5px;
+  }
+
+  .scroll-to-top {
+    width: 30px;
+    height: 30px;
+    right: 5px;
+    bottom: 5px;
+  }
+
+  .quiz-container {
+    max-width: 90vw;
+    padding: 10px;
+    margin-top: 20px;
+  }
+
+}
 </style>

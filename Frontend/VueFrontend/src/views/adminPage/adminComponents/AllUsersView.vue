@@ -1,62 +1,56 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { UserService } from '@/services/UserService.js';
+import { RoleService } from '@/services/RoleService.js'
 
-// Change user to users and initialize as an empty array
 const users = ref([]);
 
-const deleteUser = (userId) => {
-  alert(`Delete user with ID: ${userId}`);
-  // Implement deletion logic here
-  // This could involve filtering out the deleted user from the users array
-  // Or making an API call to delete the user on the server
-};
-
-
-onMounted(async () => {
+const fetchUsers = async () => {
   try {
-    // Adjust the endpoint if needed. Assuming this endpoint returns the JSON structure you provided
-    const response = await axios.get('/mockJSON/user/profile.json');
-    users.value = response.data.users; // Update based on your actual data structure
+    const allUsers = await UserService.getAllUsers();
+    users.value = allUsers;
   } catch (error) {
     console.error('Failed to load user data:', error);
   }
-});
+};
+
+const deleteUser = async (username) => {
+  await UserService.deleteUser(username);
+  await fetchUsers();
+};
+
+const giveAdmin = async (username) => {
+  await RoleService.asignRoleToUser(username, 'ADMIN');
+  await fetchUsers();
+};
+
+onMounted(fetchUsers);
+
 </script>
-
-
 
 <template>
   <div class="user-container">
     <div class="headings">
-
-    <h1>All User Information</h1>
+      <h1>All User Information</h1>
       <h2>View all users</h2>
-
     </div>
-    <!-- Iterating over users array to display each user -->
-    <div v-for="user in users" :key="user.userId" class="profile">
-      <h2>User ID: {{ user.userId }}</h2>
+    <div v-for="user in users" :key="user.id" class="profile">
       <h3>Username: {{ user.username }}</h3>
+      <p>User ID: {{ user.id }}</p>
       <h4>Email: {{ user.email }}</h4>
-      <h4>Quizzes: {{user.quizzes}} </h4>
-
-
-
 
       <div class="action-icons">
-        <div @click="deleteUser(user.userId)" class="delete-icon">
+        <div @click="deleteUser(user.username)" class="delete-icon">
           <span class="material-symbols-outlined">delete</span>
         </div>
-        <div @click="deleteUser(user.userId)" class="block-icon">
-          <span class="material-symbols-outlined">do_not_disturb</span>
+        <div @click="giveAdmin(user.username)" class="block-icon">
+          <span class="material-symbols-outlined">admin_panel_settings</span>
         </div>
       </div>
-
-
     </div>
   </div>
 </template>
+
 
 
 

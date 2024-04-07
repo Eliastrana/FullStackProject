@@ -21,6 +21,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.regex.Pattern;
+
 /**
  * Provides services for user authentication, including registration and login.
  * Utilizes {@link UserRepository} for user persistence, {@link PasswordEncoder} for password encryption,
@@ -42,6 +45,8 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+    private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
 
     /**
      * Registers a new user with the given user details.
@@ -59,22 +64,45 @@ public class AuthenticationService {
         if (userRepository.findByUsername(userCreationDTO.getUsername()).isPresent()) {
             throw new UserAlreadyExistException("Username already exists");
         }
+
+        if (!pattern.matcher(userCreationDTO.getPassword()).matches()) {
+            throw new IllegalArgumentException("Password does not meet complexity requirements.");
+        }
+
         User user = User
                 .builder()
                 .username(userCreationDTO.getUsername())
                 .password(passwordEncoder.encode(userCreationDTO.getPassword()))
                 .email(userCreationDTO.getEmail())
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .enabled(true)
                 .build();
+
+        logger.info("Registering user with username: " + user.getUsername());
 
         Role defaultRole = roleRepository.findByRole("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("Error: Default role is not found."));
 
-        // Istansiate and set up UserRole
+        logger.info("Default role is: " + defaultRole.getRole());
+
         UserRole userRole = new UserRole();
         userRole.setUser(user);
+        logger.info("User role is: " + userRole.getUser().getUsername());
         userRole.setRole(defaultRole);
+        logger.info("Role is: " + userRole.getRole().getRole());
 
+        if (user.getUserRoles() == null) {
+            logger.info("User roles are null");
+            user.setUserRoles(new HashSet<>());
+        }
+        logger.info("User roles are: " + user.getUserRoles());
         user.getUserRoles().add(userRole);
+        logger.info("User roles are: " + user.getUserRoles());
+
+
+        //user.getUserRoles().add(userRole);
 
         User savedUser = userRepository.save(user);
         logger.info("User " + savedUser.getUsername() + " has been registered");

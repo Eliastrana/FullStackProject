@@ -23,15 +23,15 @@ public class CompleteQuizDTO {
     
     @Schema(description = "The unique identifier of the creator of the quiz.", example = "d290f1ee-6c54-4b01-90e6-d701748f0851")
     private UUID creatorId;
-    
-    @Schema(description = "The name of the category under which the quiz falls.", example = "Sport")
-    private String categoryName;
-    
+
+    @Schema(description = "The unique identifier of the category under which the quiz falls.", example = "23e4567-e89b-12d3-a456-426614174000")
+    private UUID categoryId;
+
     @Schema(description = "The difficulty level of the quiz.", example = "EASY")
     private Difficulty difficulty;
 
     @Schema(description = "A boolean value indicating whether the quiz is public or private.", example = "true")
-    private boolean isPublic;
+    private Boolean isPublic;
     
     @Schema(description = "A set of questions included in the quiz.")
     private Set<CompleteQuestionDTO> questions;

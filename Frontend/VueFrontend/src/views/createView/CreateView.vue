@@ -4,13 +4,18 @@ import PublicquizzesView from '@/components/quizzesPage/PublicquizzesView.vue';
 import QuizFullScreen from '@/components/quizzesPage/FullscreenquizView.vue';
 import HowtocreateView from '@/components/createPage/HowtocreateView.vue'
 
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 /**
  * Selected quiz
  * @type {import('vue').Ref<Object>}
  */
 const selectedQuiz = ref(null);
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+
+});
 </script>
 
 <template>

@@ -30,20 +30,20 @@ const answered = ref(false);
 /**
  * Checks the user's answer and emits an event with the result
  */
+
+const isCorrect = ref(null);
+
 const checkAnswer = () => {
-  // If the question has already been answered, do nothing
   if (answered.value) return;
 
-  // Check if the user's answer matches any of the correct answers (case insensitive)
-  const isCorrect = props.question.answers.some(answer =>
+  isCorrect.value = props.question.answers.some(answer =>
     userAnswer.value.trim().toLowerCase() === answer.text.toLowerCase()
   );
 
-  // Emit the 'answered' event with the result
-  emit('answered', isCorrect);
-  // Mark the question as answered
+  emit('answered', isCorrect.value);
   answered.value = true;
 };
+
 </script>
 
 
@@ -54,7 +54,10 @@ const checkAnswer = () => {
       {{ question.text }}
       <input v-model="userAnswer"
              @keyup.enter="checkAnswer"
-             :class="{ 'correct-answer': isCorrect === true, 'incorrect-answer': isCorrect === false }"
+             :class="{
+               'correct-answer': isCorrect === true,
+               'incorrect-answer': isCorrect === false
+             }"
              placeholder="Answer here"
              class="blank"
              :disabled="answered">
@@ -62,6 +65,7 @@ const checkAnswer = () => {
     <button class="checkAnswerButton" @click="checkAnswer" :disabled="answered">Check Answer</button>
   </div>
 </template>
+
 
 
 

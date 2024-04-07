@@ -12,7 +12,7 @@ import AdminToolbar from '@/views/adminPage/adminComponents/AdminToolbar.vue'
   <h1>Administrator console</h1>
   <h2>Moderate users and quizzes</h2>
   <AdminToolbar />
-  <FlaggedQuizzes />
+<!--  <FlaggedQuizzes />--> <!-- This is possible for a further implementation of a flagging system. -->
   <div class="admin-container">
     <AllQuizzesView />
     <AllUsersView />
@@ -41,8 +41,12 @@ import AdminToolbar from '@/views/adminPage/adminComponents/AdminToolbar.vue'
   flex-basis: 48%; /* Adjust flex-basis similarly */
 }
 
+h1 {
+  margin-top: 40px; /* Adds space above the title */
+  text-align: center;
+}
 
-h1, h2 {
+h2 {
   text-align: center; /* Centers the titles */
   color: #3232ff; /* Sets the color for both headings for consistency */
 }
