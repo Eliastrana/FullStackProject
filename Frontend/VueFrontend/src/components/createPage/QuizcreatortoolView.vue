@@ -14,6 +14,8 @@ import { useRoute } from 'vue-router'
 
 const store = useStore();
 
+const formSubmitted = ref(false);
+
 const route = useRoute();
 
 const quizTitle = ref('');
@@ -22,6 +24,12 @@ const quizCategory = ref('');
 const quizDifficulty = ref(''); // Ensure this matches the value for "Easy"
 const coverImage = ref(null);
 const categories = ref([]);
+
+const isTitleValid = computed(() => /^.{1,100}$/.test(quizTitle.value));
+const isDescriptionValid = computed(() => quizDescription.value.trim().length > 0);
+const isCategoryValid = computed(() => quizCategory.value.trim().length > 0);
+const isDifficultyValid = computed(() => ['EASY', 'MEDIUM', 'HARD'].includes(quizDifficulty.value));
+
 
 const questions = computed(() => store.state.quizzes.quizDetails.questions);
 console.log('Questions:', questions.value);
@@ -104,31 +112,25 @@ function addQuestionType(type) {
     imageBack: null,
   };
 
-  // Customize the question template based on the type
   switch (type) {
     case 'multipleChoice':
       questionTemplate.questionType = 'MULTIPLE_CHOICE';
-      // Initialize with one default answer option
       questionTemplate.answers = [{ text: '', correct: false }];
       break;
     case 'fillInTheBlank':
       questionTemplate.questionType = 'FILL_IN_BLANK';
-      // Fill in the blank might only need one correct answer
       questionTemplate.answers = [{ text: '', correct: true }];
       break;
     case 'study':
       questionTemplate.questionType = 'STUDY';
-      // Study card might not have traditional answers but handled as one correct concept or explanation
       questionTemplate.answers = [{ text: '', correct: true }];
       break;
   }
 
-  // Dispatch the action to add this new question to the Vuex store
   store.dispatch('quizzes/addOrUpdateQuestion', questionTemplate);
   console.log(questions)
 
 }
-
 
 function handleQuizData(data) {
   store.dispatch('quizzes/addOrUpdateQuestion', data);
@@ -156,10 +158,25 @@ function updateQuizDetails() {
     difficulty: quizDifficulty.value,
     coverImage: coverImage.value,
   });
+  formSubmitted.value = true;
+
 }
+
+const isFormValid = computed(() => isTitleValid.value && isDescriptionValid.value && isCategoryValid.value && isDifficultyValid.value);
+
 
 async function saveQuiz()
 {
+
+  formSubmitted.value = true;
+
+  // Check if the title is valid before proceeding
+  if (!isTitleValid.value) {
+    console.error('The quiz title is invalid.');
+    return; // Stop the function if the title is invalid
+  }
+
+
   const quizDetails = store.state.quizzes.quizDetails;
   const quizId = route.params.quizId;
   if (quizId) {
@@ -181,7 +198,6 @@ async function saveQuiz()
     }
   }
 }
-
 
 function removeQuestionFromStore(uuid) {
   store.dispatch('quizzes/removeQuestion', uuid);
@@ -207,9 +223,8 @@ function handleFileUpload(event) {
 }
 
 function removeImage() {
-  coverImage.value = null; // Clears the image, effectively removing it
+  coverImage.value = null;
 }
-
 
 function moveQuestionUp(index) {
   if (index > 0) {
@@ -237,20 +252,18 @@ const isPublicCheckbox = computed({
   },
 });
 
+
+
+
+
 </script>
 
 
 <template>
-
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-
   <div class="app-container">
-
-
     <div class="top-container">
       <h1>Add your information</h1>
-
       <div>
         <input type="checkbox" id="lock" v-model="isPublicCheckbox" />
         <label for="lock" class="lock-label">
@@ -262,84 +275,62 @@ const isPublicCheckbox = computed({
       </span>
       </label>
       </div>
-
-
-      <!-- Image Preview with Remove Button -->
       <div v-if="coverImage" class="image-preview">
         <img :src="coverImage" alt="Cover Image Preview" />
         <div class="remove-image" @click="removeImage">&times;</div>
       </div>
-
       <div v-if="!coverImage">
         <input type="file" id="upload" hidden @change="handleFileUpload" accept="image/*"/>
         <label class="uploadimagebutton" for="upload">Upload Cover Image</label>
       </div>
 
-      <input id="quiz-title-input" v-model="quizTitle" @blur="updateQuizDetails" placeholder="Enter title of your quiz" />
-      <textarea v-model="quizDescription" @blur="updateQuizDetails" placeholder="Enter description of your quiz"></textarea>
 
+      <input id="quiz-title-input"
+             v-model="quizTitle"
+             placeholder="Enter title of your quiz"
+             @blur="updateQuizDetails" />
+      <p v-if="!isTitleValid && formSubmitted" style="color: red;">
+        Title must be between 1 and 100 characters long.
+      </p>
+
+
+      <textarea v-model="quizDescription"
+                @blur="updateQuizDetails"
+                placeholder="Enter description of your quiz"></textarea>
+      <p v-if="!isDescriptionValid && formSubmitted" style="color: red;">
+        Description is required.
+      </p>
+
+
+      <!-- Category Dropdown -->
       <div id="bottom-container">
-        <!-- Quiz Category Dropdown -->
-        <select v-model="quizCategory" @change="updateQuizDetails">
+        <select v-model="quizCategory"
+                @change="updateQuizDetails"
+                @blur="updateQuizDetails"
+                :class="{'select-invalid': !isCategoryValid && formSubmitted}">
           <option disabled value="">Choose category</option>
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.categoryName }}
           </option>
         </select>
 
-        <!-- Quiz Difficulty Dropdown -->
-        <select v-model="quizDifficulty" @change="updateQuizDetails">
+        <!-- Difficulty Dropdown -->
+        <select v-model="quizDifficulty"
+                @change="updateQuizDetails"
+                @blur="updateQuizDetails"
+                :class="{'select-invalid': !isDifficultyValid && formSubmitted}">
           <option disabled value="">Choose difficulty</option>
           <option v-for="difficulty in difficulties" :key="difficulty.value" :value="difficulty.value">
             {{ difficulty.text }}
           </option>
         </select>
-
-
-
       </div>
+
+
+
 
     </div>
-
-
-
-
-
     <div class="quiz-container">
-
-      <h2>Your Questions:</h2>
-
-      <transition-group name="fade" tag="div" class="quiz-type-buttons">
-
-      <div v-for="(question, index) in questions" :key="question.uuid" class="question-container">
-        <!-- Move Buttons -->
-        <div class="move-buttons">
-
-          <button @click="moveQuestionUp(index)" :disabled="index === 0" class="move-button">
-            <span class="material-icons">arrow_upward</span>
-          </button>
-
-          <button @click="moveQuestionDown(index)" :disabled="index === questions.length - 1" class="move-button">
-            <span class="material-icons">arrow_downward</span>
-          </button>
-
-        </div>
-
-
-
-      <div class="question-editor">
-          <component
-            :is="getComponent(question.questionType)"
-            :uuid="question.uuid"
-            @submitData="handleQuizData"
-            @removeQuestion="removeQuestionFromStore"
-            v-bind="question"
-          />
-        </div>
-      </div>
-
-      </transition-group>
-
 
       <div class="quiz-type-selector">
         <h2>Choose question type:</h2>
@@ -356,18 +347,60 @@ const isPublicCheckbox = computed({
         </div>
       </div>
 
-      <!--      <button class="compileButton" @click="compileQuizToJson">Compile Quiz to JSON</button>-->
-      <button class="compileButton" @click="saveQuiz">Save Quiz</button>
-    </div>
 
+      <h2>Your Questions:</h2>
+      <transition-group name="fade" tag="div" class="quiz-type-buttons">
+      <div v-for="(question, index) in questions" :key="question.uuid" class="question-container">
+        <div class="move-buttons">
+          <button @click="moveQuestionUp(index)" :disabled="index === 0" class="move-button">
+            <span class="material-icons">arrow_upward</span>
+          </button>
+          <button @click="moveQuestionDown(index)" :disabled="index === questions.length - 1" class="move-button">
+            <span class="material-icons">arrow_downward</span>
+          </button>
+        </div>
+      <div class="question-editor">
+          <component
+            :is="getComponent(question.questionType)"
+            :uuid="question.uuid"
+            @submitData="handleQuizData"
+            @removeQuestion="removeQuestionFromStore"
+            v-bind="question"
+          />
+        </div>
+      </div>
+      </transition-group>
+      <div class="quiz-type-selector">
+        <h2>Add another question!</h2>
+        <div class="quiz-type-buttons">
+          <button
+            v-for="quizType in quizTypes"
+            :key="quizType.id"
+            @click="addQuestionType(quizType.id)"
+            :style="{ backgroundColor: quizType.color }"
+            class="quiz-type-button"
+          >
+            + {{ quizType.name }}
+          </button>
+        </div>
+      </div>
+
+      <button class="compileButton" @click="saveQuiz" :disabled="!isFormValid">Save Quiz</button>
+
+    </div>
     <button class="scroll-to-top" @click="scrollToTop">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12l1.41 1.41L12 6.83l6.59 6.58L20 12l-8-8-8 8z"/></svg>
     </button>
-
   </div>
 </template>
 
 <style scoped>
+
+.select-invalid {
+  border: 2px solid red;
+}
+
+
 
 body {
   font-family: 'DM Sans', sans-serif;
@@ -438,6 +471,12 @@ h2 {
   background-color: #47a0d5;
 }
 
+.compileButton:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+}
+
 
 .top-container {
   display: flex;
@@ -471,9 +510,6 @@ h2 {
   box-shadow: 0 0 0 2px #62B6CB; /* Adds a custom focus style */
 }
 
-
-
-
 #quiz-title-input {
   margin: 0 0 0 0;
   font-size: 20px;
@@ -482,8 +518,8 @@ h2 {
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-
 }
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -737,8 +773,9 @@ quiz-type-buttons {
   transform: scale(0.9);
 }
 
-
-
+.select-invalid {
+  border: 2px solid red;
+}
 
 
 @media (max-width: 768px) {
