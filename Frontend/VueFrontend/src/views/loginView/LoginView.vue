@@ -70,7 +70,7 @@ const login = async () => {
       username: username.value,
       password: password.value
     });
-    router.push({name: 'MyAccount'});
+    router.push({name: 'home'});
   } catch (error) {
     console.error("Login failed:", error);
     errorMessage.value = "Incorrect username or password.";
