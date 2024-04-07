@@ -50,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
       String usernameString = username.toString();
       UUID email = UUID.randomUUID();
       String emailString = email.toString();
-      UserCreationDTO userCreationDTO = new UserCreationDTO(usernameString, "testpassword", emailString + "@example.com");
+      UserCreationDTO userCreationDTO = new UserCreationDTO(usernameString, "testpassword123", emailString + "@example.com");
 
       mockMvc.perform(post("/api/user/register")
         .contentType(MediaType.APPLICATION_JSON)
