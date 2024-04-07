@@ -60,7 +60,7 @@ public class CompleteQuizDTO {
      * while private quizzes are restricted to specific users or groups.
      */
     @Schema(description = "A boolean value indicating whether the quiz is public or private.", example = "true")
-    private boolean isPublic;
+    private Boolean isPublic;
 
     /**
      * The set of questions included in the quiz. Each question is detailed further in its own DTO,

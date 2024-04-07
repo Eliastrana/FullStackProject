@@ -41,7 +41,7 @@ public class Role implements GrantedAuthority {
     /**
      * The name of the role, representing the authority or access level it grants.
      */
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String role;
 
     /**

@@ -32,7 +32,7 @@
           <!-- Displaying Difficulty -->
           <p :class="['difficulty-badge', difficultyClass(quiz.difficulty)]">{{ quiz.difficulty }}</p>
         </div>
-
+        <StarRating :rating="quiz.ratings.average" />
       </div>
     </div>
   </div>
@@ -45,7 +45,8 @@ import { useStore } from 'vuex';
 import { CategoryService } from '@/services/CategoryService.js'
 import { DifficultyService } from '@/services/DifficultyService.js'
 import { TagService } from '@/services/TagService.js'
-import { QuestionService } from '@/services/QuestionService.js' // Adjust import paths as needed
+import { QuestionService } from '@/services/QuestionService.js'
+import StarRating from '@/components/util/StarRating.vue' // Adjust import paths as needed
 
 const store = useStore();
 const emit = defineEmits(['select-quiz']);
@@ -61,6 +62,7 @@ const quizToTagsMap = ref({});
 onMounted(async () => {
   await store.dispatch('quizzes/fetchAllQuizzes');
   await store.dispatch('quizzes/fetchQuizImages');
+  await store.dispatch('quizzes/fetchAllQuizRatings');
   allTags.value = await TagService.getAllTags();
 
   const allCategories = await CategoryService.getAllCategories();
@@ -86,12 +88,13 @@ const quizzes = computed(() => store.state.quizzes.quizzes);
 const filteredQuizzes = computed(() => {
   const searchLower = searchQuery.value.toLowerCase();
   return quizzes.value.filter(quiz => {
+    const isPublic = quiz.isPublic;
     const titleMatch = quiz.title.toLowerCase().includes(searchLower);
     const tagMatch = quizToTagsMap.value[quiz.id]?.some(tagName => tagName.toLowerCase().includes(searchLower));
     const difficultyMatch = selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value;
     const categoryMatch = selectedCategory.value === '' || quiz.categoryId === selectedCategory.value;
 
-    return (titleMatch || tagMatch) && difficultyMatch && categoryMatch;
+    return isPublic && (titleMatch || tagMatch) && difficultyMatch && categoryMatch;
   });
 });
 
@@ -324,7 +327,10 @@ select {
   margin: 5px 0;
 }
 
-
+.average-rating {
+  margin-top: 10px;
+  font-weight: bold;
+}
 
 .quiz-info {
   display: flex;

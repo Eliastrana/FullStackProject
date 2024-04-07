@@ -1,6 +1,5 @@
 // src/utils/axiosSetup.js
 import axios from 'axios';
-import { SessionToken } from '@/features/SessionToken';
 import router from '@/router/index.js'
 import store from '@/store/index.js'
 
@@ -34,9 +33,9 @@ axios.interceptors.response.use(
   response => response,
   error => {
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      store.dispatch('user/logout') // Dispatch the logout action
+      store.dispatch('user/logout')
         .then(() => {
-          router.push('/login'); // Redirect to login page after cleanup
+          router.push('/login');
         })
         .catch(logoutError => {
           console.error('Error during logout:', logoutError);

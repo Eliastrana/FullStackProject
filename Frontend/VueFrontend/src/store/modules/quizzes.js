@@ -1,6 +1,7 @@
 // store/modules/quizzes.js
 import { v4 as uuidv4 } from 'uuid';
 import { QuizService } from '@/services/QuizService.js'
+import { RatingService } from '@/services/RatingService.js'
 
 
 export default {
@@ -16,6 +17,7 @@ export default {
       coverImage: null,
       imageName: '',
       imageType: '',
+      isPublic: false,
     },
     quizzes: [],
   }),
@@ -41,6 +43,7 @@ export default {
         coverImage: null,
         imageName: '',
         imageType: '',
+        isPublic: false,
       };
     },
     SET_QUIZ_DETAILS(state, details) {
@@ -79,6 +82,15 @@ export default {
         state.quizzes[quizIndex].imageData = imageData;
       }
     },
+    SET_QUIZ_RATING(state, { quizId, averageRating }) {
+      const quizIndex = state.quizzes.findIndex(quiz => quiz.id === quizId);
+      if (quizIndex !== -1) {
+        if (!state.quizzes[quizIndex].ratings) {
+          state.quizzes[quizIndex].ratings = {};
+        }
+        state.quizzes[quizIndex].ratings.average = averageRating;
+      }
+    },
 
   },
   actions: {
@@ -90,13 +102,6 @@ export default {
       } else {
         commit('ADD_QUESTION', questionData);
       }
-      // if (questionData.coverImage) {
-      //   commit('SET_QUIZ_COVER_IMAGE', {
-      //     imageName: questionData.imageName,
-      //     imageType: questionData.imageType,
-      //     coverImage: questionData.coverImage
-      //   });
-      // }
     },
     setQuizDetails({ commit }, details) {
       commit('SET_QUIZ_DETAILS', details);
@@ -127,23 +132,41 @@ export default {
     },
     async fetchQuizImages({ commit, state }) {
       for (let quiz of state.quizzes) {
-        console.log(quiz)
         if (quiz.imageId) {
           try {
             const imageData = await QuizService.getImageById(quiz.imageId);
             commit('SET_QUIZ_IMAGE', { quizId: quiz.id, imageData });
-            console.log(imageData)
           } catch (error) {
             console.error('Error fetching image for quiz', quiz.id, error);
           }
         }
       }
     },
+    async addImageToQuiz({ commit, state }, { quizId }) {
+      try {
+        for (let quiz of state.quizzes) {
+          if (quiz.id === quizId) {
+            const imageData = await QuizService.getImageById(quiz.imageId);
+            commit('SET_QUIZ_IMAGE', { quizId, imageData });
+          }
+        }
+      } catch (error) {
+        console.error('Error adding image to quiz:', error);
+      }
+    },
+    async fetchAllQuizRatings({ commit, state }) {
+      for (const quiz of state.quizzes) {
+        try {
+          const averageRating = await RatingService.getAverageRating(quiz.id);
+          commit('SET_QUIZ_RATING', { quizId: quiz.id, averageRating });
+        } catch (error) {
+          console.error('Error fetching average rating for quiz', quiz.id, error);
+        }
+      }
+    },
     addQuestionsByType({ dispatch }, { type, numberOfQuestions = 5 }) {
       for (let i = 0; i < numberOfQuestions; i++) {
         let questionTemplate;
-
-        console.log(type)
 
         switch (type) {
           case 'FILL_IN_BLANK':
@@ -153,7 +176,6 @@ export default {
               questionType: 'FILL_IN_BLANK',
               tags: [],
               answers: [{ text: '', correct: true }],
-//              image: null,
             };
             break;
           case 'MULTIPLE_CHOICE':
@@ -163,7 +185,6 @@ export default {
               questionType: 'MULTIPLE_CHOICE',
               tags: [],
               answers: [{ text: '', correct: false }],
-//              image: null,
             };
             break;
           case 'STUDY':
@@ -173,8 +194,6 @@ export default {
               questionType: 'STUDY',
               tags: [],
               answers: [{ text: '', correct: true }],
-//              imageFront: null,
-//              imageBack: null,
             };
             break;
           default:

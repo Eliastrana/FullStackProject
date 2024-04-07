@@ -49,6 +49,7 @@ import { CategoryService } from '@/services/CategoryService.js'
 const props = defineProps({
   quiz: Object,
 });
+
 const emits = defineEmits(['close']);
 const questions = ref([]);
 const store = useStore(); // Use the store

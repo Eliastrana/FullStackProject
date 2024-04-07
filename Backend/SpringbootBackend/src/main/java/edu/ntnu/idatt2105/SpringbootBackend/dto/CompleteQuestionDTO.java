@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents a Data Transfer Object (DTO) for encapsulating all the details of a question in a quiz.
@@ -27,6 +28,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Schema(description = "Data Transfer Object for a complete question, including all details such as text, type, multimedia link, tags, answers, and associated image.")
 public class CompleteQuestionDTO {
+    @Schema(example = "123e4567-e89b-12d3-a456-426614174000", description = "The unique identifier of the question.", required = true)
+    private UUID id;
+
     /**
      * The text content of the question. This is the primary information presented to the user,
      * describing what is being asked.

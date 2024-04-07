@@ -26,7 +26,7 @@ const updateQuizzes = (newQuizzes) => {
 
 onMounted(async () => {
   try {
-    quizzes.value = await QuizService.getAllQuizzes();
+    quizzes.value = await QuizService.getPublicQuizzes();
   } catch (error) {
     console.error('Error while fetching quizzes', error);
   }
@@ -34,7 +34,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Existing styles... */
 
 .no-quizzes {
   display: flex;

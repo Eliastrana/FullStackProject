@@ -62,8 +62,6 @@ const store = useStore();
 const sendResetLink = async () => {
   try {
 
-    console.log(`Sending reset link to ${email.value}`);
-
     successMessage.value = "If an account exists for this email, a reset link has been sent.";
     errorMessage.value = '';
 

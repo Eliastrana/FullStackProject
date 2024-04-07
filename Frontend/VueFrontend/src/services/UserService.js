@@ -30,7 +30,18 @@ export const UserService = {
     return response.data;
   },
 
+  async getAllUsers() {
+    const response = await axios.get(`${API_URL}/all`);
+    return response.data;
+  },
 
-
+  async deleteUser(username) {
+    const response = await axios.delete(`${API_URL}/${username}`);
+    return response.data;
+  },
+  
+  updatePassword(passwordUpdateData) {
+    return axios.put(`${API_URL}/update/password`, passwordUpdateData);
+  }
 
 };

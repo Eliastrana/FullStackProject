@@ -174,4 +174,10 @@ public QuizDTO updateQuiz(UUID id, QuizDTO quizUpdateDTO) {
     quiz = quizRepository.save(quiz);
     return quizMapper.toQuizDTO(quiz);
     }
+
+    public List<QuizDTO> getPublicQuizzes() {
+    return quizRepository.findAllByIsPublicTrue().stream()
+            .map(quizMapper::toQuizDTO)
+            .collect(Collectors.toList());
+    }
 }

@@ -15,6 +15,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import org.springframework.beans.factory.annotation.Value;
+
 /**
  * Service class for managing JSON Web Token (JWT) operations.
  * It supports generating JWTs for user authentication, extracting claims like username and expiration date from a JWT,
@@ -29,8 +31,13 @@ import io.jsonwebtoken.security.Keys;
  */
 @Service
 public class JWTService {
-    private static final String SECRET_KEY = "ce5Yllz+KjNxVcVHUFgEUVqGpxdyEkQkMHb1AzlA69WAOjfvT03TzlyDHgcEoMViudQr6ApY1rw3Kg5Q2HokUg==";
     private final Logger logger = LoggerFactory.getLogger(JWTService.class);
+    private final String secretKey;
+
+
+    public JWTService(@Value("${SECRET_KEY}") String secretKey) {
+        this.secretKey = secretKey;
+    }
 
     /**
      * Extracts the username from the specified JWT token.
@@ -144,7 +151,7 @@ public class JWTService {
      * @return The signing key as a {@link Key}.
      */
     private Key getSigningKey() {
-        byte[] key = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(key);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

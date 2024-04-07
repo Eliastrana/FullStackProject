@@ -1,18 +1,15 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
-import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDetailsDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.dto.*;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AuthenticationService;
 import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +31,7 @@ import lombok.RequiredArgsConstructor;
  * @since 0.1
  * @version 0.1
  */
-@Tag(name = "User Authentication")
+@Tag(name = "User Authentication" , description = "API for user authentication")
 @CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
@@ -122,6 +119,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Users fetched successfully")
     @ApiResponse(responseCode = "404", description = "No users found")
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Iterable<UserDetailsDTO>> getAllUsers() {
         logger.info("Fetching all users");
         Iterable<UserDetailsDTO> users = userService.getAllUsers();
@@ -132,4 +130,30 @@ public class UserController {
         }
         return ResponseEntity.ok(users);
     }
+
+    @Operation(summary = "Delete user", description = "Deletes a user from the system")
+    @ApiResponse(responseCode = "200", description = "User deleted successfully")
+    @ApiResponse(responseCode = "404", description = "User not found")
+    @DeleteMapping("/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        logger.info("Deleting user with username: " + username);
+        boolean isDeleted = userService.deleteUser(username);
+
+        if (!isDeleted) {
+            logger.error("User not found: " + username);
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Update password", description = "Updates a user's password")
+    @ApiResponse(responseCode = "200", description = "Password updated successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid password")
+    @PutMapping("/update/password")
+    public ResponseEntity<?> updatePassword(Authentication authentication, @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
+        userService.updatePassword(authentication.getName(), passwordUpdateDTO);
+        return ResponseEntity.ok().build();
+    }
+
 }

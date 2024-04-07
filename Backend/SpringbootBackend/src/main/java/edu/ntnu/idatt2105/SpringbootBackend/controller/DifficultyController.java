@@ -2,6 +2,10 @@ package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +31,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/difficulties")
 public class DifficultyController {
 
-    /**
+/**
      * Retrieves a list of all possible {@link Difficulty} levels defined in the system.
      * This endpoint allows clients to understand what difficulty levels can be associated
      * with quizzes and therefore, can be used to filter or categorize quizzes based on their
@@ -36,8 +40,10 @@ public class DifficultyController {
      * @return A {@link ResponseEntity} object containing a list of all {@link Difficulty} levels.
      * The HTTP status code is set to OK (200) indicating the request was successfully processed.
      */
-    @GetMapping("/")
-    @Operation(summary = "List all difficulties", description = "Retrieves a list of all possible quiz difficulty levels.")
+    @GetMapping
+    @Operation(summary = "List all difficulties", description = "Retrieves a list of all possible quiz difficulty levels.", responses = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of difficulties",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = Difficulty.class))))})
     public ResponseEntity<List<Difficulty>> getAllDifficulties() {
         List<Difficulty> difficulties = Arrays.stream(Difficulty.values())
                 .collect(Collectors.toList());

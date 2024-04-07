@@ -37,6 +37,7 @@ public class UserQuizAttemptMapper {
         dto.setUserId(userQuizAttempt.getUser().getId());
         dto.setQuizId(userQuizAttempt.getQuiz().getId());
         dto.setScore(userQuizAttempt.getScore()); 
+        dto.setQuizTitle(userQuizAttempt.getQuiz().getTitle());
         return dto;
     }
 

@@ -83,6 +83,7 @@ public class QuizMapper {
             .creatorId(quiz.getCreator().getId())
             .categoryId(categoryDTO != null ? categoryDTO.getId() : null)
             .imageId(imageId)
+            .isPublic(quiz.isPublic())
             .build();
 }
 
@@ -120,7 +121,7 @@ public class QuizMapper {
         existingQuiz.setCreator(User.builder().id(quizDTO.getCreatorId()).build());
         existingQuiz.setImage(Image.builder().id(quizDTO.getImageId()).build());
         existingQuiz.setDifficulty(quizDTO.getDifficulty());
-        existingQuiz.setPublic(quizDTO.isPublic());
+        existingQuiz.setPublic(quizDTO.getIsPublic());
         return existingQuiz;
     }
 
