@@ -86,12 +86,13 @@ const quizzes = computed(() => store.state.quizzes.quizzes);
 const filteredQuizzes = computed(() => {
   const searchLower = searchQuery.value.toLowerCase();
   return quizzes.value.filter(quiz => {
+    const isPublic = quiz.isPublic;
     const titleMatch = quiz.title.toLowerCase().includes(searchLower);
     const tagMatch = quizToTagsMap.value[quiz.id]?.some(tagName => tagName.toLowerCase().includes(searchLower));
     const difficultyMatch = selectedDifficulty.value === '' || quiz.difficulty === selectedDifficulty.value;
     const categoryMatch = selectedCategory.value === '' || quiz.categoryId === selectedCategory.value;
 
-    return (titleMatch || tagMatch) && difficultyMatch && categoryMatch;
+    return isPublic && (titleMatch || tagMatch) && difficultyMatch && categoryMatch;
   });
 });
 
