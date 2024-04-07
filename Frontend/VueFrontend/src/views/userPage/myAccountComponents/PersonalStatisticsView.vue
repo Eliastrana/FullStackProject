@@ -68,10 +68,8 @@ onMounted(async () => {
       <div class="tile" v-for="(attempt, index) in quizAttempts" :key="index">
 
 <!--        <h2>{{userInfo.username}}</h2>-->
-        <h3>{{ attempt.id}}</h3>
+        <h3>{{ attempt.quizTitle}}</h3>
         <h4>Correct answers: {{attempt.score}}</h4>
-        <p>{{attempt.userId}}</p>
-        <p>{{attempt.quizId}}</p>
         <div class="progress-bar-container">
           <div class="progress-bar" :style="{ width: (attempt.score / questionService.getQuestionsByQuizId(attempt.quizId)) * 100 + '%' }"></div>
         </div>
