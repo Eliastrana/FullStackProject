@@ -260,6 +260,8 @@ function moveQuestionDown(index) {
 
       <h2>Your Questions:</h2>
 
+      <transition-group name="fade" tag="div" class="quiz-type-buttons">
+
       <div v-for="(question, index) in questions" :key="question.uuid" class="question-container">
         <!-- Move Buttons -->
         <div class="move-buttons">
@@ -274,7 +276,9 @@ function moveQuestionDown(index) {
 
         </div>
 
-        <div class="question-editor">
+
+
+      <div class="question-editor">
           <component
             :is="getComponent(question.questionType)"
             :uuid="question.uuid"
@@ -284,6 +288,9 @@ function moveQuestionDown(index) {
           />
         </div>
       </div>
+
+      </transition-group>
+
 
       <div class="quiz-type-selector">
         <h2>Choose question type:</h2>
@@ -563,6 +570,13 @@ textarea {
   padding-bottom: 40px; /* Adjust as needed */
 }
 
+quiz-type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
 .move-buttons {
   display: flex;
   flex-direction: column;
@@ -613,6 +627,20 @@ textarea {
   transform: translateY(50px);
   opacity: 0;
 }
+
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-leave-to {
+  opacity: 0;
+}
+
+.question-editor > * {
+  box-sizing: border-box;
+  margin: 0 auto; /* Center align the content */
+  max-width: 100%; /* Prevent overflow */
+}
+
 
 
 
