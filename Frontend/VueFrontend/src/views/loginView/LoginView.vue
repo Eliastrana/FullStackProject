@@ -16,6 +16,8 @@
       <div id="button-container">
         <button id="sign-in" type="submit" :disabled="username.trim() === '' || password.trim() === '' ">Sign in</button>
         <button id="create-user-link" type="button" @click="navigateToCreateUser">Register</button>
+        <button id="reset-password-link" type="button" @click="navigateToResetPassword">Forgot password?</button>
+
       </div>
     </form>
   </div>
@@ -81,6 +83,15 @@ const login = async () => {
 const navigateToCreateUser = () => {
   router.push({ name: 'CreateUser' });
 };
+
+/**
+ * Navigates to the ResetPassword route
+ */
+
+const navigateToResetPassword = () => {
+  router.push({ name: 'ResetPassword' });
+};
+
 </script>
 
 <style scoped>
@@ -190,11 +201,28 @@ label {
   border: none;
   cursor: pointer;
   text-decoration: none;
-  font-size: 15px;
+  font-size: 18px;
   margin-top: 10px;
 }
 
 #create-user-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+
+#reset-password-link {
+  background-color: transparent;
+  color: #424242;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+#reset-password-link:hover {
   color: #0056b3;
   text-decoration: underline;
 }

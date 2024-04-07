@@ -42,6 +42,11 @@ const router = createRouter({
       component: () => import('../views/loginView/CreateUserView.vue') // Adjust the path as necessary
     },
     {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: () => import('../views/loginView/ResetPasswordView.vue') // Adjust the path as necessary
+    },
+    {
       path: '/quizcreator',
       name: 'Quizcreator',
       component: () => import('../components/createPage/QuizcreatortoolView.vue'),
