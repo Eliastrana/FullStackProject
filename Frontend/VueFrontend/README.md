@@ -16,6 +16,7 @@ ___
   - [Run Unit Tests with Vitest](#run-unit-tests-with-vitest)
   - [Run End-to-End Tests with Cypress](#run-end-to-end-tests-with-cypress)
   - [Lint with ESLint](#lint-with-eslint)
+- [Contact Information](#contact-information)
 
 ---
 
@@ -72,7 +73,7 @@ npm run test:e2e
 ```sh
 npm run lint
 ```
-
+---
 ## Contact Information
 
 If You have trouble running the project, questions or feedback, feel free to contact us at:
