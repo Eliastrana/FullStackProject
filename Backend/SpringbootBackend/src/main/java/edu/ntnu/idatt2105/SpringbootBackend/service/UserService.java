@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
+import edu.ntnu.idatt2105.SpringbootBackend.dto.PasswordUpdateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDetailsDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserNotFoundException;
@@ -7,11 +8,14 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -32,6 +36,9 @@ public class UserService{
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+    private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
 
     /**
      * Finds a user based on the provided {@link UserDTO}.
@@ -95,4 +102,16 @@ public class UserService{
         userRepository.deleteByUsername(username);
         return true;
     }
+
+    public void updatePassword(String username, PasswordUpdateDTO passwordUpdateDTO) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(passwordEncoder.matches(passwordUpdateDTO.getOldPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(passwordUpdateDTO.getNewPassword()));
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Old password is incorrect.");
+        }
+    }
+
 }

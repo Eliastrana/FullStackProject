@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 /**
  * Provides services for user authentication, including registration and login.
@@ -44,6 +45,8 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+    private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
 
     /**
      * Registers a new user with the given user details.
@@ -61,6 +64,11 @@ public class AuthenticationService {
         if (userRepository.findByUsername(userCreationDTO.getUsername()).isPresent()) {
             throw new UserAlreadyExistException("Username already exists");
         }
+
+        if (!pattern.matcher(userCreationDTO.getPassword()).matches()) {
+            throw new IllegalArgumentException("Password does not meet complexity requirements.");
+        }
+
         User user = User
                 .builder()
                 .username(userCreationDTO.getUsername())
