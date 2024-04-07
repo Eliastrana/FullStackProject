@@ -179,7 +179,6 @@ function getComponent(type) {
  */
 
 function updateQuizDetails() {
-  console.log('Updating quiz details')
   store.commit('quizzes/SET_QUIZ_DETAILS', {
     title: quizTitle.value,
     description: quizDescription.value,
@@ -204,7 +203,6 @@ async function saveQuiz() {
   const quizId = route.params.quizId;
   if (quizId) {
     try {
-      console.log(quizDetails)
       await QuizService.updateQuiz(quizId, quizDetails);
       store.commit('quizzes/CLEAR_QUIZZES')
       await router.push('/');
@@ -356,9 +354,10 @@ const isPublicCheckbox = computed({
       </div>
     </div>
     <div class="quiz-container">
-      <div class="quiz-type-selector">
+
+      <div class="quiz-type-selector" v-if="questions.length === 0">
         <h2>Choose question type:</h2>
-        <div class="quiz-type-buttons">
+        <div class="quiz-type-buttons" >
           <button
             v-for="quizType in quizTypes"
             :key="quizType.id"
@@ -370,6 +369,7 @@ const isPublicCheckbox = computed({
           </button>
         </div>
       </div>
+
       <h2>Your Questions:</h2>
       <transition-group name="fade" tag="div" class="quiz-type-buttons">
       <div v-for="(question, index) in questions" :key="question.uuid" class="question-container">
@@ -392,8 +392,9 @@ const isPublicCheckbox = computed({
         </div>
       </div>
       </transition-group>
-      <div class="quiz-type-selector">
+      <div class="quiz-type-selector" v-if="questions.length > 0">
         <h2>Add another question!</h2>
+
         <div class="quiz-type-buttons">
           <button
             v-for="quizType in quizTypes"
@@ -405,6 +406,8 @@ const isPublicCheckbox = computed({
             + {{ quizType.name }}
           </button>
         </div>
+
+
       </div>
       <button class="compileButton" @click="saveQuiz" :disabled="!isFormValid">Save Quiz</button>
     </div>

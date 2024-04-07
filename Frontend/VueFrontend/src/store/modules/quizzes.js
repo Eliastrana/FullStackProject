@@ -155,8 +155,6 @@ export default {
       for (let i = 0; i < numberOfQuestions; i++) {
         let questionTemplate;
 
-        console.log(type)
-
         switch (type) {
           case 'FILL_IN_BLANK':
             questionTemplate = {

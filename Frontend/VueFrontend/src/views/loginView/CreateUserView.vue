@@ -119,7 +119,6 @@ const registerUser = async () => {
       password: password.value,
     });
 
-    console.log("Registration successful");
     router.push({ name: 'home' });
   } catch (error) {
     console.error("Registration failed:", error);
