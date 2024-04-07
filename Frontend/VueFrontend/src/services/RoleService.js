@@ -6,7 +6,6 @@ export const RoleService = {
   async userHasRoleAdmin(username) {
     try {
       const response = await axios.get(`${API_URL}hasRole`, { params: { username, role: 'ADMIN' } });
-      console.log(response.data)
       return response.data;
     } catch (error) {
       console.error('Error checking ADMIN role:', error);

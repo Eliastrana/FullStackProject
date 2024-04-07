@@ -23,7 +23,6 @@ export const QuizService = {
     modifiedQuizDetails.questions = transformQuestionAnswers(modifiedQuizDetails.questions);
 
     try {
-      console.log(modifiedQuizDetails)
       const response = await axios.post(`${COMPLETE_API_URL}`, modifiedQuizDetails);
       return response.data;
     } catch (error) {

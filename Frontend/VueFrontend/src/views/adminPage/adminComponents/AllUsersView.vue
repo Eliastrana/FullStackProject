@@ -9,20 +9,17 @@ const fetchUsers = async () => {
   try {
     const allUsers = await UserService.getAllUsers();
     users.value = allUsers;
-    console.log('User data loaded:', users.value);
   } catch (error) {
     console.error('Failed to load user data:', error);
   }
 };
 
 const deleteUser = async (username) => {
-  console.log('Deleting user with username:', username);
   await UserService.deleteUser(username);
   await fetchUsers();
 };
 
 const giveAdmin = async (username) => {
-  console.log('Giving admin to user with username:', username);
   await RoleService.asignRoleToUser(username, 'ADMIN');
   await fetchUsers();
 };

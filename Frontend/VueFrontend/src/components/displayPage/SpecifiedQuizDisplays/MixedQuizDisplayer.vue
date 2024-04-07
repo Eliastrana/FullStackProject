@@ -125,8 +125,6 @@ const currentQuizComponent = computed(() =>
 );
 
 watch(quizData, (newQuizData) => {
-  console.log('new quiz data: ')
-  console.log(newQuizData)
   if (newQuizData) {
     questions.value = [...newQuizData.questions];
   }
@@ -203,13 +201,11 @@ const progressBarWidth = computed(() => {
 
 watch(quizCompleted, async (newValue) => {
   if (newValue === true) {
-    console.log('Quiz completed, submitting attempt...');
     await submitAttempt();
   }
 });
 
 const submitAttempt = async () => {
-  console.log('Submitting attempt...');
   const attemptDetails = {
     quizId: quizId.value,
     userId: store.getters['user/userId'],
@@ -218,7 +214,6 @@ const submitAttempt = async () => {
     correctAnswers: questions.value.filter(q => q.correct).length,
   };
 
-  console.log(attemptDetails)
 
   try {
     await AttemptService.create(attemptDetails);
