@@ -139,6 +139,20 @@ export default {
         }
       }
     },
+    async addImageToQuiz({ commit, state }, { quizId }) {
+      try {
+        for (let quiz of state.quizzes) {
+          if (quiz.id === quizId) {
+            console.log("BALLLEEEE")
+            console.log(quiz.imageId)
+            const imageData = await QuizService.getImageById(quiz.imageId);
+            commit('SET_QUIZ_IMAGE', { quizId, imageData });
+          }
+        }
+      } catch (error) {
+        console.error('Error adding image to quiz:', error);
+      }
+    },
     addQuestionsByType({ dispatch }, { type, numberOfQuestions = 5 }) {
       for (let i = 0; i < numberOfQuestions; i++) {
         let questionTemplate;

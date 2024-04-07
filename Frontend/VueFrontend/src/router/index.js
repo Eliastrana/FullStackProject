@@ -48,17 +48,18 @@ const router = createRouter({
       component: () => import('../views/loginView/ResetPasswordView.vue') // Adjust the path as necessary
     },
     {
-      path: '/quizcreator',
+      path: '/quizcreator/:quizId?',
       name: 'Quizcreator',
       component: () => import('../components/createPage/QuizcreatortoolView.vue'),
       meta: { requiresAuth: true }
     },
     {
-      path: '/QuizcreatorTool',
+      path: '/QuizcreatorTool/:quizId?',
       name: 'QuizcreatorTool',
       component: () => import('../components/createPage/QuizcreatortoolView.vue'),
       meta: { requiresAuth: true }
     },
+
     // {
     //   path: '/Account',
     //   name: 'Account',
