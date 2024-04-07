@@ -4,7 +4,11 @@ import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.service.CompleteQuizService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,13 +42,14 @@ public class CompleteQuizController {
         this.completeQuizService = completeQuizService;
     }
 
-    @Operation(summary = "Create a complete quiz", description = "Creates a new quiz along with questions and answers.")
-    @ApiResponse(responseCode = "201", description = "Complete quiz created successfully.")
-    @ApiResponse(responseCode = "400", description = "Bad request due to invalid input.")
-    @ApiResponse(responseCode = "403", description = "Forbidden - user not authorized to perform this action.")
+    @Operation(summary = "Create a complete quiz", description = "Creates a new quiz along with questions and answers.", responses = {
+    @ApiResponse(responseCode = "201", description = "Complete quiz created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CompleteQuizDTO.class))),
+    @ApiResponse(responseCode = "400", description = "Bad request due to invalid input."),
+    @ApiResponse(responseCode = "403", description = "Forbidden - user not authorized to perform this action.")}, security = {@SecurityRequirement(name = "bearerAuth")})
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> createCompleteQuiz(@RequestBody CompleteQuizDTO completeQuizDTO) {
+    public ResponseEntity<?> createCompleteQuiz(
+        @RequestBody CompleteQuizDTO completeQuizDTO) {
     try {
         logger.info(String.valueOf(completeQuizDTO.getIsPublic()));
         UUID createdQuizId = completeQuizService.createCompleteQuiz(completeQuizDTO);
@@ -57,9 +62,11 @@ public class CompleteQuizController {
 }
 
 
-    @Operation(summary = "Get a complete quiz", description = "Fetches a complete quiz with questions and answers.")
-    @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.")
-    @ApiResponse(responseCode = "404", description = "Quiz not found.")
+    @Operation(summary = "Get a complete quiz", description = "Fetches a complete quiz with questions and answers.", responses = {
+    @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.", 
+    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CompleteQuizDTO.class))),
+    @ApiResponse(responseCode = "404", description = "Quiz not found.")}, 
+    security = {@SecurityRequirement(name = "bearerAuth")})
     @GetMapping("/{quizId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCompleteQuiz(@PathVariable UUID quizId) {
@@ -72,17 +79,18 @@ public class CompleteQuizController {
     } catch (Exception e) {
         logger.error("Failed to fetch complete quiz: {}", quizId, e.getMessage(), e);
         // Consider a more general error response here or handle specific exceptions as needed
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An error occurred while fetching the quiz", "message", e.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(Map.of("error", "An error occurred while fetching the quiz", "message", e.getMessage()));
     }     
 }
 
 
-    @Operation(summary = "Update a complete quiz", description = "Updates an existing quiz along with questions and answers.")
-    @ApiResponse(responseCode = "200", description = "Complete quiz updated successfully.")
-    @ApiResponse(responseCode = "400", description = "Bad request due to invalid input.")
-    @ApiResponse(responseCode = "404", description = "Quiz not found.")
-    @PutMapping("/{quizId}")
-    @PreAuthorize("isAuthenticated()")
+@Operation(summary = "Update a complete quiz", description = "Updates an existing quiz along with questions and answers.", responses = {
+    @ApiResponse(responseCode = "200", description = "Complete quiz updated successfully.", content = @Content(mediaType = "application/json")),
+    @ApiResponse(responseCode = "400", description = "Bad request due to invalid input."),
+    @ApiResponse(responseCode = "404", description = "Quiz not found.")}, security = {@SecurityRequirement(name = "bearerAuth")})
+@PutMapping("/{quizId}")
+@PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> updateCompleteQuiz(@PathVariable UUID quizId, @RequestBody CompleteQuizDTO completeQuizDTO) {
         try {
             completeQuizService.updateCompleteQuiz(quizId, completeQuizDTO);
@@ -96,9 +104,10 @@ public class CompleteQuizController {
         }
     }
 
-    @Operation(summary = "Delete a complete quiz", description = "Deletes an existing quiz along with questions and answers.")
-    @ApiResponse(responseCode = "204", description = "Complete quiz deleted successfully.")
-    @ApiResponse(responseCode = "404", description = "Quiz not found.")
+    @Operation(summary = "Delete a complete quiz", description = "Deletes an existing quiz along with questions and answers.", responses = {
+        @ApiResponse(responseCode = "204", description = "Complete quiz deleted successfully."),
+        @ApiResponse(responseCode = "404", description = "Quiz not found.")}, 
+        security = {@SecurityRequirement(name = "bearerAuth")})
     @DeleteMapping("/{quizId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> deleteCompleteQuiz(@PathVariable UUID quizId) {
@@ -114,11 +123,12 @@ public class CompleteQuizController {
         }
     }
 
-    @Operation(summary = "Gets a complete Quiz by its tag", description = "Fetches a complete quiz with questions and answers by its tag.")
-    @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.")
-    @ApiResponse(responseCode = "404", description = "Quiz not found.")
-    @GetMapping("/tag/{tag}")
-    @PreAuthorize("isAuthenticated()")
+@Operation(summary = "Gets a complete Quiz by its tag", description = "Fetches a complete quiz with questions and answers by its tag.", responses = {
+    @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.", content = @Content(mediaType = "application/json", 
+    array = @ArraySchema(schema = @Schema(implementation = CompleteQuizDTO.class)))),
+    @ApiResponse(responseCode = "404", description = "Quiz not found.")}, security = {@SecurityRequirement(name = "bearerAuth")})
+@GetMapping("/tag/{tag}")
+@PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCompleteQuizByTag(@PathVariable String tag) {
         try {
             List<CompleteQuizDTO> completeQuizDTO = completeQuizService.getCompleteQuizzesByTag(tag);
