@@ -42,7 +42,7 @@ public class UserRoleController {
     @ApiResponse(responseCode = "200", description = "Role assigned successfully")
     @ApiResponse(responseCode = "400", description = "Could not assign role to user or bad request")
     @PostMapping("/")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> assignRoleToUser(@RequestParam String username, @RequestParam String role) {
         boolean isAssigned = userRoleService.assignRoleToUser(username, role);
         if (isAssigned) {
@@ -64,7 +64,7 @@ public class UserRoleController {
         User user = userRepository.findByUsername(username).orElse(null);
 
         boolean isAdmin = user.getAuthorities().stream()
-            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_OWNER"));
+            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
 
         if (isAdmin) {
             return ResponseEntity.badRequest().body("Admins cannot be assigned roles.");
@@ -102,5 +102,12 @@ public class UserRoleController {
         } else {
             return ResponseEntity.badRequest().body("Could not assign role to user.");
         }
+    }
+
+    @GetMapping("/hasRole")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Boolean> userHasRole(@RequestParam String username, @RequestParam String role) {
+        boolean hasRole = userRoleService.userHasRole(username, role);
+        return ResponseEntity.ok(hasRole);
     }
 }

@@ -42,4 +42,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * @return An {@link Optional} containing the found user, or an empty {@link Optional} if no user is found.
      */
     Optional<User> findByUsername(String username);
+    void deleteByUsername(String username);
 }

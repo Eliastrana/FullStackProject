@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class CategoryController {
   @ApiResponse(responseCode = "201", description = "Category created successfully")
   @ApiResponse(responseCode = "400", description = "Bad request when the category details are invalid")
   @PostMapping("/")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
     CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
     return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);

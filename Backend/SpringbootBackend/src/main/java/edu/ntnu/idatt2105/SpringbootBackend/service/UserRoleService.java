@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
-import edu.ntnu.idatt2105.SpringbootBackend.exception.NotOwnerException;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.NotAdminException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.RoleAlreadyAssignedException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.RoleNotFoundException;
@@ -28,36 +28,28 @@ public class UserRoleService {
         this.roleRepository = roleRepository;
     }
 
-@Transactional
-public boolean assignRoleToUser(String username, String roleName) {
-    User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    @Transactional
+    public boolean assignRoleToUser(String username, String roleName) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
 
-    boolean isOwner = user.getUserRoles().stream()
-            .anyMatch(ur -> ur.getRole().getRole().equals("ROLE_OWNER"));
-    if (!isOwner) {
-        throw new NotOwnerException("User is not an owner: " + username);
+        String qualifiedRoleName = "ROLE_" + roleName.toUpperCase();
+        Role role = roleRepository.findByRole(qualifiedRoleName)
+                .orElseThrow(() -> new RoleNotFoundException("Role not found: " + qualifiedRoleName));
+
+        boolean alreadyHasRole = user.getUserRoles().stream()
+                .anyMatch(ur -> ur.getRole().getRole().equalsIgnoreCase(qualifiedRoleName));
+        if (alreadyHasRole) {
+            throw new RoleAlreadyAssignedException("User already has role: " + roleName);
+        }
+
+        // Create and save the UserRole association
+        UserRole userRole = new UserRole();
+        userRole.setUser(user);
+        userRole.setRole(role);
+        userRoleRepository.save(userRole);
+        return true;
     }
-
-    String qualifiedRoleName = "ROLE_" + roleName.toUpperCase();
-    Role role = roleRepository.findByRole(qualifiedRoleName)
-            .orElseThrow(() -> new RoleNotFoundException("Role not found: " + qualifiedRoleName));
-
-    boolean alreadyHasRole = user.getUserRoles().stream()
-                                .anyMatch(ur -> ur.getRole().equals(role));
-    if (alreadyHasRole) {
-        throw new RoleAlreadyAssignedException("User already has role: " + roleName);
-    }
-
-    // Create and save the UserRole association
-    UserRole userRole = new UserRole();
-    userRole.setUser(user);
-    userRole.setRole(role);
-    userRoleRepository.save(userRole);
-    return true;
-}
-
-
 
     @Transactional
     public boolean updateRoleForUser(String username, String newRoleName) {
@@ -91,5 +83,10 @@ public boolean assignRoleToUser(String username, String roleName) {
         });
 
         return userRoleOptional.isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean userHasRole(String username, String roleName) {
+        return userRoleRepository.existsByUserUsernameAndRoleRole(username, "ROLE_" + roleName.toUpperCase());
     }
 }
