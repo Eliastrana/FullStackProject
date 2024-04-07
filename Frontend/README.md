@@ -89,7 +89,7 @@ npm run lint
 ## Test Users
 ### Admin
 - Username: admin
-- Password: admin
+- Password: Password123
 
 ### User
 - Username: user
