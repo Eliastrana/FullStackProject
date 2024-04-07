@@ -11,11 +11,14 @@ understanding. More than a website, it's a confluence for thinkers and dreamers,
 
 ___Qanda___ rewrites the rules of learning, inviting users to explore the frontiers of knowledge, one question at a time.
 
-___
+## Info
+
+The task involves developing a full-stack web application for a quiz platform as part of the IDATT2105 course in 2024. The application must include a Vue.js frontend, a Java and Spring Boot backend, and utilize MySQL or H2 for the database. The platform should enable users to create, manage, and take quizzes for educational or entertainment purposes.
 
 ### Table of Contents
 
 - [Description](#description)
+- [Info](#info)
 - [Table of Contents](#table-of-contents)
 - [Basic Setup Guide](#basic-setup-guide)
   - [Commands](#commands)

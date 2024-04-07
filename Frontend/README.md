@@ -11,11 +11,14 @@ ___
 - [Recommended IDE Setup](#recommended-ide-setup)
 - [Customize configuration](#customize-configuration)
 - [Project Setup](#project-setup)
+  - [Clone the project](#clone-the-project)
+  - [Install Npm](#install-npm)
   - [Compile and Hot-Reload for Development](#compile-and-hot-reload-for-development)
   - [Compile and Minify for Production](#compile-and-minify-for-production)
   - [Run Unit Tests with Vitest](#run-unit-tests-with-vitest)
   - [Run End-to-End Tests with Cypress](#run-end-to-end-tests-with-cypress)
   - [Lint with ESLint](#lint-with-eslint)
+- [Test Users](#test-users)  
 - [Contact Information](#contact-information)
 
 ---
@@ -30,6 +33,14 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ## Project Setup
 
+### Clone the project
+```bash
+git clone git@github.com:Eliastrana/FullStackProject.git
+```
+```bash
+cd SpringbootBackend
+```
+### Install Npm
 ```sh
 npm install
 ```
@@ -39,12 +50,13 @@ npm install
 ```sh
 npm run dev
 ```
+NB: you need to have the [Backend](https://github.com/Eliastrana/FullStackProject/tree/main/Backend/SpringbootBackend) running to be able to log in and use the application.
 
 ### Compile and Minify for Production
 
-```sh
-npm run build
 ```
+npm run build
+``` 
 
 ### Run Unit Tests with [Vitest](https://vitest.dev/)
 
@@ -73,6 +85,15 @@ npm run test:e2e
 ```sh
 npm run lint
 ```
+---
+## Test Users
+### Admin
+- Username: admin
+- Password: admin
+
+### User
+- Username: user
+- Password: user
 ---
 ## Contact Information
 
