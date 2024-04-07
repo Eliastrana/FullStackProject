@@ -9,8 +9,11 @@ import edu.ntnu.idatt2105.SpringbootBackend.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Service class for managing user-related operations.
@@ -68,4 +71,20 @@ public class UserService{
                              .map(userMapper::toUserDetails)
                              .orElse(null); // Or handle the absence of the user differently
     }
+
+    /**
+     * Retrived the user detials of all users in the database.
+     * This method is used for loading user details for admin purposes.
+     * It returns a List of {@link UserDetailsDTO} object containing the user's identification details.
+     * @return A List of {@@link UserDetailsDTO} of all users
+     */
+    public Iterable<UserDetailsDTO> getAllUsers() {
+    Iterable<User> users = userRepository.findAll();
+    
+    List<UserDetailsDTO> userDetailsDTOs = StreamSupport.stream(users.spliterator(), false)
+                                                         .map(user -> userMapper.toUserDetails(user))
+                                                         .collect(Collectors.toList());
+    
+    return userDetailsDTOs;
+}
 }
