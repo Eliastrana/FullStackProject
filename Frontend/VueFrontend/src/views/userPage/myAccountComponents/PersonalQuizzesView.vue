@@ -113,19 +113,17 @@ const editQuiz = async (quizId) => {
  */
 
 const deleteQuiz = async (quizId) => {
-  const isConfirmed = confirm('Are you sure you want to delete this quiz?');
-
-  if (isConfirmed) {
-    try {
-      await QuizService.deleteQuiz(quizId);
-      allQuizzes.value = allQuizzes.value.filter(quiz => quiz.id !== quizId);
-      updateDisplayedQuizzes();
-    } catch (error) {
-      console.error('Failed to delete quiz:', error);
-      alert('Error deleting the quiz. Please try again.');
-    }
+  try {
+    await QuizService.deleteQuiz(quizId);
+    allQuizzes.value = allQuizzes.value.filter(quiz => quiz.id !== quizId);
+    updateDisplayedQuizzes();
+    
+  } catch (error) {
+    console.error('Failed to delete quiz:', error);
+    alert('Error deleting the quiz. Please try again.');
   }
 };
+
 
 /**
  * Fetches the image data for a quiz.
