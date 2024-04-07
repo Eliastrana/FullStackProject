@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents a Data Transfer Object (DTO) for encapsulating all the details of a question in a quiz.
