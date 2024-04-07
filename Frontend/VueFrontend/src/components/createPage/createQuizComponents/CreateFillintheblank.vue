@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
 import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue'
+import store from '@/store/index.js'
 
 /**
  * Props for the CreateFillintheblank component
@@ -14,7 +15,8 @@ const props = defineProps({
   answers: {
     type: Array,
     default: () => [{ text: '' }] // Ensure this structure matches what you expect
-  }
+  },
+  tags: Array
 });
 
 
@@ -22,7 +24,7 @@ const props = defineProps({
  * Emits custom events
  * @type {Function}
  */
-const emits = defineEmits(['submitData']);
+const emits = defineEmits(['submitData', 'removeQuestion']);
 
 /**
  * The question title
@@ -35,25 +37,27 @@ const title = ref(props.text);
  * @type {import('vue').Ref<Array>}
  */
 const answers = ref(props.answers);
+const tags = ref(props.tags || []);
 
-/**
- * The cover image for the question
- * @type {import('vue').Ref<string>}
- */
-const coverImage = ref(null);
+function handleTagUpdate(newTags) {
+  store.dispatch('quizzes/updateQuestionTags', {
+    uuid: props.uuid,
+    newTags
+  });
+}
 
 /**
  * Watches for changes in the title and answers and emits the updated data
  */
-watch(() => ({ title: title.value, answers: answers.value, coverImage: coverImage.value }), (newVal) => {
+watch([title, answers, tags], () => {
   emits('submitData', {
     uuid: props.uuid,
-    text: newVal.title,
+    text: title.value,
     questionType: 'FILL_IN_BLANK',
-    answers: newVal.answers,
-    image: newVal.coverImage
+    answers: answers.value,
+    tags: tags.value // Include the updated tags in the emitted data
   });
-}, { deep: true, immediate: true });
+}, { deep: true });
 
 /**
  * Emits the 'removeQuestion' event with the question's uuid
@@ -62,30 +66,8 @@ function removeQuestion() {
   emits('removeQuestion', props.uuid);
 }
 
-/**
- * Handles the file upload for the question
- * @param {Event} event - The file upload event
- */
-function handleFileUpload(event) {
-  const file = event.target.files[0];
 
-  if (file) {
-    const reader = new FileReader();
 
-    reader.onload = (e) => {
-      coverImage.value = e.target.result;
-    };
-
-    reader.readAsDataURL(file);
-  }
-}
-
-/**
- * Removes the cover image for the question
- */
-function removeImage() {
-  coverImage.value = null;
-}
 
 </script>
 
@@ -97,17 +79,9 @@ function removeImage() {
         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41l5.59 5.59L5 17.59 6.41 19l5.59-5.59L17.59 19 19 17.59l-5.59-5.59L19 6.41z"/>
       </svg>
     </div>
-    <div v-if="coverImage" class="image-preview">
-      <img :src="coverImage" alt="Cover Image Preview" />
-      <div class="remove-image" @click="removeImage">&times;</div>
-    </div>
-    <div v-if="!coverImage">
-      <input type="file" id="upload" hidden @change="handleFileUpload" accept="image/*"/>
-      <label class="uploadimagebutton" for="upload">Upload Cover Image</label>
-    </div>
     <input class="question-title" v-model="title" placeholder="Question title" />
     <input class="answer-text" v-model="answers[0].text" placeholder="Correct answer for the blank" />
-    <CreateTags/>
+    <CreateTags :initialTags="tags" @update-tags="handleTagUpdate" />
   </div>
 </template>
 

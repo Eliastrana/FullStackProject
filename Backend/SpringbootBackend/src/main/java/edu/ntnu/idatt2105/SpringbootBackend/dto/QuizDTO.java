@@ -58,7 +58,7 @@ public class QuizDTO {
      * whereas a private setting restricts access to specific user groups or contexts.
      */
     @Schema(required = true, example = "true", description = "Boolean value indicating whether the quiz is public or private")
-    private boolean isPublic;
+    private Boolean isPublic;
 
     /**
      * The unique identifier for the category under which the quiz is classified, aiding in the organization

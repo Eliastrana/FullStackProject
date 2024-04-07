@@ -2,85 +2,67 @@
   <div class="center-container"></div>
   <div class="login-container">
     <h2>Contact Us</h2>
-    <form @submit.prevent="registerUser">
+    <div>
       <div class="input-container">
-        <input v-model="username" type="text" id="username" placeholder=" " required>
-        <label for="username">Username</label>
+        <input v-model="name" type="text" id="name" placeholder=" " required>
+        <label for="name">Name</label>
       </div>
       <div class="input-container">
-        <input v-model="email" type="email" id="email" placeholder=" " required>
-        <label for="email">Email</label>
+        <input v-model="subject" type="text" id="subject" placeholder=" " required>
+        <label for="subject">Subject</label>
       </div>
-
       <div class="input-container">
-        <textarea id="message" v-model="message" placeholder=" " required></textarea>
-        <label for="message">Message</label>
+        <textarea id="content" v-model="content" placeholder=" " required></textarea>
+        <label for="content">Content</label>
       </div>
-
       <div id="button-container">
-        <button id="register-user" type="submit">Send</button>
+        <button @click="openMailClient" id="register-user" type="submit">Send</button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
 
+
+
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 
 /**
- * Username for contact form
+ * Name for the contact form
  * @type {import('vue').Ref<string>}
  */
-const username = ref('');
+const name = ref('');
 
 /**
- * Email for contact form
+ * Subject for the contact form
  * @type {import('vue').Ref<string>}
  */
-const email = ref('');
+const subject = ref('');
 
 /**
- * Message for contact form
+ * Content for the contact form
  * @type {import('vue').Ref<string>}
  */
-const message = ref('');
+const content = ref('');
 
 /**
- * Vue Router instance
- * @type {import('vue-router').Router}
+ * Function to open the mail client
+ * This function creates a mailto link with the subject, name, and content from the form.
+ * It then sets the window location to this link, which opens the default mail client with a new email populated with this data.
  */
-const router = useRouter();
+const openMailClient = () => {
+  const mailtoLink = `mailto:support@qanda.no?subject=${encodeURIComponent(subject.value)}&body=Name: ${encodeURIComponent(name.value)}%0D%0A%0D%0AContent:%0D%0A${encodeURIComponent(content.value)}`;
+  window.location.href = mailtoLink;
 
-/**
- * Vuex Store instance
- * @type {import('vuex').Store}
- */
-const store = useStore();
+  name.value = '';
+  subject.value = '';
+  content.value = '';
 
-/**
- * Send contact form function
- * Dispatches a register action to the Vuex store
- * If successful, redirects to the login route
- * If unsuccessful, logs the error
- */
-const registerUser = async () => {
-  try {
-    await store.dispatch('user/register', {
-      username: username.value,
-      email: email.value,
-      message: message.value,
-    });
-
-    console.log("Message sent successfully");
-    router.push({ name: 'login' });
-  } catch (error) {
-    console.error("Message sending failed:", error);
-  }
 };
+
 </script>
+
 
 <style scoped>
 .center-container {
@@ -215,5 +197,6 @@ textarea {
   color: #343434;
   resize: vertical;
 }
+
 
 </style>

@@ -1,80 +1,213 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import user from '@/store/modules/user.js'
+/**
+ * This component displays the quizzes created by the user.
+ * The user can start, edit, or delete the quizzes.
+ */
+import { defineProps, onMounted, ref } from 'vue'
+import { QuizService } from '@/services/QuizService.js'
+import { UserService } from '@/services/UserService.js'
+import ConfirmationModal from '@/components/util/ConfirmationModal.vue'
+import { CategoryService } from '@/services/CategoryService.js'
+import { useRouter } from 'vue-router'
+import store from '@/store/index.js'
 
-const allQuizzes = ref([]); // Stores all quizzes
-const displayLimit = ref(3); // Initial display limit
-const displayedQuizzes = ref([]); // Quizzes to be displayed
+// Stateful references used by the component.
+const allQuizzes = ref([]);
+const displayLimit = ref(3);
+const displayedQuizzes = ref([]);
+const categories = ref({});
+// eslint-disable-next-line
+const difficulties = ref([]);
+const router = useRouter();
+const showConfirmationModal = ref(false);
+const pendingDeleteQuizId = ref(null);
 
-// Fetch quizzes data from the API when the component is mounted
+/**
+ * Fetches quizzes created by the current user, along with their categories and any associated images,
+ * upon component mount. Filters quizzes by creator ID and maps category IDs to category names for display.
+ */
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/testdata.json');
-    allQuizzes.value = response.data;
-    updateDisplayedQuizzes();
+    const userDetails = await UserService.getUserDetails();
+    const userId = userDetails.id;
+
+    let quizzesData = await QuizService.getAllQuizzes();
+
+    quizzesData = quizzesData.filter(quiz => quiz.creatorId === userId);
+
+    const allCategories = await CategoryService.getAllCategories();
+    categories.value = allCategories.reduce((acc, current) => {
+      acc[current.id] = current.categoryName;
+      return acc;
+    }, {});
+
+    allQuizzes.value = await Promise.all(quizzesData.map(async (quiz) => {
+      if (quiz.imageId) {
+        quiz.imageData = await loadImageData(quiz.imageId);
+      } else {
+        quiz.imageData = '';
+      }
+      return quiz;
+    }));
+    displayedQuizzes.value = allQuizzes.value.slice(0, displayLimit.value);
   } catch (error) {
     console.error('Failed to load quizzes:', error);
   }
 });
 
-// Update the displayed quizzes based on the display limit
+/**
+ * Updates the list of quizzes currently being displayed based on the display limit.
+ */
 function updateDisplayedQuizzes() {
   displayedQuizzes.value = allQuizzes.value.slice(0, displayLimit.value);
 }
 
-// Function to load more quizzes
+/**
+ * Increases the display limit and updates the displayed quizzes accordingly.
+ */
+
 const loadMoreQuizzes = () => {
-  displayLimit.value += 5; // Increase the limit
-  updateDisplayedQuizzes(); // Update displayed quizzes
+  displayLimit.value += 5;
+  updateDisplayedQuizzes();
 };
 
-// Edit quiz function
-const editQuiz = (id) => {
-  alert(`Edit quiz with ID: ${id}`);
+/**
+ * Triggers the confirmation modal for deleting a quiz.
+ * @param {number} quizId - The ID of the quiz to potentially delete.
+ */
+
+const askDeleteQuiz = (quizId) => {
+  pendingDeleteQuizId.value = quizId;
+  showConfirmationModal.value = true;
 };
 
-// Delete user function
-const deleteUser = (userId) => {
-  alert(`Delete user with ID: ${userId}`);
+/**
+ * Confirms the deletion of a quiz and removes it from the display.
+ */
+
+const confirmDelete = () => {
+  deleteQuiz(pendingDeleteQuizId.value);
+  showConfirmationModal.value = false;
 };
+
+/**
+ * Cancels the deletion of a quiz.
+ */
+
+const cancelDelete = () => {
+  showConfirmationModal.value = false;
+};
+
+/**
+ * Navigates to the quiz creator tool with the selected quiz for editing.
+ * @param {number} quizId - The ID of the quiz to edit.
+ */
+
+const editQuiz = async (quizId) => {
+  await router.push({ name: 'QuizcreatorTool', params: { quizId } });
+};
+
+/**
+ * Deletes a quiz from the database and removes it from the display.
+ * @param {number} quizId - The ID of the quiz to delete.
+ */
+
+const deleteQuiz = async (quizId) => {
+  const isConfirmed = confirm('Are you sure you want to delete this quiz?');
+
+  if (isConfirmed) {
+    try {
+      console.log('Deleting quiz with ID:', quizId);
+      await QuizService.deleteQuiz(quizId);
+      allQuizzes.value = allQuizzes.value.filter(quiz => quiz.id !== quizId);
+      updateDisplayedQuizzes();
+    } catch (error) {
+      console.error('Failed to delete quiz:', error);
+      alert('Error deleting the quiz. Please try again.');
+    }
+  }
+};
+
+/**
+ * Fetches the image data for a quiz.
+ * @param {number} imageId - The ID of the image to fetch.
+ * @returns {string} - The image data as a base64 string.
+ */
+
+const loadImageData = async (imageId) => {
+  try {
+    const imageData = await QuizService.getImageById(imageId);
+    return imageData;
+  } catch (error) {
+    console.error('Failed to load image:', error);
+    return '';
+  }
+};
+
+/**
+ * Starts a quiz attempt by fetching the quiz data and navigating to the quiz displayer.
+ * @param {Object} quiz - The quiz object to start.
+ */
+// eslint-disable-next-line
+const props = defineProps({
+  quiz: Object,
+});
+
+
+/**
+ * Starts a quiz session by fetching quiz data and navigating to the Quiz Displayer.
+ * @param {Object} quiz - The quiz object to start.
+ */
+
+const startQuiz = async (quiz) => {
+  try {
+    const quizData = await QuizService.getQuizById(quiz.id);
+    await store.dispatch('quizAttempt/setQuizData', { quizData, quizId: quiz.id });
+    await router.push({ name: 'QuizDisplayer' });
+  } catch (error) {
+    console.error('Failed to fetch and store quiz data:', error);
+  }
+};
+
 </script>
-
 
 <template>
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
   <div class="quizzes-container">
-    <h1>Private Quizzes</h1>
+    <h1>
+      Personal Quizzes</h1>
     <h2>These are your personal quizzes</h2>
     <div class="quizzes">
-      <div class="quiz" v-for="(quiz, index) in displayedQuizzes" :key="quiz.id">
+      <div class="quiz" v-for="(quiz) in displayedQuizzes" :key="quiz.id">
         <div class="quiz-info">
-          <img :src="quiz.image" :alt="quiz.title" class="quiz-image"/>
+          <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image" class="quiz-image"/>
           <div class="quiz-text">
             <h3>{{ quiz.title }}</h3>
             <p>{{ quiz.description }}</p>
-            <p>Category: <strong>{{ quiz.category }}</strong></p>
-            <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>
+            <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
           </div>
-
           <div class="action-icons">
+            <div @click="startQuiz(quiz)" class="delete-icon">
+              <span class="material-icons play-icon">play_arrow</span>
+            </div>
             <div @click="editQuiz(quiz.id)" class="delete-icon">
               <span class="material-icons">edit</span>
             </div>
-
-            <div @click="deleteUser(user.userId)" class="delete-icon">
-              <span class="material-icons">delete</span>
+            <div @click="askDeleteQuiz(quiz.id)" class="delete-icon">
+              <span class="material-icons delete-quiz-icon">delete</span>
             </div>
-
-
-
             </div>
-
         </div>
       </div>
       <button v-if="displayedQuizzes.length < allQuizzes.length" @click="loadMoreQuizzes" class="view-more-button">View More</button>
+
+      <ConfirmationModal
+        :isVisible="showConfirmationModal"
+        message="Are you sure you want to delete this quiz?"
+        @confirm="confirmDelete"
+        @cancel="cancelDelete"
+      />
 
     </div>
   </div>
@@ -83,19 +216,11 @@ const deleteUser = (userId) => {
 <style scoped>
 
 .quizzes-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
   max-width: 800px;
+  margin-right: auto;
+  margin-left: auto;
+  display: block;
   padding: 20px;
-  margin: 5% auto;
-  margin-right: 2%;
-  margin-left: 2%;
-
-  border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  background-color: #ececec;
 }
 
 .edit-icon {
@@ -149,22 +274,20 @@ const deleteUser = (userId) => {
 
 .action-icons {
   display: flex;
-  align-items: center; /* Center items vertically within the container */
-  gap: 8px; /* Adjust the gap between icons */
+  align-items: center;
+  gap: 8px;
   position: absolute;
-  top: 10px; /* Adjust as needed */
-  right: 10px; /* Adjust as needed */
+  top: 10px;
+  right: 10px;
 }
 
-/* If icons appear too small or too large, adjust here */
 .material-icons {
-  font-size: 24px; /* Adjust icon size as necessary */
+  font-size: 24px;
   cursor: pointer;
 }
 
-/* Optional: Add hover effect for better user interaction */
 .material-icons:hover {
-  color: #666; /* Change as per your theme */
+  color: #666;
 }
 
 .quiz:hover {
@@ -187,7 +310,7 @@ h2 {
   top: 10px;
   right: 10px;
   display: flex;
-  gap: 10px; /* Adjust gap between icons */
+  gap: 10px;
 }
 
 .view-more-button {
@@ -207,6 +330,23 @@ h2 {
   background-color: #0056b3;
 }
 
+.category-badge {
+  display: inline-block;
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.play-icon {
+  color: #3ad83a;
+}
+
+.delete-quiz-icon {
+  color: #f40404;
+}
 
 @media (max-width: 768px) {
   .quiz-info {

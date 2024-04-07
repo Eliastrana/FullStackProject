@@ -46,6 +46,7 @@ const actions = {
       await dispatch('fetchUserDetails');
     }
   },
+
   async fetchUserDetails({ commit }) {
     // The token is automatically attached via Axios interceptor, no need to pass it
     const userDetails = await UserService.getUserDetails();
@@ -62,6 +63,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         commit('CLEAR_USER');
+        SessionToken.clearToken();
         dispatch('quizzes/clearQuizzes', null, { root: true }); // Adjusted to dispatch to an action
         resolve();
       } catch (error) {
@@ -74,7 +76,6 @@ const actions = {
       console.error('Logout failed:', error);
     });
   },
-
 
 
 };

@@ -184,4 +184,20 @@ li {
 .answer:active {
   transform: translateY(0);
 }
+
+
+@media (max-width: 768px) {
+  .answers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .answer {
+    width: 100%;
+  }
+
+  quiz-container {
+    padding: 10px;
+  }
+
+}
 </style>

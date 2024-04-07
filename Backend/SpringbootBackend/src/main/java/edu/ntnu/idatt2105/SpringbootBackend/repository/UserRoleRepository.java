@@ -51,5 +51,5 @@ public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
      * or an empty Optional if the user does not have an associated role.
      */
     Optional<UserRole> findByUserUsername(String username);
-
+    boolean existsByUserUsernameAndRoleRole(String username, String role);
 }

@@ -71,7 +71,7 @@ public class QuizMapper {
     }
 
     UUID imageId = null;
-    if (quiz.getImage() != null) { 
+    if (quiz.getImage() != null) {
         imageId = quiz.getImage().getId();
     }
 
@@ -79,9 +79,11 @@ public class QuizMapper {
             .id(quiz.getId())
             .title(quiz.getTitle())
             .description(quiz.getDescription())
+            .difficulty(quiz.getDifficulty())
             .creatorId(quiz.getCreator().getId())
             .categoryId(categoryDTO != null ? categoryDTO.getId() : null)
             .imageId(imageId)
+            .isPublic(quiz.isPublic())
             .build();
 }
 
@@ -119,7 +121,7 @@ public class QuizMapper {
         existingQuiz.setCreator(User.builder().id(quizDTO.getCreatorId()).build());
         existingQuiz.setImage(Image.builder().id(quizDTO.getImageId()).build());
         existingQuiz.setDifficulty(quizDTO.getDifficulty());
-        existingQuiz.setPublic(quizDTO.isPublic());
+        existingQuiz.setPublic(quizDTO.getIsPublic());
         return existingQuiz;
     }
 
@@ -179,8 +181,6 @@ public class QuizMapper {
                 .map(question -> questionMapper.toCompleteQuestionDTO(question))
                 .collect(Collectors.toSet());
 
-        String categoryName = quiz.getCategory() != null ? quiz.getCategory().getCategoryName() : null;
-
         String imageName = null;
         String imageType = null;
         String imageData = null;
@@ -195,7 +195,7 @@ public class QuizMapper {
                 quiz.getTitle(),
                 quiz.getDescription(),
                 quiz.getCreator().getId(),
-                categoryName,
+                quiz.getCategory().getId(),
                 quiz.getDifficulty(),
                 quiz.isPublic(),
                 completeQuestionDTOs,

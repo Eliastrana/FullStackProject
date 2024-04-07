@@ -4,7 +4,7 @@
       class="tag-input"
       v-model="newTagInput"
       @keyup.enter="handleTagInputEnter"
-      placeholder="Type a tag and press Enter... (Pythagoras Theorem)"
+      placeholder="Type a tag and press Enter... (e.g., Pythagoras Theorem)"
       :disabled="!canAddMoreTags"
     />
     <div class="tags-display">
@@ -17,54 +17,47 @@
 </template>
 
 <script setup>
-// Importing necessary modules from Vue
-import { ref, computed } from 'vue';
+import { ref, computed, watch, defineProps, defineEmits } from 'vue';
 
-/**
- * Array of tags
- * @type {import('vue').Ref<Array<string>>}
- */
-const tags = ref([]);
+// Props are defined to accept `tags` from the parent component if any exist.
+const props = defineProps({
+  initialTags: Array
+});
 
-/**
- * Input value for the new tag
- * @type {import('vue').Ref<string>}
- */
+const emit = defineEmits(['update-tags']);
+
+// Use `initialTags` prop to initialize the `tags` reactive state if provided.
+const tags = ref(props.initialTags || []);
 const newTagInput = ref('');
+const maxTags = 10; // Maximum number of tags
 
-/**
- * Maximum number of tags allowed
- * @type {number}
- */
-const maxTags = 10; // Adjust as needed
-
-/**
- * Computed property to check if more tags can be added
- * @type {import('vue').ComputedRef<boolean>}
- */
 const canAddMoreTags = computed(() => tags.value.length < maxTags);
 
-/**
- * Handles the event when the Enter key is pressed in the tag input field
- * If the input is not empty and the tag does not already exist, it is added to the tags array
- * The input field is then cleared
- */
 function handleTagInputEnter() {
   const trimmedTag = newTagInput.value.trim();
   if (trimmedTag && !tags.value.includes(trimmedTag)) {
     tags.value.push(trimmedTag);
-    newTagInput.value = ''; // Clear input field
+    newTagInput.value = ''; // Clear input field after adding a tag
+    emitUpdateTags();
   }
 }
 
-/**
- * Removes a tag from the tags array at the specified index
- * @param {number} index - The index of the tag to remove
- */
 function removeTag(index) {
   tags.value.splice(index, 1);
+  emitUpdateTags();
 }
+
+// Emit the updated tags array to the parent component when tags are added or removed.
+function emitUpdateTags() {
+  emit('update-tags', tags.value);
+}
+
+// This watcher ensures that the parent component's `tags` prop is updated whenever the tags change.
+watch(tags, (newTags) => {
+  emit('update-tags', newTags);
+}, { deep: true });
 </script>
+
 
 
 <style scoped>

@@ -48,8 +48,9 @@ public class RoleController {
      * @return A {@link ResponseEntity} object containing a list of all {@link Role} objects.
      * The HTTP status code is set to OK (200) indicating the request was successfully processed.
      */
-    @Operation(summary = "Get all roles", description = "Fetch a list of all roles")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved list", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Role.class)))
+    @Operation(summary = "Get all roles", description = "Fetch a list of all roles", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved list", content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = Role.class)))})
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<Role>> getAllRoles() {
@@ -65,10 +66,11 @@ public class RoleController {
      * @return A {@link ResponseEntity} object containing the created {@link Role} object.
      * The HTTP status code is set to OK (200:Successfully created new role) indicating the request was successfully processed.
      */
-    @Operation(summary = "Create a new role", description = "Create a new role in the system")
-    @ApiResponse(responseCode = "200", description = "Successfully created new role", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Role.class)))
+    @Operation(summary = "Create a new role", description = "Create a new role in the system", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully created new role", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Role.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid role data provided")})
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Role> createRole(@RequestBody Role role) {
         Role savedRole = roleService.createRole(role);
         return ResponseEntity.ok(savedRole);

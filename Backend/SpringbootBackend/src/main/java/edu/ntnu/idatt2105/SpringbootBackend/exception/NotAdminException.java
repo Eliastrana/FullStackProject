@@ -11,14 +11,14 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  * @see edu.ntnu.idatt2105.SpringbootBackend.controller.UserController
  *
  */
-public class NotOwnerException extends RuntimeException {
+public class NotAdminException extends RuntimeException {
 
     /**
      * Constructs a new {@code NotOwnerException} with a detailed message indicating the user and the lack of ownership.
      *
      * @param username The username of the user who attempted the operation without having ownership rights.
      */
-    public NotOwnerException(String username) {
+    public NotAdminException(String username) {
         super(String.format("User is not an owner: %s", username));
     }
 }

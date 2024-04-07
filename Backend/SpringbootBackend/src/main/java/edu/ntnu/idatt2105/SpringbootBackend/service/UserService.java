@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
+import edu.ntnu.idatt2105.SpringbootBackend.dto.PasswordUpdateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserDetailsDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserNotFoundException;
@@ -7,10 +8,16 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Service class for managing user-related operations.
@@ -29,6 +36,9 @@ public class UserService{
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+    private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
 
     /**
      * Finds a user based on the provided {@link UserDTO}.
@@ -68,4 +78,40 @@ public class UserService{
                              .map(userMapper::toUserDetails)
                              .orElse(null); // Or handle the absence of the user differently
     }
+
+    /**
+     * Retrived the user detials of all users in the database.
+     * This method is used for loading user details for admin purposes.
+     * It returns a List of {@link UserDetailsDTO} object containing the user's identification details.
+     * @return A List of {@@link UserDetailsDTO} of all users
+     */
+    public Iterable<UserDetailsDTO> getAllUsers() {
+    Iterable<User> users = userRepository.findAll();
+
+        return StreamSupport.stream(users.spliterator(), false)
+                                                         .map(user -> userMapper.toUserDetails(user))
+                                                         .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public boolean deleteUser(String username) {
+        boolean userExists = userRepository.findByUsername(username).isPresent();
+        if (!userExists) {
+            return false;
+        }
+        userRepository.deleteByUsername(username);
+        return true;
+    }
+
+    public void updatePassword(String username, PasswordUpdateDTO passwordUpdateDTO) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(passwordEncoder.matches(passwordUpdateDTO.getOldPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(passwordUpdateDTO.getNewPassword()));
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Old password is incorrect.");
+        }
+    }
+
 }

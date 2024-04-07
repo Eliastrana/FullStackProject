@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
@@ -59,13 +60,13 @@ public class ImageController {
      * @return A {@link ResponseEntity} with a success message if the image is uploaded and associated successfully,
      * or an error message and {@link HttpStatus#INTERNAL_SERVER_ERROR} if the process fails.
      */
-    @Operation(summary = "Upload an image for a quiz", description = "Uploads an image to associate with a quiz")
-    @ApiResponse(responseCode = "200", description = "Image uploaded successfully")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @Operation(summary = "Upload an image for a quiz", description = "Uploads an image to associate with a quiz", responses = {
+        @ApiResponse(responseCode = "200", description = "Image uploaded successfully", content = @Content(mediaType = "text/plain")),
+        @ApiResponse(responseCode = "500", description = "Internal server error")})
     @PostMapping("/quizzes/{quizId}/image")
     public ResponseEntity<?> uploadImage(
-            @PathVariable UUID quizId,
-            @RequestParam("image") MultipartFile file) {
+        @PathVariable UUID quizId,
+        @RequestParam("image") MultipartFile file) {
                 try {
                     Image image = imageService.storeImage(file);
                     quizService.setImageForQuiz(quizId, image);
@@ -88,10 +89,10 @@ public class ImageController {
      * @return A {@link ResponseEntity} containing the image data and content type if the image is found,
      * or a {@link HttpStatus#NOT_FOUND} response if the image does not exist.
      */
-    @Operation(summary = "Get an image by ID", description = "Retrieves an image by its unique identifier")
-    @ApiResponse(responseCode = "200", description = "Successfully fetched the image")
-    @ApiResponse(responseCode = "404", description = "Image not found")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @Operation(summary = "Get an image by ID", description = "Retrieves an image by its unique identifier", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully fetched the image", content = @Content(mediaType = "application/octet-stream")),
+        @ApiResponse(responseCode = "404", description = "Image not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")})
     @GetMapping("/images/{imageId}")
     public ResponseEntity<byte[]> getImage(
             @PathVariable UUID imageId) {
@@ -118,13 +119,13 @@ public class ImageController {
      * @return A {@link ResponseEntity} with an OK status and message indicating
      * successful upload, or INTERNAL_SERVER_ERROR if the upload fails.
      */
-    @Operation(summary = "Upload an image for a question", description = "Uploads an image to associate with a question")
-    @ApiResponse(responseCode = "200", description = "Image uploaded successfully")
-    @ApiResponse(responseCode = "500", description = "Internal server error")
+    @Operation(summary = "Upload an image for a question", description = "Uploads an image to associate with a question", responses = {
+        @ApiResponse(responseCode = "200", description = "Image uploaded successfully", content = @Content(mediaType = "text/plain")),
+        @ApiResponse(responseCode = "500", description = "Internal server error")})
     @PostMapping("/questions/{questionId}/image")
     public ResponseEntity<?> uploadImageForQuestion(
-            @PathVariable UUID questionId,
-            @RequestParam("image") MultipartFile file) {
+        @PathVariable UUID questionId,
+        @RequestParam("image") MultipartFile file) {
         try {
             Image image = imageService.storeImage(file);
             questionService.setImageForQuestion(questionId, image);
@@ -137,5 +138,4 @@ public class ImageController {
                     .body("Could not upload the file: " + file.getOriginalFilename() + "!");
         }
     }
-
 }

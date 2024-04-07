@@ -53,8 +53,8 @@ public class CompleteQuizDTO {
      * The category name under which the quiz is classified. Categories help organize quizzes into themes
      * or subject areas, making it easier for users to find quizzes that match their interests.
      */
-    @Schema(description = "The name of the category under which the quiz falls.", example = "Sport")
-    private String categoryName;
+    @Schema(description = "The unique identifier of the category under which the quiz falls.", example = "23e4567-e89b-12d3-a456-426614174000")
+    private UUID categoryId;
 
     /**
      * The difficulty level of the quiz, indicating the level of challenge users can expect.
@@ -68,7 +68,7 @@ public class CompleteQuizDTO {
      * while private quizzes are restricted to specific users or groups.
      */
     @Schema(description = "A boolean value indicating whether the quiz is public or private.", example = "true")
-    private boolean isPublic;
+    private Boolean isPublic;
 
     /**
      * The set of questions included in the quiz. Each question is detailed further in its own DTO,

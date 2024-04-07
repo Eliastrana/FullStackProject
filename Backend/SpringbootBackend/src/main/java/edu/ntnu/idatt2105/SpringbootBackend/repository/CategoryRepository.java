@@ -38,14 +38,4 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
      * @return {@code true} if a category with the specified name exists, {@code false} otherwise.
      */
     boolean existsByCategoryName(String categoryName);
-    /**
-     * Retrieves a {@link Category} by its name.
-     * This method allows for the fetching of a category based on its unique name, supporting
-     * operations that require reference to specific categories, such as categorization of quizzes
-     * or questions.
-     *
-     * @param categoryName The name of the category to retrieve.
-     * @return An {@link Optional} containing the found {@link Category} if present; otherwise, an empty {@link Optional}.
-     */
-    Optional<Category> findByCategoryName(String categoryName);
 }
