@@ -44,7 +44,6 @@ docker-compose pull
 docker-compose up -d
 ```
 
-___
 ## Documentation
 
 - [SpringBoot Backend](https://github.com/Eliastrana/FullStackProject/tree/main/Backend)
@@ -56,7 +55,7 @@ ___
 
 - [Elias Trana](https://github.com/Eliastrana)
 - [Erik Nordsæther](https://github.com/eriktur)
-- [Sander Skofsrud](https://github.com/SanderSkofsrud)
+- [Sander Rom Skofsrud](https://github.com/SanderSkofsrud)
 - [Vegard Johnsen](https://github.com/VegardJohnsen)
 
 ## Contact Information

@@ -31,7 +31,7 @@ To run the backend individually, you will need:
 - [Postman](https://www.postman.com/downloads/)
 - [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
 - [IntelliJ IDEA](https://www.jetbrains.com/idea/download/)
-- [git](https://git-scm.com/downloads)
+- [Git](https://git-scm.com/downloads)
 ---
 ## Project Setup
 ## Commands

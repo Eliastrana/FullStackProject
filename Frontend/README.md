@@ -1,76 +1,82 @@
-# Frontend
+# VueFrontend
 
-Vue vite frontend.
+This template should help get you started developing with Vue 3 in Vite.
 
-## Basic Setup Guide
+___
 
-To run the frontend individually, you will need:
+### Table of contents
 
+- [VueFrontend](#vuefrontend)
+  - [Table of contents](#table-of-contents)
+- [Recommended IDE Setup](#recommended-ide-setup)
+- [Customize configuration](#customize-configuration)
+- [Project Setup](#project-setup)
+  - [Compile and Hot-Reload for Development](#compile-and-hot-reload-for-development)
+  - [Compile and Minify for Production](#compile-and-minify-for-production)
+  - [Run Unit Tests with Vitest](#run-unit-tests-with-vitest)
+  - [Run End-to-End Tests with Cypress](#run-end-to-end-tests-with-cypress)
+  - [Lint with ESLint](#lint-with-eslint)
+- [Contact Information](#contact-information)
 
-- [npm](https://www.npmjs.com/get-npm)
-- [Vue Vite](https://vitejs.dev/)
-- [Web browser](https://www.google.com/chrome/)
+---
 
+## Recommended IDE Setup
 
-### Useful tools
-- [webstorm](https://www.jetbrains.com/webstorm/download/)
-- [git](https://git-scm.com/downloads)
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
+## Customize configuration
 
-### Commands
+See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-Inside the VueFrontend folder of the project:
+## Project Setup
 
-```bash
+```sh
 npm install
 ```
 
-```bash
+### Compile and Hot-Reload for Development
+
+```sh
 npm run dev
 ```
 
+### Compile and Minify for Production
 
-## Documentation
+```sh
+npm run build
+```
 
-### User handling
+### Run Unit Tests with [Vitest](https://vitest.dev/)
 
-- Create user
-- Sign in
-- play quizzes
+```sh
+npm run test:unit
+```
 
-### Question handling
+### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
 
-- Create questions
-  - Question title
-  - Answer
-  - Add custom tags
-  - Sort the order of the questions
-  - Search for questions
-  - Filter questions based on tags
-  - Edit quizzes ?
+```sh
+npm run test:e2e:dev
+```
 
-### Answer handling
+This runs the end-to-end tests against the Vite development server.
+It is much faster than the production build.
 
-- Answer questions
-  - Play public quizzes
-  - Play personal quizzes
-  - View answers
-  - Try again
-  - Randomize order of answers
-  - View correct answers
-  - View score
+But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
 
-### Admin privileges
+```sh
+npm run build
+npm run test:e2e
+```
 
-- Imports
-  - Import quizzes
-  - Export quizzes
-- Create categories
-- Manage users
-  - Delete users
-  - Disable users
-  - Delete quizzes
+### Lint with [ESLint](https://eslint.org/)
 
+```sh
+npm run lint
+```
+---
+## Contact Information
 
+If You have trouble running the project, questions or feedback, feel free to contact us at:
 
-
+- [Support](mailto:support@quand.no)
+- [Feedback](mailto:support@quand.no)
