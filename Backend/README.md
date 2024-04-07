@@ -71,7 +71,7 @@ mvn clean test
 
 ### User
 - Username: user
-- Password: user
+- Password: Password123
 ---
 # Endpoints
 
