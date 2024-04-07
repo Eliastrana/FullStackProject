@@ -177,20 +177,14 @@ const loadImageData = async (imageId) => {
 <style scoped>
 
 .quizzes-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 800px;
+  max-width: 800px; /* or your desired width */
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
   padding: 20px;
-  margin: 5% auto;
-  margin-right: 2%;
-  margin-left: 2%;
-
-  border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  background-color: #ececec;
+  /* other styles */
 }
+
 
 .edit-icon {
   cursor: pointer;

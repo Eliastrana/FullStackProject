@@ -45,8 +45,9 @@
 
     </div>
 
+
     <!-- Questions Display -->
-    <div v-if="questions.length > 0">
+    <div v-if="questions.length > 0" class="questions">
       <transition name="slide" mode="out-in">
         <!-- Dynamically display the current question component -->
         <component :is="currentQuizComponent"
@@ -441,6 +442,33 @@ body {
   color: #a0a0a0;
   cursor: not-allowed;
 }
+
+@media (max-width: 600px) {
+  .quiz-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .quiz-header button {
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+
+  .questions {
+    max-width: 100%;
+    width: 100%;
+    overflow-x: auto; /* Allows horizontal scrolling if the content is too wide */
+    box-sizing: border-box; /* Ensures padding and border are included in the width */
+  }
+
+  .results-window {
+    min-width: 80%;
+    max-height: 50%;
+  }
+
+
+}
+
+
 
 
 

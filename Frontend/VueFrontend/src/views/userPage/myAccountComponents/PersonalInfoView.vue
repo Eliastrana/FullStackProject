@@ -41,9 +41,13 @@ const updatePassword = () => {
 
 <template>
   <div class="user-info-container" v-if="userInfo">
-    <h1>Your Info</h1>
-    <h2>This is you</h2>
-    <img :src="'/images/profilepic.png'" alt="User photo" class="user-photo"/>
+
+    <div class="title">
+      <h1>Your Info</h1>
+      <h2>This is you</h2>
+      <img :src="'/images/profilepic.png'" alt="User photo" class="user-photo"/>
+    </div>
+
     <div class="basic-info">
       <p><strong>Name:</strong> {{ userInfo.username }}</p>
       <p><strong>Email:</strong> {{ userInfo.email }}</p>
@@ -70,16 +74,53 @@ const updatePassword = () => {
 <style scoped>
 
 .user-info-container {
-  display: flex;
+  max-width: 800px; /* or your desired width */
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
+  padding: 20px;
+  /* other styles */
+}
+
+.user-info-container {
+  max-width: 800px; /* or your desired width */
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
+  padding: 20px;
+  /* other styles */
+
   flex-direction: column;
   align-items: center;
-  max-width: 90%;
   min-height: 83vh;
-  margin:  auto;
-  padding: 20px;
+  margin-top: 5%;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  background-color: #ececec;
+}
+
+.title, .basic-info, .level-info, .achievements, .updateinfo {
+  text-align: center;
+  width: 100%; /* Ensures the container fills its parent's width */
+}
+
+/* Ensure buttons are centered by adjusting the .updateinfo class if they are not */
+.updateinfo {
+  justify-content: center; /* Centers flex items on the main axis (horizontally) */
+  flex-direction: column; /* Stacks flex items vertically */
+  gap: 20px; /* Adds space between vertically stacked items */
+}
+
+.updateusername, .updatepassword {
+  margin: 10px auto; /* Automatically margins on the sides center the buttons */
+}
+
+.user-photo {
+  display: block; /* Makes the <img> block level for margin auto to work */
+  margin: 20px auto; /* Centers the image */
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
 }
 
 .updateinfo {
@@ -127,12 +168,6 @@ h2 {
   color: #3232ff;
 }
 
-.user-photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin: 20px 0;
-}
 
 .highlight {
   font-size: 1.2em;

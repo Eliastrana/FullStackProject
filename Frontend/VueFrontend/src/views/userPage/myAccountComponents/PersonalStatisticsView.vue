@@ -95,13 +95,17 @@ h2 {
 }
 
 .achievements-container {
-  background-color: #ececec;
-  display: flex;
+  max-width: 800px; /* or your desired width */
+  margin-top: 2%;
+  margin-right: auto;
+  margin-left: auto;
+  display: block; /* Default, but explicitly stated for clarity */
+  padding: 20px;
+  /* other styles */
+
   flex-direction: column; /* Align children vertically */
   align-items: stretch; /* Stretch items to fill the horizontal space */
   min-width: 96%;
-  margin-top: -2%;
-  padding: 20px;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
