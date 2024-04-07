@@ -37,7 +37,7 @@ To run the backend individually, you will need:
 ## Commands
 
 Inside the springbootBackend folder, you can run the following commands:
-### compile and run the project
+### Compile and run the project
 ```bash
 mvn clean install
 ```
