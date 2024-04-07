@@ -27,14 +27,14 @@ class CompleteQuizDTOTest {
         quiz.setTitle("Sport Quiz");
         quiz.setCreatorId(creatorId);
         quiz.setDifficulty(Difficulty.EASY);
-        quiz.setPublic(true);
+        quiz.setIsPublic(true);
         quiz.setQuestions(questions);
 
         assertNotNull(quiz);
         assertEquals("Sport Quiz", quiz.getTitle());
         assertEquals(creatorId, quiz.getCreatorId());
         assertEquals(Difficulty.EASY, quiz.getDifficulty());
-        assertTrue(quiz.isPublic());
+        assertTrue(quiz.getIsPublic());
         assertEquals(1, quiz.getQuestions().size());
     }
 

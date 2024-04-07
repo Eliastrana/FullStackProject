@@ -124,7 +124,7 @@ public class QuizMapperTest {
         quizDTO.setTitle("Science Quiz");
         quizDTO.setDescription("A quiz covering basic science topics.");
         quizDTO.setDifficulty(Difficulty.EASY); // Assuming difficulty is a String. Adjust if it's an enum
-        quizDTO.setPublic(true);
+        quizDTO.setIsPublic(true);
 
         // Setup questions and answers
         Set<CompleteQuestionDTO> questions = new HashSet<>();
@@ -165,7 +165,7 @@ public class QuizMapperTest {
         assertEquals(quizDTO.getTitle(), quiz.getTitle());
         assertEquals(quizDTO.getDescription(), quiz.getDescription());
         assertEquals(quizDTO.getDifficulty(), quiz.getDifficulty());
-        assertEquals(quizDTO.isPublic(), quiz.isPublic());
+        assertEquals(quizDTO.getIsPublic(), quiz.isPublic());
         assertNotNull(quiz.getImage());
         assertEquals(1, quiz.getQuestions().size()); // Verifying one question was added
         verify(imageRepository, times(1)).save(any(Image.class)); // Verify image was saved once

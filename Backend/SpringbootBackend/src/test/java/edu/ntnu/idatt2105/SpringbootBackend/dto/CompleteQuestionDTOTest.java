@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CompleteQuestionDTOTest {
@@ -25,8 +27,9 @@ class CompleteQuestionDTOTest {
         answers.add(new AnswerCreateDTO("Yes", true));
         answers.add(new AnswerCreateDTO("No", false));
 
+        UUID id = UUID.randomUUID();
         CompleteQuestionDTO dto = new CompleteQuestionDTO(
-                "What is the penalty for a handball in soccer?",
+                id, "What is the penalty for a handball in soccer?",
                 QuestionType.MULTIPLE_CHOICE,
                 "https://example.com/video/rules-of-handball-in-soccer",
                 tags,
