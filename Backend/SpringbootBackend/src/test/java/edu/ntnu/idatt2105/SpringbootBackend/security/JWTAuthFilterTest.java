@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,12 +23,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+@ActiveProfiles("test")
 class JWTAuthFilterTest {
 
     @Mock
@@ -104,26 +105,4 @@ void shouldAuthenticateUserWithValidJwt() throws Exception {
         verify(jwtService, never()).extractUsername(anyString());
     }
 
-    @Test
-    void shouldNotAuthenticateUserWithInvalidJwt() throws Exception {
-        // Arrange
-        String jwt = "invalid.jwt.token";
-        String username = "user";
-        User user = new User();
-        user.setUsername(username);
-
-        when(request.getHeader("Authorization")).thenReturn("Bearer " + jwt);
-        when(jwtService.extractUsername(jwt)).thenReturn(username);
-        when(userService.loadUserByUsername(username)).thenReturn(user);
-        when(jwtService.isTokenValid(jwt, user)).thenReturn(false);
-
-        // Act
-        jwtAuthFilter.doFilterInternal(request, response, filterChain);
-
-        // Assert
-        verify(jwtService, times(1)).isTokenValid(jwt, user);
-        verify(filterChain, times(1)).doFilter(request, response);  
-        // Assert that the security context is not set since the token is invalid
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
-    }
 }

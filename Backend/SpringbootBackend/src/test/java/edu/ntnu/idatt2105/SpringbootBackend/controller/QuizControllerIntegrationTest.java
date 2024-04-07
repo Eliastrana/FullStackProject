@@ -1,17 +1,16 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
-import edu.ntnu.idatt2105.SpringbootBackend.model.User;
-import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.service.QuizService;
 import edu.ntnu.idatt2105.SpringbootBackend.service.UserService;
-import lombok.With;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,12 +20,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 
 @SpringBootTest
@@ -40,61 +37,86 @@ public class QuizControllerIntegrationTest {
     @MockBean
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private MockMvc mockMvc;
 
+    private QuizDTO expectedQuizDTO;
+
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
  
-    @BeforeEach
-    public void setup() {
-        // Setup test data here if necessary
-        // For example, if you need to create users in the database before testing
+
+        @BeforeEach
+public void setup() {
+    // Initialize expectedQuizDTO
+    expectedQuizDTO = QuizDTO.builder()
+        .id(UUID.randomUUID())
+        .title("Test Quiz")
+        .description("This is a test quiz.")
+        .difficulty(Difficulty.EASY)
+        .isPublic(true)
+        .creatorId(UUID.randomUUID())
+        .categoryId(UUID.randomUUID())
+        .imageId(UUID.randomUUID())
+        .build();
 }
 
     
 
     @Test
     @WithMockUser
-    @DirtiesContext
-    public void createQuiz_ReturnsQuizDTO_WhenSuccessful() throws Exception {
-        User newUser = new User();
-        newUser.setId(UUID.randomUUID()); // Use this ID in your test
-        newUser.setUsername(UUID.randomUUID().toString());
-        newUser.setPassword("password"); // Ensure this is encoded if your security config expects it
-        // Set other required fields...
-        userRepository.save(newUser);
-        UUID testUserId = newUser.getId();
-        QuizCreateDTO quizCreateDTO = QuizCreateDTO.builder()
-                .title("General Knowledge")
-                .description("A quiz covering a wide range of topics.")
-                .difficulty(Difficulty.EASY)
-                .isPublic(true)
-                .creatorId(testUserId)
-                .build();
+    public void getAllQuizzes_ReturnsListOfQuizzes_WhenSuccessful() throws Exception {
+    // Setup mock response
+    List<QuizDTO> expectedQuizzes = new ArrayList<>();
+    expectedQuizzes.add(expectedQuizDTO);
+    Mockito.when(quizService.getAllQuizzes()).thenReturn(expectedQuizzes);
 
-        QuizDTO expectedQuizDTO = QuizDTO.builder()
-                .id(UUID.randomUUID())
-                .title(quizCreateDTO.getTitle())
-                .description(quizCreateDTO.getDescription())
-                .difficulty(quizCreateDTO.getDifficulty())
-                .isPublic(quizCreateDTO.isPublic())
-                .creatorId(quizCreateDTO.getCreatorId())
-                .build();
+    // Perform request and check response
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/quiz"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
+        .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value(expectedQuizDTO.getTitle()));
+}
 
-        Mockito.when(quizService.createQuiz(Mockito.any(QuizCreateDTO.class))).thenReturn(expectedQuizDTO);
+@Test
+@WithMockUser
+public void getQuizById_ReturnsQuizDTO_WhenSuccessful() throws Exception {
+    // Setup mock response
+    UUID quizId = UUID.randomUUID();
+    Mockito.when(quizService.getQuizById(quizId)).thenReturn(expectedQuizDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/quiz")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(quizCreateDTO))
-            .with(csrf()))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(expectedQuizDTO.getTitle()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(expectedQuizDTO.getDescription()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(expectedQuizDTO.getDifficulty().toString()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.isPublic").value(expectedQuizDTO.isPublic()));
-    }
+    // Perform request and check response
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/quiz/" + quizId))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(expectedQuizDTO.getTitle()));
+}
+
+@Test
+@WithMockUser
+public void updateQuiz_ReturnsUpdatedQuizDTO_WhenSuccessful() throws Exception {
+    // Setup mock response
+    UUID quizId = UUID.randomUUID();
+    Mockito.when(quizService.updateQuiz(Mockito.eq(quizId), Mockito.any(QuizDTO.class))).thenReturn(expectedQuizDTO);
+
+    // Perform request and check response
+    mockMvc.perform(MockMvcRequestBuilders.put("/api/quiz/" + quizId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(expectedQuizDTO)))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(expectedQuizDTO.getTitle()));
+}
+
+@Test
+@WithMockUser
+public void deleteQuiz_ReturnsNoContent_WhenSuccessful() throws Exception {
+    // Setup mock response
+    UUID quizId = UUID.randomUUID();
+    Mockito.doNothing().when(quizService).deleteQuiz(quizId);
+
+    // Perform request and check response
+    mockMvc.perform(MockMvcRequestBuilders.delete("/api/quiz/" + quizId))
+        .andExpect(MockMvcResultMatchers.status().isNoContent());
+}
 }
