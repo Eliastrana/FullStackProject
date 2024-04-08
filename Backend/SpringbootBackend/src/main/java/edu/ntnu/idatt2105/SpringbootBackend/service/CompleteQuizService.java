@@ -272,10 +272,18 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
      * @throws QuizNotFoundException If the quiz to delete is not found.
      */
 
-    @Transactional
-    public void deleteCompleteQuiz(UUID quizId) throws QuizNotFoundException {
-        Quiz quiz = quizRepository.findById(quizId).orElseThrow(() ->
-                new QuizNotFoundException("Quiz not found with id: " + quizId));
+    /**
+     * Deletes an existing quiz and its related entities, such as questions and answers,
+     * identified by its UUID.
+     *
+     * @param quizId The UUID of the quiz to delete.
+     * @throws QuizNotFoundException If the quiz to delete is not found.
+     */
+
+@Transactional
+public void deleteCompleteQuiz(UUID quizId) throws QuizNotFoundException {
+    Quiz quiz = quizRepository.findById(quizId).orElseThrow(() ->
+            new QuizNotFoundException("Quiz not found with id: " + quizId));
 
         quiz.getQuestions().forEach(question ->
                 answerRepository.deleteAll(question.getAnswers()));

@@ -25,14 +25,5 @@ import java.util.List;
  * @see Question for the entity managed by this repository.
  */
 public interface QuestionRepository extends JpaRepository<Question, UUID>{
-
-    /**
-     * Retrieves a list of {@link Question} entities associated with a specified quiz, identified by its UUID.
-     * This method enables the fetching of all questions belonging to a given quiz, supporting functionalities
-     * such as quiz review and editing.
-     *
-     * @param quizId the UUID of the quiz for which questions are to be retrieved.
-     * @return a list of {@link Question} entities associated with the given quiz ID.
-     */
-    List<Question> findAllByQuizId(UUID quizId);
+    List<Question> findAllByQuizId(UUID quizId);   
 }

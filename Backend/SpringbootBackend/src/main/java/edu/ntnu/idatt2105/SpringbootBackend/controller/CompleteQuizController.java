@@ -94,22 +94,22 @@ public class CompleteQuizController {
     }
 }
 
-   /**
-    * Retrieves a complete quiz by its UUID, including all associated questions and their answers.
-    * This method facilitates accessing detailed information about a specific quiz.
-    * The retrieval process involves searching for the quiz using its UUID, and if found,
-    * returning the complete details encapsulated in a DTO.
-    *
-    * Access to this endpoint is restricted to authenticated users, ensuring that quiz information
-    * is protected and only accessible to users with the appropriate permissions. If the quiz is
-    * found, its details are returned; otherwise, an HTTP status code indicating not found (404) is
-    * returned.
-    *
-    * @param quizId The UUID of the quiz to retrieve.
-    * @return A ResponseEntity containing the CompleteQuizDTO if the quiz is found, or an HTTP
-    * status code indicating not found (404) if the quiz does not exist.
-    */
 
+    /**
+     * Retrieves a complete quiz by its UUID, including all associated questions and their answers.
+     * This method facilitates accessing detailed information about a specific quiz.
+     * The retrieval process involves searching for the quiz using its UUID, and if found,
+     * returning the complete details encapsulated in a DTO.
+     *
+     * Access to this endpoint is restricted to authenticated users, ensuring that quiz information
+     * is protected and only accessible to users with the appropriate permissions. If the quiz is
+     * found, its details are returned; otherwise, an HTTP status code indicating not found (404) is
+     * returned.
+     *
+     * @param quizId The UUID of the quiz to retrieve.
+     * @return A ResponseEntity containing the CompleteQuizDTO if the quiz is found, or an HTTP
+     * status code indicating not found (404) if the quiz does not exist.
+     */
     @Operation(summary = "Get a complete quiz", description = "Fetches a complete quiz with questions and answers.", responses = {
     @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.",
     content = @Content(mediaType = "application/json", schema = @Schema(implementation = CompleteQuizDTO.class))),
@@ -149,7 +149,7 @@ public class CompleteQuizController {
      * a "Quiz not found" error if the quiz does not exist, or an internal server error
      * if an unexpected error occurs during the update process.
      */
-@Operation(summary = "Update a complete quiz", description = "Updates an existing quiz along with questions and answers.", responses = {
+    @Operation(summary = "Update a complete quiz", description = "Updates an existing quiz along with questions and answers.", responses = {
     @ApiResponse(responseCode = "200", description = "Complete quiz updated successfully.", content = @Content(mediaType = "application/json")),
     @ApiResponse(responseCode = "400", description = "Bad request due to invalid input."),
     @ApiResponse(responseCode = "404", description = "Quiz not found.")}, security = {@SecurityRequirement(name = "bearerAuth")})
@@ -168,7 +168,7 @@ public class CompleteQuizController {
         }
     }
 
-/**
+    /**
      * Deletes an existing quiz along with all its associated questions and answers based on the
      * provided quiz ID. This operation is irreversible and removes the quiz entirely from the
      * system.
@@ -182,6 +182,7 @@ public class CompleteQuizController {
      * @return A ResponseEntity with NO_CONTENT status if the quiz is successfully deleted,
      *         or a "Quiz not found" error if the quiz does not exist.
      */
+
     @Operation(summary = "Delete a complete quiz", description = "Deletes an existing quiz along with questions and answers.", responses = {
         @ApiResponse(responseCode = "204", description = "Complete quiz deleted successfully."),
         @ApiResponse(responseCode = "404", description = "Quiz not found.")},
@@ -215,7 +216,8 @@ public class CompleteQuizController {
      * @return A ResponseEntity containing a list of CompleteQuizDTOs if quizzes with the
      *         specified tag are found, or a "Quiz not found" error if no such quizzes exist.
      */
-@Operation(summary = "Gets a complete Quiz by its tag", description = "Fetches a complete quiz with questions and answers by its tag.", responses = {
+
+    @Operation(summary = "Gets a complete Quiz by its tag", description = "Fetches a complete quiz with questions and answers by its tag.", responses = {
     @ApiResponse(responseCode = "200", description = "Complete quiz fetched successfully.", content = @Content(mediaType = "application/json",
     array = @ArraySchema(schema = @Schema(implementation = CompleteQuizDTO.class)))),
     @ApiResponse(responseCode = "404", description = "Quiz not found.")}, security = {@SecurityRequirement(name = "bearerAuth")})

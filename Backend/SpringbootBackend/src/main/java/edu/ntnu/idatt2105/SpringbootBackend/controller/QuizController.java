@@ -50,7 +50,7 @@ public class QuizController {
     private final QuizService quizService;
     private final Logger logger = LoggerFactory.getLogger(QuizController.class);
 
-/**
+    /**
      * Creates a new quiz with details provided in {@link QuizCreateDTO}. The quiz
      * is associated with the currently authenticated user. Upon successful creation,
      * returns the created quiz details as {@link QuizDTO}.
@@ -87,7 +87,7 @@ public class QuizController {
      *
      * @return A {@link ResponseEntity} containing a list of all {@link QuizDTO}.
      */
-@Operation(summary = "Fetch all quizzes", description = "Retrieves all available quizzes", responses = {
+    @Operation(summary = "Fetch all quizzes", description = "Retrieves all available quizzes", responses = {
     @ApiResponse(responseCode = "200", description = "Successfully fetched quizzes", content = @Content(mediaType = "application/json",
     array = @ArraySchema(schema = @Schema(implementation = QuizDTO.class))))})
 @GetMapping
@@ -101,7 +101,7 @@ public class QuizController {
         }
     }
 
-/**
+    /**
      * Retrieves a specific quiz by its unique identifier ({@code id}). If the quiz is found,
      * its details are returned as {@link QuizDTO}; otherwise, a not found status is returned.
      *
@@ -131,7 +131,7 @@ public class QuizController {
         }
     }
 
-/**
+    /**
      * Updates an existing quiz identified by its unique identifier ({@code id}). The updated
      * quiz details are provided in a {@link QuizDTO}. If the quiz is found, it is updated with
      * the new details and the updated {@link QuizDTO} is returned; otherwise, a not found status
@@ -160,7 +160,7 @@ public class QuizController {
         }
     }
 
-/**
+    /**
      * Deletes a quiz by its unique identifier ({@code id}). If the quiz is found, it is deleted
      * and a no content status is returned; otherwise, a not found status is returned.
      *

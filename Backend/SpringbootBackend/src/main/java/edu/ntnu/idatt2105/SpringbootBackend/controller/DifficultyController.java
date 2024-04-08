@@ -31,19 +31,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/difficulties")
 public class DifficultyController {
 
-/**
-     * Retrieves a list of all possible {@link Difficulty} levels defined in the system.
-     * This endpoint allows clients to understand what difficulty levels can be associated
-     * with quizzes and therefore, can be used to filter or categorize quizzes based on their
-     * difficulty.
-     *
-     * @return A {@link ResponseEntity} object containing a list of all {@link Difficulty} levels.
-     * The HTTP status code is set to OK (200) indicating the request was successfully processed.
-     */
-    @GetMapping
     @Operation(summary = "List all difficulties", description = "Retrieves a list of all possible quiz difficulty levels.", responses = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of difficulties",
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of difficulties", 
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = Difficulty.class))))})
+    @GetMapping
     public ResponseEntity<List<Difficulty>> getAllDifficulties() {
         List<Difficulty> difficulties = Arrays.stream(Difficulty.values())
                 .collect(Collectors.toList());

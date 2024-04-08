@@ -37,7 +37,7 @@ public class TagController {
 
   private final TagService tagService;
 
-/**
+  /**
    * Creates a new tag in the system. This endpoint requires authentication and accepts
    * a {@link Tag} object in the request body.
    *
@@ -55,7 +55,7 @@ public class TagController {
     return new ResponseEntity<>(createdTag, HttpStatus.CREATED);
   }
 
-/**
+   /**
    * Retrieves all tags available in the system. This endpoint does not require any
    * specific identifier and returns a list of all tags.
    *
@@ -70,7 +70,7 @@ public class TagController {
     return ResponseEntity.ok(tags);
   }
 
-/**
+  /**
    * Retrieves a specific tag by its unique identifier. Utilizes the {@link TagService} to
    * search for the tag. If the tag is found, it is returned within a {@link ResponseEntity}; otherwise,
    * a NOT FOUND status is returned.
@@ -87,7 +87,7 @@ public class TagController {
     return ResponseEntity.ok(tag);
   }
 
-/**
+  /**
    * Updates an existing tag identified by its UUID with new information provided in the request body.
    * This operation calls the {@link TagService} to apply the updates. If successful, the updated tag is returned;
    * if the tag is not found, a NOT FOUND response is generated.
@@ -106,7 +106,7 @@ public class TagController {
     return ResponseEntity.ok(updatedTag);
   }
 
-/**
+  /**
    * Deletes a tag from the system using its unique identifier. This method uses the {@link TagService}
    * to attempt deletion. If the operation is successful, a NO CONTENT response is returned; if the tag
    * cannot be found, a NOT FOUND response is provided.

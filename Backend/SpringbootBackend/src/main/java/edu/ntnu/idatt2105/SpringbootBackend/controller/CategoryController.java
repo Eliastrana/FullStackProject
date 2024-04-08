@@ -45,7 +45,7 @@ public class CategoryController {
     this.categoryService = categoryService;
   }
 
-/**
+  /**
    * Creates a new category with the provided details.
    * This method accepts a {@link CategoryDTO} object containing the category details,
    * processes it through the {@link CategoryService}, and saves the new category.
@@ -68,7 +68,7 @@ public class CategoryController {
     return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
   }
 
-/**
+  /**
    * Retrieves all categories from the system.
    * This method calls the {@link CategoryService} to fetch all existing categories
    * and returns them in a list. It does not require any specific identifier since it aims
@@ -85,7 +85,7 @@ public class CategoryController {
     return new ResponseEntity<>(categories, HttpStatus.OK);
   }
 
-/**
+  /**
    * Retrieves a specific category by its unique identifier (ID).
    * This method uses the {@link CategoryService} to find a category by its ID.
    *
@@ -103,7 +103,7 @@ public class CategoryController {
     return ResponseEntity.ok(categoryDTO);
   }
 
-/**
+  /**
    * Updates an existing category identified by its ID with new details.
    * This method takes a {@link CategoryDTO} with updated category details and an ID,
    * processes the update through the {@link CategoryService}, and returns the updated category.
@@ -127,7 +127,7 @@ public class CategoryController {
     return ResponseEntity.ok(updatedCategory);
   }
 
-/**
+  /**
    * Deletes a category by its unique identifier (ID).
    * This method calls the {@link CategoryService} to delete a category based on its ID.
    *

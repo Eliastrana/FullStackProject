@@ -59,12 +59,16 @@ jobs:
         run: npm run build --prefix Frontend/VueFrontend
       - name: Run Vitest
         run: npm run test:unit --prefix Frontend/VueFrontend
-      - name: Cypress tests
-        uses: cypress-io/github-action@v2
-        with:
-          start: npm run serve --prefix Frontend/VueFrontend
-          wait-on: 'http://localhost:8080'
-          config: baseUrl=http://localhost:8080
+      - name: Start Server
+        run: npm run serve &
+        working-directory: ./Frontend/VueFrontend
+
+      - name: Wait for Server
+        run: sleep 60
+
+      - name: Run Cypress Tests
+        run: npm run test:e2e
+        working-directory: ./Frontend/VueFrontend
 
 #  deploy:
 #    needs: [ build-and-test-backend, build-and-test-frontend ]

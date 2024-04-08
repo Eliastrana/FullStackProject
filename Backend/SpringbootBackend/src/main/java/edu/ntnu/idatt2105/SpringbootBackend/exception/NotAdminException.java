@@ -12,8 +12,9 @@ package edu.ntnu.idatt2105.SpringbootBackend.exception;
  *
  */
 public class NotAdminException extends RuntimeException {
-/**
-     * Constructs a new {@code NotAdminException} with a detailed message indicating the user and the lack of ownership.
+
+    /**
+     * Constructs a new {@code NotOwnerException} with a detailed message indicating the user and the lack of ownership.
      *
      * @param username The username of the user who attempted the operation without having ownership rights.
      */

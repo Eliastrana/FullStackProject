@@ -50,7 +50,7 @@ public class ImageController {
 
     private final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
-/**
+    /**
      * Uploads an image file and associates it with a specific quiz identified by its UUID.
      * The method stores the image using {@link ImageService} and updates the quiz's image reference
      * using {@link QuizService}.
@@ -80,7 +80,7 @@ public class ImageController {
                 }
             }
 
-/**
+    /**
      * Retrieves an image by its unique identifier (UUID) and returns the image content
      * along with the correct content type. If the image is not found, a {@link HttpStatus#NOT_FOUND}
      * response is returned.
@@ -110,7 +110,7 @@ public class ImageController {
         }
     }
 
-/**
+    /**
      * Uploads an image and associates it with a question identified by its UUID.
      * This method allows for enhancing questions with visual content.
      *

@@ -58,7 +58,7 @@ public class RoleController {
         return ResponseEntity.ok(roles);
     }
 
-/**
+    /**
      * Creates a new role in the system.
      * This endpoint allows clients to create new roles that can be assigned to users.
      *

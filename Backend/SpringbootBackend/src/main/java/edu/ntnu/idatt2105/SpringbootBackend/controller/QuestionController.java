@@ -49,7 +49,7 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-/**
+    /**
      * Creates a new question and associates it with a specified quiz. The question details
      * are provided in the form of a {@link QuestionCreateDTO}. If the associated quiz
      * is found, the question is created and a {@link QuestionDTO} is returned.
@@ -78,7 +78,7 @@ public class QuestionController {
         }
     }
 
-/**
+    /**
      * Retrieves a question by its unique identifier. If the question exists, it returns
      * a {@link QuestionDTO} with the question details.
      *
@@ -100,7 +100,7 @@ public class QuestionController {
         }
     }
 
-/**
+    /**
      * Updates an existing question identified by its UUID. The updated question details
      * are provided in a {@link QuestionDTO}. If the question exists, it is updated and
      * the updated {@link QuestionDTO} is returned.
@@ -124,7 +124,7 @@ public class QuestionController {
         }
     }
 
-/**
+    /**
      * Deletes a question by its unique identifier. If the question exists, it is deleted
      * and a NO_CONTENT status is returned. If the question is not found, a NOT_FOUND status
      * is returned.
@@ -156,7 +156,7 @@ public class QuestionController {
      * @param quizId The unique identifier of the quiz for which questions are being requested.
      * @return A {@link ResponseEntity} with a list of {@link QuestionDTO} if the quiz exists, or an error status if not.
      */
-@Operation(summary = "Get questions by quiz id", description = "Get all questions for a specific quiz", responses = {
+    @Operation(summary = "Get questions by quiz id", description = "Get all questions for a specific quiz", responses = {
     @ApiResponse(responseCode = "200", description = "Questions found", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = QuestionDTO.class)))),
     @ApiResponse(responseCode = "404", description = "Questions not found"),
     @ApiResponse(responseCode = "400", description = "Bad request")})

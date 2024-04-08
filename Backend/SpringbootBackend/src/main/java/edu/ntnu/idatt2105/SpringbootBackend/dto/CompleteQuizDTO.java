@@ -49,9 +49,17 @@ public class CompleteQuizDTO {
     @Schema(description = "The unique identifier of the creator of the quiz.", example = "d290f1ee-6c54-4b01-90e6-d701748f0851")
     private UUID creatorId;
 
+    /**
+     * The category name under which the quiz is classified. Categories help organize quizzes into themes
+     * or subject areas, making it easier for users to find quizzes that match their interests.
+     */
     @Schema(description = "The unique identifier of the category under which the quiz falls.", example = "23e4567-e89b-12d3-a456-426614174000")
     private UUID categoryId;
 
+    /**
+     * The difficulty level of the quiz, indicating the level of challenge users can expect.
+     * It helps users select quizzes that match their skill or knowledge level.
+     */
     @Schema(description = "The difficulty level of the quiz.", example = "EASY")
     private Difficulty difficulty;
 
