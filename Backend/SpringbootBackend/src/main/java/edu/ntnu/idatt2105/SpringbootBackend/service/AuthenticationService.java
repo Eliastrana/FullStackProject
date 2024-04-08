@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.PasswordDoesNotMeetRequirements;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserAlreadyExistException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Role;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
@@ -68,7 +69,7 @@ public class AuthenticationService {
         }
 
         if (!pattern.matcher(userCreationDTO.getPassword()).matches()) {
-            throw new IllegalArgumentException("Password does not meet complexity requirements.");
+            throw new PasswordDoesNotMeetRequirements(userCreationDTO.getPassword());
         }
 
         User user = User

@@ -1,6 +1,5 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
-import edu.ntnu.idatt2105.SpringbootBackend.exception.NotAdminException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.RoleAlreadyAssignedException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.RoleNotFoundException;

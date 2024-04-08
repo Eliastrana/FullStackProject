@@ -1,14 +1,10 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
-import edu.ntnu.idatt2105.SpringbootBackend.dto.AnswerCreateDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.dto.AnswerDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuestionDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.CategoryNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.CreatorNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.QuizNotFoundException;
-import edu.ntnu.idatt2105.SpringbootBackend.exception.TagNotFoundException;
-import edu.ntnu.idatt2105.SpringbootBackend.exception.QuestionNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.TagNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Answer;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Category;
@@ -29,9 +25,7 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CompleteQuizService {
 
-    private final AnswerService answerService;
     private final QuizRepository quizRepository;
     private final CategoryRepository categoryRepository;
     private final QuestionRepository questionRepository;
@@ -73,7 +66,6 @@ public class CompleteQuizService {
         ImageRepository imageRepository
         ) 
         {
-        this.answerService = answerService;
         this.quizRepository = quizRepository;
         this.categoryRepository = categoryRepository;
         this.questionRepository = questionRepository;

@@ -1,7 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.QuestionType;
-import edu.ntnu.idatt2105.SpringbootBackend.model.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;

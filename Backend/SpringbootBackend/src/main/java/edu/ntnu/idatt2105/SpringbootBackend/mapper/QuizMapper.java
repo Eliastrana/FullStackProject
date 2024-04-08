@@ -5,12 +5,10 @@ import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuestionDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.CompleteQuizDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizCreateDTO;
 import edu.ntnu.idatt2105.SpringbootBackend.dto.QuizDTO;
-import edu.ntnu.idatt2105.SpringbootBackend.exception.CategoryNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Category;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Image;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Quiz;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
-import edu.ntnu.idatt2105.SpringbootBackend.repository.CategoryRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.ImageRepository;
 
 import java.util.Base64;
@@ -27,11 +25,6 @@ public class QuizMapper {
     @Autowired
     private QuestionMapper questionMapper;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private AnswerMapper answerMapper;
 
     @Autowired
     private ImageRepository imageRepository;
