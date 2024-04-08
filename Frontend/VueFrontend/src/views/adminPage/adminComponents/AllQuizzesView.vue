@@ -110,9 +110,9 @@ const downloadQuiz = async (quizId) => {
       <div class="quiz" v-for="(quiz, index) in quizzes" :key="quiz.id">
         <div class="quiz-info">
 
-<!--          <img src="https://via.placeholder.com/150" alt="Placeholder Image" class="quiz-image"/>-->
 
-          <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image" class="quiz-image"/>
+          <img :src="quiz.imageData || '/images/default.png'" alt="Quiz Image" class="quiz-image" />
+
 
           <div class="quiz-text">
             <h3>{{quiz.title }}</h3>
@@ -166,30 +166,30 @@ const downloadQuiz = async (quizId) => {
 
 .delete-icon {
   cursor: pointer;
-  width: 20px; /* Adjust icon size as needed */
-  height: 20px; /* Adjust icon size as needed */
+  width: 20px;
+  height: 20px;
   position: absolute;
   top: 20px;
   right: 20px;
-  fill: #4a5568; /* Icon color */
+  fill: #4a5568;
 }
 
 .delete-icon:hover {
-  fill: rgba(0, 0, 0, 0.8); /* Icon color on hover */
+  fill: rgba(0, 0, 0, 0.8);
 }
 
 .download-icon {
   cursor: pointer;
-  width: 20px; /* Adjust icon size as needed */
-  height: 20px; /* Adjust icon size as needed */
+  width: 20px;
+  height: 20px;
   position: absolute;
   top: 20px;
   right: 50px;
-  fill: #4a5568; /* Icon color */
+  fill: #4a5568;
 }
 
 .download-icon:hover {
-  fill: rgba(0, 0, 0, 0.8); /* Icon color on hover */
+  fill: rgba(0, 0, 0, 0.8);
 }
 
 .quizzes {
@@ -207,9 +207,9 @@ const downloadQuiz = async (quizId) => {
 }
 
 .quiz-image {
-  width: 100px; /* Ensure this size is suitable for your layout */
-  height: 100px; /* Provide a specific height */
-  object-fit: cover; /* Adjusts the size of the image to fill the box, preserving aspect ratio */
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
 
 
@@ -219,13 +219,13 @@ const downloadQuiz = async (quizId) => {
 
 
 .category-badge {
-  display: inline-block; /* Treat the <p> tag more like an inline element */
-  background-color: #007bff; /* Example background color */
-  color: #ffffff; /* Text color */
-  padding: 5px 15px; /* Vertical and horizontal padding */
-  border-radius: 20px; /* Rounded corners */
-  font-size: 0.8rem; /* Adjust font size as needed */
-  margin: 0; /* Remove default <p> margin if needed */
+  display: inline-block;
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 0;
 }
 
 .quiz {
@@ -234,7 +234,7 @@ const downloadQuiz = async (quizId) => {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   transition: transform 0.3s;
-  position: relative; /* This is necessary to position the edit icon correctly */
+  position: relative;
 
 }
 
@@ -253,8 +253,8 @@ h2 {
 }
 
 .headings {
-  align-self: stretch; /* Makes the headings container take the full width */
-  text-align: left; /* Aligns the text to the left */
+  align-self: stretch;
+  text-align: left;
 }
 
 
