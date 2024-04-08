@@ -164,7 +164,13 @@ public QuizDTO updateQuiz(UUID id, QuizDTO quizUpdateDTO) {
         }
         quizRepository.deleteById(id);
     }
-
+    /**
+     * Sets an image for a quiz.
+     * 
+     * @param quizId Quiz id
+     * @param image Image to set
+     * @return The updated {@link QuizDTO} with the new image.
+     */
     public QuizDTO setImageForQuiz(UUID quizId, Image image) {
     Quiz quiz = quizRepository.findById(quizId)
             .orElseThrow(() -> new QuizNotFoundException("Quiz not found with id: " + quizId));
@@ -173,6 +179,11 @@ public QuizDTO updateQuiz(UUID id, QuizDTO quizUpdateDTO) {
     return quizMapper.toQuizDTO(quiz);
     }
 
+    /**
+     * Retrieves all public quizzes available in the system.
+     *
+     * @return A list of {@link QuizDTO} representing all public quizzes.
+     */
     public List<QuizDTO> getPublicQuizzes() {
     return quizRepository.findAllByIsPublicTrue().stream()
             .map(quizMapper::toQuizDTO)

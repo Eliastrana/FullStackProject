@@ -12,7 +12,7 @@ import java.util.UUID;
  * Categories facilitate the organization and retrieval of questions by theme, making it easier for users to navigate and interact with quiz content.
  * This DTO structure is utilized for operations involving the creation, retrieval, and updating of category information.
  *
- * @author Sander rom Skofsrud
+ * @author Sander R. Skofsrud
  * @version 0.1
  * @since 0.1
  * @see CategoryDTO

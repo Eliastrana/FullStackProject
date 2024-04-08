@@ -36,7 +36,7 @@ import java.util.UUID;
  * facilitate the management of quizzes, from their inception to their consumption and eventual
  * removal, ensuring a comprehensive approach to quiz handling within the system.
  *
- * @author vegard johnsen
+ * @author Vegard Johnsen
  * @version 0.1
  * @since 0.1
  * @see CompleteQuizService

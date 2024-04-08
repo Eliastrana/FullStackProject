@@ -29,7 +29,7 @@ import java.util.UUID;
  * updating, and deletion of questions, as well as the retrieval of all questions
  * associated with a specific quiz.
  *
- * @author Vegard Johnsen
+ * @author Vegard Johnsen, Sander R. Skofsrud
  * @version 1.0
  * @since 1.0
  * @see QuestionService
@@ -148,7 +148,7 @@ public class QuestionController {
         }
     }
 
-/**
+    /**
      * Retrieves all questions associated with a specified quiz by its unique identifier.
      * If the quiz exists, a list of {@link QuestionDTO} is returned with all questions
      * for that quiz.

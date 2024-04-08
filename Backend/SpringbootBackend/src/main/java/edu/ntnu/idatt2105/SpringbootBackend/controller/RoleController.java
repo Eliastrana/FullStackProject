@@ -18,7 +18,7 @@ import java.util.List;
  * It allows fetching all roles and creating new roles, leveraging the {@link RoleService}.
  * Access to the APIs is secured, requiring authentication.
  *
- * @author Vegard Johnsen
+ * @author Vegard Johnsen, Sander R. Skofsrud
  * @version 0.1
  * @since 0.1
  * @see RoleService

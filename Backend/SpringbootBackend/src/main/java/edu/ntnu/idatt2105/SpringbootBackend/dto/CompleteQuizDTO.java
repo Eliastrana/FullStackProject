@@ -16,7 +16,7 @@ import java.util.UUID;
  * for managing quiz visibility (public or private) and associated imagery, enabling a rich
  * representation of the quiz content.
  *
- * @author Vegard Johnsen
+ * @author Vegard Johnsen, Sander R. Skofsrud
  * @version 0.1
  * @since 0.1
  * @see CompleteQuestionDTO
@@ -85,9 +85,16 @@ public class CompleteQuizDTO {
     @Schema(description = "The name of the image file associated with the quiz.", example = "quiz_cover.png")
     private String imageName;
 
+    /**
+     * The type of the image file associated with the quiz. This detail, such as 'png', 'jpg', etc.,
+     * helps in determining how to properly handle and display the image.
+     */
     @Schema(description = "The type of the image file.", example = "png")
     private String imageType;
-    
+
+    /**
+     * The base64 encoded string of the image data.
+     */
     @Schema(description = "The base64 encoded string of the image data.", example = "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABjElEQVRIS+2Vv0oDQRDGv7+9g")
     private String imageData;
 }
