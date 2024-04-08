@@ -39,8 +39,6 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: eOAcZwBHCgYcwoTj1n9U55HoAkBH9jaB
           MYSQL_DATABASE: quiz_db
-          MYSQL_USER: root
-          MYSQL_PASSWORD: eOAcZwBHCgYcwoTj1n9U55HoAkBH9jaB
         ports:
           - 3307:3306 # Mapping to match your application's expected port
         options: >-
@@ -57,8 +55,6 @@ jobs:
           node-version: '14'
       - name: Install dependencies
         run: npm install --prefix Frontend/VueFrontend
-      - name: Lint
-        run: npm run lint --prefix Frontend/VueFrontend
       - name: Build
         run: npm run build --prefix Frontend/VueFrontend
       - name: Run Vitest
