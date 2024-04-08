@@ -2,6 +2,10 @@ import axios from 'axios'
 
 const API_URL = "http://localhost:8080/api/tags"
 
+/**
+ *
+ * @type {{getAllTags(): Promise<any|undefined>}}
+ */
 export const TagService = {
   async getAllTags() {
     try {

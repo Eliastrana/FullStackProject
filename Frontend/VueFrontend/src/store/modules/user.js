@@ -3,16 +3,30 @@ import { SessionToken } from '@/features/SessionToken.js';
 import { UserService } from '@/services/UserService.js';
 import router from '@/router/index.js'
 
+/**
+ * User Module
+ * @returns {{userInfo: (*|null), token: string}}
+ */
 const state = () => ({
   token: SessionToken.getToken(),
   userInfo: SessionToken.getUserInfo(),
 });
+
+/**
+ *
+ * @type {{isAuthenticated: (function(*): boolean), userName: (function(*): *), userId: (function(*): *)}}
+ */
 
 const getters = {
   isAuthenticated: (state) => !!state.token,
   userName: (state) => state.userInfo?.username || '',
   userId: (state) => state.userInfo?.id || null,
 };
+
+/**
+ *
+ * @type {{SET_TOKEN: mutations.SET_TOKEN, CLEAR_USER: mutations.CLEAR_USER, SET_USER_INFO: mutations.SET_USER_INFO}}
+ */
 
 const mutations = {
   SET_TOKEN: (state, token) => {
@@ -30,6 +44,11 @@ const mutations = {
     SessionToken.clearUserInfo();
   },
 };
+
+/**
+ *
+ * @type {{logout({commit: *, dispatch: *}): Promise<void>, fetchUserDetails({commit: *}): Promise<void>, clearQuizzes({commit: *}): void, login({commit: *, dispatch: *}, *): Promise<void>, register({commit: *, dispatch: *}, *): Promise<void>}}
+ */
 
 const actions = {
   async register({ commit, dispatch }, userDetails) {
@@ -58,7 +77,6 @@ const actions = {
   },
 
 
-// The logout action
   logout({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       try {

@@ -69,11 +69,6 @@ h2 {
   font-size: 2rem;
 }
 
-
-
-
-
-
 @media (max-width: 768px) {
   .personal-statistics, .personal-info, .personal-quizzes {
     flex-basis: 100%;

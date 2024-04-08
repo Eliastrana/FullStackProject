@@ -1,7 +1,7 @@
 <script setup>
 import QuiztitleDisplay from '@/components/quizzesPage/QuiztitleDisplay.vue';
 import PublicquizzesView from '@/components/quizzesPage/PublicquizzesView.vue';
-import QuizFullScreen from '@/components/quizzesPage/FullscreenquizView.vue'; // Adjust path as necessary
+import QuizFullScreen from '@/components/quizzesPage/FullscreenquizView.vue';
 import { onMounted, ref } from 'vue'
 
 /**

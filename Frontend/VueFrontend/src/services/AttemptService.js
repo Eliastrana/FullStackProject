@@ -3,6 +3,10 @@ import store from '@/store/index.js';
 
 const ATTEMPT_API_URL = 'http://localhost:8080/api/userQuizAttempts';
 
+/**
+ *
+ * @type {{create(*): Promise<any|undefined>, getAttemptByUserId(*): Promise<any|undefined>, getAllAttempts(): Promise<any|undefined>, getAttemptById(*): Promise<any|undefined>}}
+ */
 export const AttemptService = {
   async create(attemptDetails) {
     try {
@@ -13,6 +17,11 @@ export const AttemptService = {
       throw error;
     }
   },
+
+  /**
+   *
+   * @returns {Promise<any|undefined>}
+   */
 
   async getAllAttempts() {
     const userId = store.getters['user/userId']; // Access userId using the getter
@@ -27,6 +36,11 @@ export const AttemptService = {
     }
   },
 
+  /**
+   *
+   * @param attemptId
+   * @returns {Promise<any|undefined>}
+   */
   async getAttemptById(attemptId) {
     try {
       const response = await axios.get(`${ATTEMPT_API_URL}/${attemptId}`);
@@ -36,6 +50,12 @@ export const AttemptService = {
       throw error;
     }
   },
+
+  /**
+   *
+   * @param userId
+   * @returns {Promise<any>}
+   */
 
   async getAttemptByUserId(userId) {
     try {

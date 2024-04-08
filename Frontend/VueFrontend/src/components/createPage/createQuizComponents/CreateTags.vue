@@ -19,17 +19,15 @@
 <script setup>
 import { ref, computed, watch, defineProps, defineEmits } from 'vue';
 
-// Props are defined to accept `tags` from the parent component if any exist.
 const props = defineProps({
   initialTags: Array
 });
 
 const emit = defineEmits(['update-tags']);
 
-// Use `initialTags` prop to initialize the `tags` reactive state if provided.
 const tags = ref(props.initialTags || []);
 const newTagInput = ref('');
-const maxTags = 10; // Maximum number of tags
+const maxTags = 10;
 
 const canAddMoreTags = computed(() => tags.value.length < maxTags);
 
@@ -37,7 +35,7 @@ function handleTagInputEnter() {
   const trimmedTag = newTagInput.value.trim();
   if (trimmedTag && !tags.value.includes(trimmedTag)) {
     tags.value.push(trimmedTag);
-    newTagInput.value = ''; // Clear input field after adding a tag
+    newTagInput.value = '';
     emitUpdateTags();
   }
 }
@@ -47,17 +45,14 @@ function removeTag(index) {
   emitUpdateTags();
 }
 
-// Emit the updated tags array to the parent component when tags are added or removed.
 function emitUpdateTags() {
   emit('update-tags', tags.value);
 }
 
-// This watcher ensures that the parent component's `tags` prop is updated whenever the tags change.
 watch(tags, (newTags) => {
   emit('update-tags', newTags);
 }, { deep: true });
 </script>
-
 
 
 <style scoped>

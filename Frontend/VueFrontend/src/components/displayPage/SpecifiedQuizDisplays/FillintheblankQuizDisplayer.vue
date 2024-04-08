@@ -7,7 +7,6 @@
 </template>
 
 <script setup>
-// Importing necessary modules from Vue
 import { defineProps, ref, defineEmits } from 'vue';
 
 /**

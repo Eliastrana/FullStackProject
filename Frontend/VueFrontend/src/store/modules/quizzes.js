@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { QuizService } from '@/services/QuizService.js'
 import { RatingService } from '@/services/RatingService.js'
 
+/**
+ * Quizzes Module
+ */
 
 export default {
   namespaced: true,
@@ -23,7 +26,7 @@ export default {
   }),
   mutations: {
     ADD_QUESTION(state, question) {
-      state.quizDetails.questions.push(question); // Now handles all types of questions including Study with front/back images
+      state.quizDetails.questions.push(question);
     },
     UPDATE_QUESTION(state, updatedQuestion) {
       const index = state.quizDetails.questions.findIndex(q => q.uuid === updatedQuestion.uuid);
@@ -55,12 +58,7 @@ export default {
         state.quizDetails.questions.splice(index, 1);
       }
     },
-    // UPDATE_QUESTION_IMAGE(state, { uuid, imageData }) {
-    //   const questionIndex = state.quizDetails.questions.findIndex(question => question.uuid === uuid);
-    //   if (questionIndex !== -1) {
-    //     state.quizDetails.questions[questionIndex].image = imageData;
-    //   }
-    // },
+
     SET_QUESTION_ORDER(state, questions) {
       state.questions = questions;
     },
@@ -118,10 +116,7 @@ export default {
     updateQuestionTags({ commit }, payload) {
       commit('UPDATE_QUESTION_TAGS', payload);
     },
-    // updateQuestionImage({ commit }, { uuid, image, imageType }) {
-    //   // Find the question by UUID and update its image
-    //    commit('UPDATE_QUESTION_IMAGE', { uuid, image, imageType });
-    // },
+
     async fetchAllQuizzes({ commit }) {
       try {
         const quizzesData = await QuizService.getAllQuizzes();
