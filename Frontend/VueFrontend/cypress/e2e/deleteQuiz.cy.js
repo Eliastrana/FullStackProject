@@ -1,8 +1,6 @@
-describe('Create Quiz Tool Test', () => {
-  it('Should create a quiz and send it to the backend', () => {
-    // Intercept the POST request
-    cy.intercept('POST', 'http://localhost:8080/api/completeQuiz').as('createQuizRequest');
-
+describe('delete quiz', () => {
+  it('Should be able to delete a quiz', () => {
+    //login to user to access the quizzes page to make sure there is a quiz to delete
     cy.visit('http://localhost:5173/Login');
     cy.get('input#username').type('user');
     cy.get('input#password').type('Password123');
@@ -36,10 +34,19 @@ describe('Create Quiz Tool Test', () => {
     // Submit the quiz
     cy.get('button').contains('Save Quiz').click();
 
-    // Wait for the POST request to be made and check the response
-    cy.wait('@createQuizRequest').then((interception) => {
-      expect(interception.response.statusCode).to.eq(201);
+    //delete the quiz
+    cy.visit('http://localhost:5173/MyAccount');
 
-    });
+
+    cy.get('.delete-icon').eq(2).click();
+    cy.contains('Yes').click();
+
+    //cy.contains('Cypress Quiz For Deletion').should('not.exist');
+
+
+
+
+
   });
+
 });

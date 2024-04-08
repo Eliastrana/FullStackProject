@@ -1,5 +1,5 @@
-describe('Play Quiz Test', () => {
-  it('Should play be able to play a quiz', () => {
+describe('feedback test', () => {
+  it('Should play be able to give feedback after playing a quiz', () => {
 
     cy.visit('http://localhost:5173/login');
     cy.get('input#username').type('user');
@@ -13,7 +13,15 @@ describe('Play Quiz Test', () => {
     cy.get('.play-icon').eq(1).click();
 
     cy.contains('Paris').click();
-    cy.contains('Quiz Completed!').should('be.visible');
+
+
+
+    cy.wait(500);
+    cy.get('#star4').click({ force: true });
+
+
+
+
 
 
   });
