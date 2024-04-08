@@ -19,6 +19,8 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.Difficulty;
  * @version 0.1
  * @since 0.1
  * @see Difficulty
+ * @see QuizDTO
+ * @see UUID
  */
 @Schema(description = "Quiz DTO for displaying quiz information")
 @Data

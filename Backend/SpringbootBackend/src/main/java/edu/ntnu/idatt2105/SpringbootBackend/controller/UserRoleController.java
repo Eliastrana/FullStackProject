@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * assigning new roles to users, updating existing roles, and removing roles from users.
  * This controller ensures that only authenticated users can perform these operations.
  *
- * @author Vegard Johnsen
+ * @author Vegard Johnsen, Sander R. Skofsrud
  * @version 0.1
  * @since 0.1
  * @see UserRoleService
@@ -152,6 +152,15 @@ public class UserRoleController {
             return ResponseEntity.badRequest().body("Could not assign role to user.");
         }
     }
+
+    /**
+     * Checks if a user has a specified role.
+     *
+     * @param username The username of the user to check.
+     * @param role The role to check for.
+     * @return A {@link ResponseEntity} containing a boolean value indicating if the user has the role(200:Role found).
+     */
+    
     @Operation(summary = "Check if user has role", description = "Check if a user has a specified role")
         @ApiResponse(responseCode = "200", description = "Role found", content = @Content(mediaType = "application/json"))
     @GetMapping("/hasRole")

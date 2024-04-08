@@ -25,7 +25,7 @@ import java.util.UUID;
  *
  * @see AnswerService for the service layer used by this controller
  * @see AnswerDTO for the data transfer object used in answer operations
- * @author Vegard Johnsen, sander rom skofsrud
+ * @author Vegard Johnsen, Sander Rom Skofsrud
  * @version 0.1
  * @since 0.1
  */

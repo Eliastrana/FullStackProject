@@ -23,12 +23,19 @@ import lombok.Data;
 @Data
 @Builder
 public class UserDetailsDTO {
+    /**
+     * The unique identifier of the user, which serves as a primary key for user-related operations.
+     */
     @Schema(required = true, example = "123e4567-e89b-12d3-a456-426614174000", description = "The unique identifier of the user")
     private UUID id;
-
+    /**
+     * The username of the user, which serves as a unique identifier for the user within the system.
+     */
     @Schema(required = true, example = "johnDoe", description = "Username of the user")
     private String username;
-
+    /**
+     * The email of the user, which is used for communication and account verification.
+     */
     @Schema(required = true, example = "example@mail.com", description = "Email of the user")
     private String email;
 
