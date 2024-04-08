@@ -1,6 +1,5 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
-import edu.ntnu.idatt2105.SpringbootBackend.exception.NotAdminException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.RoleAlreadyAssignedException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserNotFoundException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.RoleNotFoundException;
@@ -13,6 +12,7 @@ import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRoleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -57,14 +57,16 @@ public class UserRoleService {
     @Transactional
     public boolean assignRoleToUser(String username, String roleName) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+            .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
 
         String qualifiedRoleName = "ROLE_" + roleName.toUpperCase();
-        Role role = roleRepository.findByRole(qualifiedRoleName)
-                .orElseThrow(() -> new RoleNotFoundException("Role not found: " + qualifiedRoleName));
+        List<Role> role = roleRepository.findByRole(qualifiedRoleName);
+        if (role.isEmpty()) {
+            throw new RoleNotFoundException("Role not found: " + roleName);
+        }
 
         boolean alreadyHasRole = user.getUserRoles().stream()
-                .anyMatch(ur -> ur.getRole().getRole().equalsIgnoreCase(qualifiedRoleName));
+            .anyMatch(ur -> ur.getRole().getRole().equalsIgnoreCase(qualifiedRoleName));
         if (alreadyHasRole) {
             throw new RoleAlreadyAssignedException("User already has role: " + roleName);
         }
@@ -72,7 +74,7 @@ public class UserRoleService {
         // Create and save the UserRole association
         UserRole userRole = new UserRole();
         userRole.setUser(user);
-        userRole.setRole(role);
+        userRole.setRole(role.get(0));
         userRoleRepository.save(userRole);
         return true;
     }
@@ -112,11 +114,12 @@ public class UserRoleService {
         if (user == null) return false;
 
         String qualifiedRoleName = "ROLE_" + roleName.toUpperCase();
-        Role role = roleRepository.findByRole(qualifiedRoleName).orElse(null);
-        if (role == null) return false;
-
+        List <Role> role = roleRepository.findByRole(qualifiedRoleName);
+        if (role.isEmpty()) {
+            throw new RoleNotFoundException("Role not found: " + roleName);
+        }
         Optional<UserRole> userRoleOptional = user.getUserRoles().stream()
-            .filter(ur -> ur.getRole().equals(role))
+            .filter(ur -> ur.getRole().equals(role.get(0)))
             .findFirst();
 
         userRoleOptional.ifPresent(userRole -> {

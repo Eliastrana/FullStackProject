@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.PasswordDoesNotMeetRequirements;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserAlreadyExistException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Role;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
@@ -13,6 +14,7 @@ import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
@@ -45,7 +48,7 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
-    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$";    
     private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
 
     /**
@@ -66,7 +69,7 @@ public class AuthenticationService {
         }
 
         if (!pattern.matcher(userCreationDTO.getPassword()).matches()) {
-            throw new IllegalArgumentException("Password does not meet complexity requirements.");
+            throw new PasswordDoesNotMeetRequirements(userCreationDTO.getPassword());
         }
 
         User user = User
@@ -82,15 +85,16 @@ public class AuthenticationService {
 
         logger.info("Registering user with username: " + user.getUsername());
 
-        Role defaultRole = roleRepository.findByRole("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Error: Default role is not found."));
+        List<Role> defaultRole = roleRepository.findByRole("ROLE_USER");
+        Role role = defaultRole.get(0);
 
-        logger.info("Default role is: " + defaultRole.getRole());
+
+        logger.info("Default role is: " + role.getRole());
 
         UserRole userRole = new UserRole();
         userRole.setUser(user);
         logger.info("User role is: " + userRole.getUser().getUsername());
-        userRole.setRole(defaultRole);
+        userRole.setRole(role);
         logger.info("Role is: " + userRole.getRole().getRole());
 
         if (user.getUserRoles() == null) {

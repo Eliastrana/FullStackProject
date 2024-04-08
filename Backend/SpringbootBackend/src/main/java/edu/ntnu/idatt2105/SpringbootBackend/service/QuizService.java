@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
 @Service
 public class QuizService {
 
-    private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
@@ -66,7 +65,6 @@ public class QuizService {
     UserRepository userRepository,
     CategoryRepository categoryRepository, 
     QuizMapper quizMapper) {
-        this.questionRepository = questionRepository;
         this.questionMapper = questionMapper;
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;

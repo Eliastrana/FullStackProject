@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.repository;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,5 +40,5 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
      * @return An {@link Optional} containing the {@link Role} entity if found, or an empty
      *         {@link Optional} if no role with the specified name exists.
      */
-    Optional<Role> findByRole(String role);
+    List<Role> findByRole(String role);
 }

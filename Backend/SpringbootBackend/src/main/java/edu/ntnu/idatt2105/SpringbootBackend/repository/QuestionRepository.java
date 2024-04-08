@@ -35,7 +35,4 @@ public interface QuestionRepository extends JpaRepository<Question, UUID>{
      * @return a list of {@link Question} entities associated with the given quiz ID.
      */
     List<Question> findAllByQuizId(UUID quizId);
-    
-
-    
 }
