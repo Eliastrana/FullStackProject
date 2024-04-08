@@ -8,7 +8,7 @@ describe('Create Quiz Tool Test', () => {
     cy.get('input#password').type('Password123');
     cy.get('button#sign-in').click();
     cy.url().should('include', '/');
-    cy.wait(500);
+
 
     cy.visit('http://localhost:5173/quizcreator');
     cy.url().should('include', '/quizcreator');
