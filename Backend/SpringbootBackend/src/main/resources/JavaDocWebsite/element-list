@@ -1,0 +1,11 @@
+edu.ntnu.idatt2105.SpringbootBackend
+edu.ntnu.idatt2105.SpringbootBackend.config
+edu.ntnu.idatt2105.SpringbootBackend.controller
+edu.ntnu.idatt2105.SpringbootBackend.dto
+edu.ntnu.idatt2105.SpringbootBackend.exception
+edu.ntnu.idatt2105.SpringbootBackend.mapper
+edu.ntnu.idatt2105.SpringbootBackend.model
+edu.ntnu.idatt2105.SpringbootBackend.repository
+edu.ntnu.idatt2105.SpringbootBackend.security
+edu.ntnu.idatt2105.SpringbootBackend.service
+edu.ntnu.idatt2105.SpringbootBackend.startup
