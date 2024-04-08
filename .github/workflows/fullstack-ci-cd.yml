@@ -54,20 +54,16 @@ jobs:
         with:
           node-version: '18'
       - name: Install dependencies
-        run: npm install --prefix Frontend/VueFrontend
-      - name: Build
-        run: npm run build --prefix Frontend/VueFrontend
-      - name: Run Vitest
-        run: npm run test:unit --prefix Frontend/VueFrontend
-      - name: Start Server
-        run: npm run serve &
+        run: npm install
         working-directory: ./Frontend/VueFrontend
-
-      - name: Wait for Server
-        run: sleep 60
-
-      - name: Run Cypress Tests
-        run: npm run test:e2e
+      - name: Build
+        run: npm run build
+        working-directory: ./Frontend/VueFrontend
+      - name: Run Vitest (Unit Tests)
+        run: npm run test:unit
+        working-directory: ./Frontend/VueFrontend
+      - name: Run Cypress Tests (E2E)
+        run: npm run test:e2e:dev
         working-directory: ./Frontend/VueFrontend
 
 #  deploy:
