@@ -86,7 +86,7 @@ const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
  * Regular expression for password validation
  * @type {RegExp}
  */
-const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
 /**
  * Function to register a new user

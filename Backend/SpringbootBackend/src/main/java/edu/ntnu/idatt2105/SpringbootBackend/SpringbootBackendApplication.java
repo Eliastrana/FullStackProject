@@ -3,8 +3,6 @@ package edu.ntnu.idatt2105.SpringbootBackend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
 /**
  * Main application class for the Spring Boot backend API.
  * This class serves as the entry point for the Spring Boot application,
