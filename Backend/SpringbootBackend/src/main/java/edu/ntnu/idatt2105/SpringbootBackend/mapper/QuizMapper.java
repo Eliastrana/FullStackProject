@@ -94,6 +94,7 @@ public class QuizMapper {
         quiz.setCreator(creator);
         quiz.setCategory(category);
         quiz.setDifficulty(dto.getDifficulty());
+        quiz.setPublic(dto.getIsPublic());
 
         // Include image information if available
         if (dto.getImageData() != null && !dto.getImageData().isEmpty()) {

@@ -2,6 +2,7 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.QuestionType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,12 +18,15 @@ import java.util.UUID;
 @Schema(description = "Data Transfer Object for creating a new question. This includes all necessary information to define a question such as the text, type, multimedia links, tags, and associated answers.")
 public class QuestionCreateDTO {
     
+    @NotBlank(message = "Question text is required")
     @Schema(description = "The text content of the question.", example = "What is the capital of France?")
     private String text;
 
+    @NotBlank(message = "Question type is required")
     @Schema(description = "The type of the question, defining how it should be presented or answered.", example = "MULTIPLE_CHOICE")
     private QuestionType questionType;
 
+    @NotBlank(message = "Multimedia link is required")
     @Schema(description = "An optional link to multimedia content related to the question, such as images or videos.", example = "https://example.com/image.png")
     private String multimediaLink;
 
