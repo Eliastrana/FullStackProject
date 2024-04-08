@@ -32,11 +32,11 @@ const showUpdatePasswordModal = () => {
 const handleUpdatePassword = async ({ oldPassword, newPassword }) => {
   try {
     await UserService.updatePassword({ oldPassword, newPassword });
-    alert('Password updated successfully'); // Consider using a more integrated notification system
+    alert('Password updated successfully');
     isUpdatePasswordModalVisible.value = false;
   } catch (error) {
     console.error('Failed to update password:', error);
-    alert('Failed to update password'); // Consider using a more integrated notification system for errors
+    alert('Failed to update password');
   }
 };
 
@@ -77,22 +77,19 @@ const handleUpdatePassword = async ({ oldPassword, newPassword }) => {
 <style scoped>
 
 .user-info-container {
-  max-width: 800px; /* or your desired width */
+  max-width: 800px;
   margin-right: auto;
   margin-left: auto;
-  display: block; /* Default, but explicitly stated for clarity */
+  display: block;
   padding: 20px;
-  /* other styles */
 }
 
 .user-info-container {
-  max-width: 800px; /* or your desired width */
+  max-width: 800px;
   margin-right: auto;
   margin-left: auto;
-  display: block; /* Default, but explicitly stated for clarity */
+  display: block;
   padding: 20px;
-  /* other styles */
-
   flex-direction: column;
   align-items: center;
   min-height: 83vh;
@@ -103,23 +100,22 @@ const handleUpdatePassword = async ({ oldPassword, newPassword }) => {
 
 .title, .basic-info, .level-info, .achievements, .updateinfo {
   text-align: center;
-  width: 100%; /* Ensures the container fills its parent's width */
+  width: 100%;
 }
 
-/* Ensure buttons are centered by adjusting the .updateinfo class if they are not */
 .updateinfo {
-  justify-content: center; /* Centers flex items on the main axis (horizontally) */
-  flex-direction: column; /* Stacks flex items vertically */
-  gap: 20px; /* Adds space between vertically stacked items */
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .updateusername, .updatepassword {
-  margin: 10px auto; /* Automatically margins on the sides center the buttons */
+  margin: 10px auto;
 }
 
 .user-photo {
-  display: block; /* Makes the <img> block level for margin auto to work */
-  margin: 20px auto; /* Centers the image */
+  display: block;
+  margin: 20px auto;
   align-items: center;
   width: 200px;
   height: 200px;

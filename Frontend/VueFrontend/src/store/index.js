@@ -4,11 +4,15 @@ import user from './modules/user';
 import quizzes from './modules/quizzes';
 import quizAttempt from './modules/quizAttempt';
 
-// Define custom storage that utilizes sessionStorage
+/**
+ *
+ * @type {(store: Store<unknown>) => void}
+ */
 const sessionStoragePlugin = createPersistedState({
   storage: window.sessionStorage,
-  paths: ['user', 'quizzes', 'quizAttempt'], // Specify your paths here
+  paths: ['user', 'quizzes', 'quizAttempt'],
 });
+
 
 export default createStore({
   modules: {
@@ -16,5 +20,5 @@ export default createStore({
     quizzes,
     quizAttempt,
   },
-  plugins: [sessionStoragePlugin], // Use the custom sessionStorage plugin
+  plugins: [sessionStoragePlugin],
 });

@@ -2,6 +2,10 @@ import axios from 'axios'
 
 const API_URL = 'http://localhost:8080/api/user-roles';
 
+/**
+ *
+ * @type {{userHasRoleAdmin(*): Promise<any|boolean|undefined>, asignRoleToUser(*, *): Promise<any|boolean|undefined>}}
+ */
 export const RoleService = {
   async userHasRoleAdmin(username) {
     try {

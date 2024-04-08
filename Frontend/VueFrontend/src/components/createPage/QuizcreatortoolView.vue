@@ -75,14 +75,12 @@ onMounted(async () => {
 
 });
 
-// Definitions of quiz types and their properties.
 const quizTypes = ref([
   { id: 'multipleChoice', name: 'Multiple Choice', color: "#CAE9FF" },
   { id: 'fillInTheBlank', name: 'Fill in the Blank', color: "#62B6CB" },
   { id: 'study', name: 'Study', color: "#BEE9E8" }
 ]);
 
-// Difficulty levels for the quiz.
 const difficulties = ref([
   { value: 'EASY', text: 'Easy' },
   { value: 'MEDIUM', text: 'Medium' },

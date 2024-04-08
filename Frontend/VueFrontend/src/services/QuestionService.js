@@ -3,6 +3,10 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/questions';
 
+/**
+ *
+ * @type {{getQuestionsByQuizId(*): Promise<any|undefined>}}
+ */
 export const QuestionService = {
   async getQuestionsByQuizId(quizId) {
     try {

@@ -14,7 +14,7 @@ const props = defineProps({
   text: String,
   answers: {
     type: Array,
-    default: () => [{ text: '' }] // Ensure this structure matches what you expect
+    default: () => [{ text: '' }]
   },
   tags: Array
 });
@@ -55,7 +55,7 @@ watch([title, answers, tags], () => {
     text: title.value,
     questionType: 'FILL_IN_BLANK',
     answers: answers.value,
-    tags: tags.value // Include the updated tags in the emitted data
+    tags: tags.value
   });
 }, { deep: true });
 
@@ -65,9 +65,6 @@ watch([title, answers, tags], () => {
 function removeQuestion() {
   emits('removeQuestion', props.uuid);
 }
-
-
-
 
 </script>
 

@@ -109,19 +109,14 @@ const downloadQuiz = async (quizId) => {
     <div class="quizzes">
       <div class="quiz" v-for="(quiz, index) in quizzes" :key="quiz.id">
         <div class="quiz-info">
-
-
           <img :src="quiz.imageData || '/images/default.png'" alt="Quiz Image" class="quiz-image" />
-
 
           <div class="quiz-text">
             <h3>{{quiz.title }}</h3>
             <p>Creator ID: {{ quiz.creatorId }}</p>
             <p>{{ quiz.description }}</p>
             <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
-<!--            <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>-->
           </div>
-
 
           <div class="action-icons">
 
@@ -137,9 +132,6 @@ const downloadQuiz = async (quizId) => {
         </div>
       </div>
     </div>
-
-<!--    <button v-if="displayedQuizzes.length < allQuizzes.length" @click="loadMoreQuizzes" class="view-more-button">View More</button>-->
-
 
     <ConfirmationModal
       :isVisible="showConfirmationModal"

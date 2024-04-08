@@ -16,6 +16,10 @@
 import { ref, watch } from 'vue';
 import { defineEmits, defineProps } from 'vue';
 
+/**
+ * Emits custom events
+ * @type {Function}
+ */
 const props = defineProps({
   isVisible: Boolean
 });
@@ -27,7 +31,11 @@ const newPassword = ref('');
 const confirmPassword = ref('');
 const error = ref('');
 
-// Validate the password requirements and matching
+/**
+ * Watches for changes in the newPassword and confirmPassword refs
+ * and sets the error message if the passwords do not match
+ */
+
 watch([newPassword, confirmPassword], () => {
   if (newPassword.value !== confirmPassword.value) {
     error.value = "New passwords do not match.";
@@ -38,6 +46,9 @@ watch([newPassword, confirmPassword], () => {
   }
 });
 
+/**
+ * Submits the form
+ */
 const submitForm = () => {
   if (newPassword.value !== confirmPassword.value) {
     error.value = "New passwords do not match.";
@@ -55,6 +66,9 @@ const submitForm = () => {
   }
 };
 
+/**
+ * Closes the modal
+ */
 const closeModal = () => {
   error.value = ''; // Reset error message
   emits('close');

@@ -38,7 +38,7 @@ const submitForm = () => {
 
 
 const close = () => {
-  emits('close'); // This emits the close event
+  emits('close');
 };
 
 
@@ -54,7 +54,7 @@ const props = defineProps({
 .modal {
 
   position: fixed;
-  z-index: 1000; /* High z-index to ensure it's above other content */
+  z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
@@ -62,64 +62,57 @@ const props = defineProps({
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
   background: white;
   padding: 20px;
   border-radius: 5px;
-  max-width: 500px; /* Or any appropriate size */
-  width: 90%; /* Responsive width, adjusted for smaller screens */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds shadow for depth */
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: column; /* Ensures children are stacked vertically */
-  gap: 10px; /* Creates space between child elements */
-  align-items: stretch; /* Aligns children width to match the container */
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
   font-family: 'DM Sans', sans-serif;
 
 }
 
-/* Styles for inputs and textarea for consistency */
 .modal-content input,
 .modal-content textarea {
   font-family: 'DM Sans', sans-serif;
   padding: 10px;
-  margin-top: 5px; /* Adds a bit of margin at the top for spacing */
-  border: none; /* Gives a subtle border */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a shadow for depth */
-  border-radius: 4px; /* Rounds the corners */
+  margin-top: 5px;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
 }
 
-/* Button styling for consistency and spacing */
 .modal-content button {
   cursor: pointer;
   padding: 10px 20px;
-  margin-top: 10px; /* Adds more space above the buttons */
+  margin-top: 10px;
   border: none;
   border-radius: 20px;
   max-width: 20%;
-  background-color: #007bff; /* Example button color */
+  background-color: #007bff;
   color: white;
   font-weight: bold;
   align-items: center;
 }
 
-/* Additional styling for the cancel button to differentiate it */
 .modal-content button:last-child {
-  background-color: #a9a9a9; /* Different color for the cancel button */
+  background-color: #a9a9a9;
 }
 
-/* Optional hover effect for buttons */
 .modal-content button:hover {
-  background-color: #0056b3; /* Darker color on hover */
+  background-color: #0056b3;
 }
-
-/* Optional hover effect for cancel button */
 
 .modal-content button:last-child:hover {
-  background-color: #7a7a7a; /* Darker color on hover */
+  background-color: #7a7a7a;
 }
-
 
 </style>

@@ -80,7 +80,6 @@ const cancelDelete = () => {
 
 <style scoped>
 
-/* Base styles for headings */
 h1, h2 {
   font-family: 'DM Sans', sans-serif;
 }
@@ -89,7 +88,6 @@ h2 {
   color: #3232ff;
 }
 
-/* Main container for user profiles */
 .user-container {
   display: flex;
   flex-direction: column;
@@ -103,7 +101,6 @@ h2 {
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* Individual user profile card */
 .profile {
   position: relative;
   width: 100%;
@@ -120,34 +117,32 @@ h2 {
   background-color: #f0f0f0;
 }
 
-/* Flex container for action icons */
 .action-icons {
   position: absolute;
   top: 10px;
   right: 10px;
   display: flex;
-  gap: 10px; /* Adjust gap between icons */
+  gap: 10px;
 }
 
-/* Styling for both delete and block icons */
 .delete-icon, .block-icon {
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 24px; /* Adjust based on actual size */
-  height: 24px; /* Adjust based on actual size */
-  fill: #4a5568; /* Icon color */
+  width: 24px;
+  height: 24px;
+  fill: #4a5568;
 }
 
 .delete-icon:hover, .block-icon:hover {
-  fill: rgba(0, 0, 0, 0.8); /* Icon hover color */
+  fill: rgba(0, 0, 0, 0.8);
 }
 
 /* Material icons */
 .material-symbols-outlined {
-  font-size: 24px; /* Adjust based on preference */
-  color: inherit; /* Ensures icon color matches parent */
+  font-size: 24px;
+  color: inherit;
 }
 
 </style>

@@ -186,9 +186,8 @@ function removeQuestion() {
   border-radius: 0 0 0 10px;
 }
 
-/* Adjustments for better visibility */
 .remove-image:hover {
-  background-color: rgba(0,0,0,0.8); /* Slightly darker on hover */
+  background-color: rgba(0,0,0,0.8);
 }
 
 

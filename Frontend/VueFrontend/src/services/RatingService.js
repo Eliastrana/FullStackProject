@@ -1,5 +1,9 @@
 const API_URL = 'http://localhost:8080/api/ratings';
 
+/**
+ *
+ * @type {{getRatingsByUser: ((function(*): Promise<any|undefined>)|*), getAverageRating: ((function(*): Promise<any|undefined>)|*), saveOrUpdateRating: ((function(*): Promise<any|undefined>)|*)}}
+ */
 export const RatingService = {
   saveOrUpdateRating: async (ratingDTO) => {
     try {

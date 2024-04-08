@@ -26,7 +26,6 @@
 </template>
 
 <script setup>
-// Importing router from Vue Router
 import router from '@/router/index.js'
 import store from '@/store/index.js'
 
@@ -38,12 +37,8 @@ import store from '@/store/index.js'
 
 const navigateToQuizCreator = (type) => {
 
-  //store.dispatch('quizzes/clearQuizzes');
 
-  // Call the modified action with the specific question type
   store.dispatch('quizzes/addQuestionsByType', { type });
-
-  // Navigate to the Quiz Creator page
   router.push({ name: 'Quizcreator' });
 };
 

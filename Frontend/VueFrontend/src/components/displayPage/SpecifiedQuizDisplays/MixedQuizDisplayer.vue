@@ -108,9 +108,12 @@ import router from '@/router/index.js';
 import { AttemptService } from '@/services/AttemptService.js'
 import { RatingService } from '@/services/RatingService.js';
 
+/**
+ * Store instance
+ * @type {import('vuex').Store}
+ */
 
 const store = useStore();
-
 const currentQuestion = computed(() => questions.value[currentQuestionIndex.value] || {});
 const quizData = computed(() => store.state.quizAttempt.quizData);
 const quizId = computed(() => store.state.quizAttempt.quizId);
@@ -122,22 +125,39 @@ const quizStarted = ref(false);
 const quizCompleted = ref(false);
 const selectedRating = ref('');
 
-// Maintain a separate ref for the total number of questions for scoring,
-// excluding study cards since they don't count towards the score.
+/**
+ * Total number of questions that count towards the score
+ * @type {import('vue').ComputedRef<number>}
+ */
+
 const totalQuestionsForScore = computed(() =>
   questions.value.filter(q => q.questionType !== "STUDY").length
 );
 
-// Component mapping based on the question type
+/**
+ * Component for the current question
+ * @type {import('vue').ComputedRef}
+ */
+
 const quizComponents = {
   STUDY: StudyCardDisplayer,
   MULTIPLE_CHOICE: MultipleChoiceDisplayer,
   FILL_IN_BLANK: FillInTheBlankDisplayer,
 };
 
+/**
+ * Current quiz component
+ * @type {import('vue').ComputedRef}
+ */
+
 const currentQuizComponent = computed(() =>
   quizComponents[questions.value[currentQuestionIndex.value]?.questionType]
 );
+
+/**
+ * Progress bar width
+ * @type {import('vue').ComputedRef<string>}
+ */
 
 watch(quizData, (newQuizData) => {
   if (newQuizData) {
@@ -145,22 +165,22 @@ watch(quizData, (newQuizData) => {
   }
 });
 
+
+/**
+ * Randomizes the order of questions
+ */
 const handleAnswered = (isCorrect) => {
   const currentIndex = currentQuestionIndex.value;
   const currentQuestion = questions.value[currentIndex];
 
-  // Check if the question has already been answered to prevent re-processing
   if (!currentQuestion.answered) {
-    // Mark as answered and set correctness
     currentQuestion.answered = true;
     currentQuestion.correct = isCorrect;
 
-    // Update the score if the answer is correct
     if (isCorrect) {
       currentScore.value++;
     }
 
-    // Handle navigation or completion after a brief pause
     if (currentIndex < questions.value.length - 1) {
       setTimeout(() => currentQuestionIndex.value++, 500);
     } else {
@@ -170,11 +190,19 @@ const handleAnswered = (isCorrect) => {
 };
 
 
+/**
+ * Randomizes the order of questions
+ */
+
 const randomizeQuestions = () => {
   if (!quizStarted.value) {
     questions.value.sort(() => 0.5 - Math.random());
   }
 };
+
+/**
+ * Moves to the next question
+ */
 
 const nextQuestion = () => {
   if (currentQuestionIndex.value < questions.value.length - 1) {
@@ -183,6 +211,10 @@ const nextQuestion = () => {
   }
 };
 
+/**
+ * Moves to the previous question
+ */
+
 const prevQuestion = () => {
   if (currentQuestionIndex.value > 0) {
     quizStarted.value = true;
@@ -190,6 +222,9 @@ const prevQuestion = () => {
   }
 };
 
+/**
+ * Restarts the quiz
+ */
 const restartQuiz = () => {
   currentQuestionIndex.value = 0;
   currentScore.value = 0;
@@ -202,23 +237,40 @@ const restartQuiz = () => {
   randomizeQuestions();
 };
 
+/**
+ * Navigates to the user's profile
+ */
 const goToProfile = () => {
   router.push({ name: 'MyAccount' });
 };
 
+/**
+ * Opens the quiz results window
+ */
 const openResults = () => {
   quizCompleted.value = true;
 };
 
+/**
+ * Progress bar width
+ * @type {import('vue').ComputedRef<string>}
+ */
 const progressBarWidth = computed(() => {
   return `${(currentQuestionIndex.value + 1) / questions.value.length * 100}%`;
 });
 
+/**
+ * Submits the quiz attempt
+ */
 watch(quizCompleted, async (newValue) => {
   if (newValue === true) {
     await submitAttempt();
   }
 });
+
+/**
+ * Submits the quiz attempt
+ */
 
 const submitAttempt = async () => {
   const attemptDetails = {
@@ -238,10 +290,17 @@ const submitAttempt = async () => {
 };
 
 
+/**
+ * Scrolls to the top of the page when the component is mounted
+ */
 onMounted(() => {
   window.scrollTo(0, 0);
 });
 
+/**
+ * Rates the quiz
+ * @param {number} rating - The rating value
+ */
 async function rateQuiz(rating) {
   const ratingDTO = {
     userId: store.getters['user/userId'],

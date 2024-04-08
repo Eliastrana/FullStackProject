@@ -14,11 +14,9 @@ const toggleFlip = () => {
       <div class="card-container" @click="toggleFlip">
         <div :class="['card', { flipped: flipped }]">
           <div class="front">
-            <!-- Display hardcoded text for the front -->
             <h5 id="CardText">Implement study cards within your quizzes</h5>
           </div>
           <div class="back">
-            <!-- Display hardcoded text for the back -->
             <h5 id="CardText">Learning can be done even while being quizzed! </h5>
           </div>
         </div>
@@ -31,7 +29,6 @@ const toggleFlip = () => {
 </template>
 
 <style scoped>
-/* Your existing styles for .functionality, .content-wrapper, .text-content, etc. */
 
 
 h5 {
@@ -41,11 +38,11 @@ h5 {
 
 .content-wrapper {
   display: flex;
-  flex-direction: row; /* Keep content side-by-side */
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Ensure wrapper takes full width */
-  gap: 20px; /* Space between elements */
+  width: 100%;
+  gap: 20px;
 }
 
 
@@ -61,7 +58,7 @@ h5 {
   width: clamp(40vh, 50vw, 70vh);
   height: clamp(40vh, 45vw, 70vh);
   transform-style: preserve-3d;
-  transition: transform 0.6s, box-shadow 0.3s; /* Oppdaterer til å inkludere box-shadow i overgangen */
+  transition: transform 0.6s, box-shadow 0.3s;
   cursor: pointer;
   position: relative;
   border-radius: 20px;
@@ -98,10 +95,10 @@ h5 {
 }
 
 .text-content {
-  min-width: 100%; /* Use the full width for text content */
-  padding: 20px; /* Provide some padding */
-  text-align: center; /* Align text to the left */
-  font-size: 1.3rem; /* Adjust font size as needed */
+  min-width: 100%;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.3rem;
 }
 #CardText{
   font-size: clamp(0.5rem, 3.6vw, 3rem);
@@ -127,8 +124,8 @@ h5 {
   }
 
   .card {
-    width: 100%; /* Adjust based on layout needs */
-    height: 40vh; /* Adjust based on layout needs */
+    width: 100%;
+    height: 40vh;
     transform-style: preserve-3d;
     transition: transform 0.6s;
     cursor: pointer;

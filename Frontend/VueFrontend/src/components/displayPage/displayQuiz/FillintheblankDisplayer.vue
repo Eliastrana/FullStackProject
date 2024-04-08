@@ -67,8 +67,6 @@ const checkAnswer = () => {
 </template>
 
 
-
-
 <style scoped>
 .question-container {
   display: flex;

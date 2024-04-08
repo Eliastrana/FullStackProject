@@ -1,23 +1,26 @@
 import { AttemptService } from '@/services/AttemptService.js'
 
+/**
+ * Quiz Attempt Module
+ */
 export default {
   namespaced: true,
   state: () => ({
-    quizData: null, // Store the entire quiz object here
-    quizId: null, // Add this to store the quiz ID
-    totalQuizzesDone: 0, // Initialize the totalQuizzesDone state
+    quizData: null,
+    quizId: null,
+    totalQuizzesDone: 0,
   }),
   mutations: {
     SET_QUIZ_DATA(state, payload) {
       state.quizData = payload.quizData;
-      state.quizId = payload.quizId; // Set the quiz ID
+      state.quizId = payload.quizId;
     },
     CLEAR_QUIZ_DATA(state) {
       state.quizData = null;
-      state.quizId = null; // Clear the quiz ID as well
+      state.quizId = null;
     },
     SET_TOTAL_QUIZZES_DONE(state, total) {
-      state.totalQuizzesDone = total; // Correctly set the total quizzes done
+      state.totalQuizzesDone = total;
     },
   },
   actions: {
@@ -30,7 +33,7 @@ export default {
 
     async updateTotalQuizzesDone({ commit }) {
       try {
-        const userId = this.getters['user/userId']; // Assuming you have a user module
+        const userId = this.getters['user/userId'];
         const attempts = await AttemptService.getAttemptByUserId(userId);
         commit('SET_TOTAL_QUIZZES_DONE', attempts.length);
       } catch (error) {
@@ -39,6 +42,6 @@ export default {
     },
   },
   getters: {
-    totalQuizzesDone: (state) => state.totalQuizzesDone, // Correctly reference the totalQuizzesDone
+    totalQuizzesDone: (state) => state.totalQuizzesDone,
   }
 };
