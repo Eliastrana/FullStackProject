@@ -29,6 +29,8 @@ const quizCategory = ref('');
 const quizDifficulty = ref('');
 const coverImage = ref(null);
 const categories = ref([]);
+const showMessage = ref(false);
+
 
 // Computed properties to validate form fields.
 const isTitleValid = computed(() => /^.{1,100}$/.test(quizTitle.value));
@@ -201,22 +203,23 @@ async function saveQuiz() {
   }
   const quizDetails = store.state.quizzes.quizDetails;
   const quizId = route.params.quizId;
-  if (quizId) {
-    try {
+
+  try {
+    if (quizId) {
       await QuizService.updateQuiz(quizId, quizDetails);
-      store.commit('quizzes/CLEAR_QUIZZES')
-      await router.push('/');
-    } catch (error) {
-      console.error('Error updating quiz:', error);
+    } else {
+      await QuizService.create(quizDetails);
     }
-  } else {
-    try {
-      await QuizService.create(quizDetails)
-      store.commit('quizzes/CLEAR_QUIZZES');
-      await router.push('/');
-    } catch (error) {
-      console.error('Error creating quiz:', error);
-    }
+
+    store.commit('quizzes/CLEAR_QUIZZES');
+    showMessage.value = true;
+    setTimeout(() => {
+      showMessage.value = false;
+      router.push('/MyAccount');
+    }, 1500);
+
+  } catch (error) {
+    console.error('Error processing quiz:', error);
   }
 }
 
@@ -411,6 +414,14 @@ const isPublicCheckbox = computed({
       </div>
       <button class="compileButton" @click="saveQuiz" :disabled="!isFormValid">Save Quiz</button>
     </div>
+
+    <transition name="fade">
+      <div class="success-message" v-if="showMessage">
+        Your quiz has been created!
+      </div>
+    </transition>
+
+
     <button class="scroll-to-top" @click="scrollToTop">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12l1.41 1.41L12 6.83l6.59 6.58L20 12l-8-8-8 8z"/></svg>
     </button>
@@ -794,6 +805,32 @@ quiz-type-buttons {
 .select-invalid {
   border: 2px solid red;
 }
+
+.success-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it covers everything */
+  font-size: 4rem;
+}
+
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
+
+
+
 
 
 @media (max-width: 768px) {
