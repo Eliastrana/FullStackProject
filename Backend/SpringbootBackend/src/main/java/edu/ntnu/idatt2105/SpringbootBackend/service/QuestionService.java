@@ -14,7 +14,6 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.Tag;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.QuestionRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.QuizRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.TagRepository;
-import edu.ntnu.idatt2105.SpringbootBackend.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
