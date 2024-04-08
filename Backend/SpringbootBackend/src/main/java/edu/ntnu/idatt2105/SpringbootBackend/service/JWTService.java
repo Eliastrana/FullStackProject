@@ -15,7 +15,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Service class for managing JSON Web Token (JWT) operations.
@@ -32,12 +31,8 @@ import org.springframework.beans.factory.annotation.Value;
 @Service
 public class JWTService {
     private final Logger logger = LoggerFactory.getLogger(JWTService.class);
-    private final String secretKey;
+    private final String SECRET_KEY = "asdfdfresdxcvfdsdf98d7s67f8763==";
 
-
-    public JWTService(@Value("${SECRET_KEY}") String secretKey) {
-        this.secretKey = secretKey;
-    }
 
     /**
      * Extracts the username from the specified JWT token.
@@ -151,7 +146,7 @@ public class JWTService {
      * @return The signing key as a {@link Key}.
      */
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+        byte[] key = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(key);
     }
 }
