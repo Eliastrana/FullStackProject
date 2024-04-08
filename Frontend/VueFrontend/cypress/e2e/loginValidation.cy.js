@@ -1,6 +1,6 @@
 describe('Login Validation', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:5173/Login',)
+    cy.visit('http://localhost:4173/Login',)
   });
   it('login button should not be disabled when input fields are filled', () => {
     cy.get('input[id="username"]').type('user');

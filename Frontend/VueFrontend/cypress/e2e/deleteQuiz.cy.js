@@ -1,14 +1,14 @@
 describe('delete quiz', () => {
   it('Should be able to delete a quiz', () => {
     //login to user to access the quizzes page to make sure there is a quiz to delete
-    cy.visit('http://localhost:5173/Login');
+    cy.visit('http://localhost:4173/Login');
     cy.get('input#username').type('user');
     cy.get('input#password').type('Password123');
     cy.get('button#sign-in').click();
     cy.url().should('include', '/');
     cy.wait(500);
 
-    cy.visit('http://localhost:5173/quizcreator');
+    cy.visit('http://localhost:4173/quizcreator');
     cy.url().should('include', '/quizcreator');
 
     // Input the quiz details
@@ -35,7 +35,7 @@ describe('delete quiz', () => {
     cy.get('button').contains('Save Quiz').click();
 
     //delete the quiz
-    cy.visit('http://localhost:5173/MyAccount');
+    cy.visit('http://localhost:4173/MyAccount');
 
 
     cy.get('.delete-icon').eq(2).click();
