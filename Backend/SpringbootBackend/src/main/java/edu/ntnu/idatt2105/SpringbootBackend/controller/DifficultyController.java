@@ -16,15 +16,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The {@code DifficultyController} class is responsible for managing the difficulty levels
+ * of quizzes within the system. It allows for the retrieval of all predefined difficulty
+ * levels that can be assigned to a quiz.
+ *
+ * @author Vegard johnsen, Sander R. Skofsrud
+ * @version 1.0
+ * @since 1.0
+ * @see Difficulty
+ */
 @Tag(name = "Difficulty Management", description = "Handles quiz difficulty levels")
 @RestController
 @RequestMapping("/api/difficulties")
 public class DifficultyController {
 
-    @GetMapping
     @Operation(summary = "List all difficulties", description = "Retrieves a list of all possible quiz difficulty levels.", responses = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of difficulties", 
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = Difficulty.class))))})
+    @GetMapping
     public ResponseEntity<List<Difficulty>> getAllDifficulties() {
         List<Difficulty> difficulties = Arrays.stream(Difficulty.values())
                 .collect(Collectors.toList());

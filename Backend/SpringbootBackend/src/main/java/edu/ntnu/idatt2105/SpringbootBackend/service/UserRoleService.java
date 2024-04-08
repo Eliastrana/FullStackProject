@@ -15,6 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing user roles.
+ * It provides functionalities to assign, update, and remove roles for users, 
+ * as well as checking if a user has a specific role.
+ */
 
 @Service
 public class UserRoleService {
@@ -22,11 +27,30 @@ public class UserRoleService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
+    /**
+     * Constructs a UserRoleService with necessary repositories.
+     *
+     * @param userRoleRepository the repository for user-role associations
+     * @param userRepository the repository for users
+     * @param roleRepository the repository for roles
+     */
+
     public UserRoleService(UserRoleRepository userRoleRepository, UserRepository userRepository, RoleRepository roleRepository) {
         this.userRoleRepository = userRoleRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
+
+    /**
+     * Assigns a role to a user.
+     *
+     * @param username the username of the user
+     * @param roleName the name of the role to assign
+     * @return true if the role was successfully assigned
+     * @throws UserNotFoundException if the user with the given username does not exist
+     * @throws RoleNotFoundException if the role does not exist
+     * @throws RoleAlreadyAssignedException if the user already has the specified role
+     */
 
     @Transactional
     public boolean assignRoleToUser(String username, String roleName) {
@@ -53,6 +77,15 @@ public class UserRoleService {
         return true;
     }
 
+
+    /**
+     * Updates the role for a user, replacing any existing roles with the new specified role.
+     *
+     * @param username the username of the user
+     * @param newRoleName the name of the new role to assign to the user
+     * @return true if the role was successfully updated
+     */
+
     @Transactional
     public boolean updateRoleForUser(String username, String newRoleName) {
         // Assuming you want to replace all existing roles with a new single role
@@ -65,6 +98,15 @@ public class UserRoleService {
         // Assign new role
         return assignRoleToUser(username, newRoleName);
     }
+
+        /**
+     * Removes a role from a user.
+     *
+     * @param username the username of the user
+     * @param roleName the name of the role to remove
+     * @return true if the role was successfully removed
+     * @throws RoleNotFoundException if the role does not exist
+     */
 
     @Transactional
     public boolean removeRoleFromUser(String username, String roleName) {
@@ -88,6 +130,14 @@ public class UserRoleService {
         return userRoleOptional.isPresent();
     }
 
+      /**
+     * Checks if a user has a specific role.
+     *
+     * @param username the username of the user
+     * @param roleName the name of the role to check
+     * @return true if the user has the specified role
+     */
+    
     @Transactional(readOnly = true)
     public boolean userHasRole(String username, String roleName) {
         return userRoleRepository.existsByUserUsernameAndRoleRole(username, "ROLE_" + roleName.toUpperCase());

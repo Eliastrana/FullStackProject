@@ -20,6 +20,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 
+/**
+ * The {@link ImageController} class manages the uploading and retrieval of images
+ * associated with quizzes and questions. It provides endpoints to upload an image
+ * for a specific quiz or question and to retrieve an image by its unique identifier.
+ *
+ * @author Vegard Johnsen, Sander R. Skofsrud
+ * @version 1.0
+ * @since 1.0
+ * @see ImageService
+ * @see ImageController
+ * @see QuizService
+ * @see QuestionService
+ */
 @Tag(name = "Image Management")
 @CrossOrigin(origins = "*")
 @RestController
@@ -37,6 +50,16 @@ public class ImageController {
 
     private final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
+    /**
+     * Uploads an image file and associates it with a specific quiz identified by its UUID.
+     * The method stores the image using {@link ImageService} and updates the quiz's image reference
+     * using {@link QuizService}.
+     *
+     * @param quizId The unique identifier (UUID) of the quiz to associate with the image.
+     * @param file The uploaded image file.
+     * @return A {@link ResponseEntity} with a success message if the image is uploaded and associated successfully,
+     * or an error message and {@link HttpStatus#INTERNAL_SERVER_ERROR} if the process fails.
+     */
     @Operation(summary = "Upload an image for a quiz", description = "Uploads an image to associate with a quiz", responses = {
         @ApiResponse(responseCode = "200", description = "Image uploaded successfully", content = @Content(mediaType = "text/plain")),
         @ApiResponse(responseCode = "500", description = "Internal server error")})
@@ -57,6 +80,15 @@ public class ImageController {
                 }
             }
 
+    /**
+     * Retrieves an image by its unique identifier (UUID) and returns the image content
+     * along with the correct content type. If the image is not found, a {@link HttpStatus#NOT_FOUND}
+     * response is returned.
+     *
+     * @param imageId The unique identifier (UUID) of the image to retrieve.
+     * @return A {@link ResponseEntity} containing the image data and content type if the image is found,
+     * or a {@link HttpStatus#NOT_FOUND} response if the image does not exist.
+     */
     @Operation(summary = "Get an image by ID", description = "Retrieves an image by its unique identifier", responses = {
         @ApiResponse(responseCode = "200", description = "Successfully fetched the image", content = @Content(mediaType = "application/octet-stream")),
         @ApiResponse(responseCode = "404", description = "Image not found"),
@@ -78,6 +110,15 @@ public class ImageController {
         }
     }
 
+    /**
+     * Uploads an image and associates it with a question identified by its UUID.
+     * This method allows for enhancing questions with visual content.
+     *
+     * @param questionId The UUID of the question to which the image is to be associated.
+     * @param file       The {@link MultipartFile} representing the image to upload.
+     * @return A {@link ResponseEntity} with an OK status and message indicating
+     * successful upload, or INTERNAL_SERVER_ERROR if the upload fails.
+     */
     @Operation(summary = "Upload an image for a question", description = "Uploads an image to associate with a question", responses = {
         @ApiResponse(responseCode = "200", description = "Image uploaded successfully", content = @Content(mediaType = "text/plain")),
         @ApiResponse(responseCode = "500", description = "Internal server error")})

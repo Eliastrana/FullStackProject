@@ -6,6 +6,16 @@ import lombok.Data;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * TagDTO is a Data Transfer Object that encapsulates the essential information about a tag used within the application.
+ * Tags play a crucial role in categorizing and organizing questions by topics or themes, making it easier for users
+ * to discover and engage with content relevant to their interests. Each tag is uniquely identified and can be associated
+ * with multiple questions, thereby facilitating thematic grouping and enhanced navigability of quiz content.
+ *
+ * @author Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ */
 @Data
 @Schema(description = "Data Transfer Object representing a tag. Tags are used to categorize questions and can be associated with multiple questions.")
 public class TagDTO {
