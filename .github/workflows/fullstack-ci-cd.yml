@@ -63,7 +63,7 @@ jobs:
         run: npm run test:unit
         working-directory: ./Frontend/VueFrontend
       - name: Run Cypress Tests (E2E)
-        run: npm run test:e2e:dev
+        run: npm run test:e2e:ci
         working-directory: ./Frontend/VueFrontend
 
 #  deploy:
