@@ -62,16 +62,12 @@ jobs:
       - name: Start Server
         run: npm run serve &
         working-directory: ./Frontend/VueFrontend
+
       - name: Wait for Server
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '60s'
+        run: sleep 60
+
       - name: Run Cypress Tests
-        uses: cypress-io/github-action@v2
-        with:
-          start: echo "Server is already started"
-          wait-on: 'http://localhost:8080'
-          config: baseUrl=http://localhost:8080
+        run: npm run test:e2e
         working-directory: ./Frontend/VueFrontend
 
 #  deploy:
