@@ -2,6 +2,9 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import edu.ntnu.idatt2105.SpringbootBackend.controller.UserController;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,12 +26,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class UserCreationDTO {
+    @NotBlank(message = "Username is required")
     @Schema(required = true, example = "johnDoe", description = "Username of the new user")
     private String username;
 
+    @NotBlank(message = "Password is required")
     @Schema(required = true, example = "Password123", description = "Password of the new user")
     private String password;
 
+    @Email(message = "Email should be valid")
     @Schema(required = true, example = "john.doe@example.com", description = "Email of the new user")
     private String email;
 

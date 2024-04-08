@@ -4,6 +4,7 @@ import { computed, onMounted, ref } from 'vue'
 import router from '@/router/index.js'
 import { UserService } from '@/services/UserService.js'
 import store from '@/store/index.js'
+import UpdatePasswordModal from '@/components/util/UpdatePasswordModal.vue'
 
 /**
  * User information
@@ -11,6 +12,7 @@ import store from '@/store/index.js'
  */
 
 const userInfo = ref(null);
+const isUpdatePasswordModalVisible = ref(false);
 const totalQuizzesDone = computed(() => store.getters['quizAttempt/totalQuizzesDone']);
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
@@ -23,21 +25,18 @@ onMounted(async () => {
   }
 });
 
+const showUpdatePasswordModal = () => {
+  isUpdatePasswordModalVisible.value = true;
+};
 
-
-const updatePassword = async () => {
-  const oldPassword = prompt('Enter your old password:');
-  const newPassword = prompt('Enter your new password:');
-  if (newPassword && passwordRegex.test(newPassword)) {
-    try {
-      await UserService.updatePassword({ oldPassword, newPassword });
-      alert('Password updated successfully');
-    } catch (error) {
-      console.error('Failed to update password:', error);
-      alert('Failed to update password');
-    }
-  } else {
-    alert('New password does not meet the complexity requirements.');
+const handleUpdatePassword = async ({ oldPassword, newPassword }) => {
+  try {
+    await UserService.updatePassword({ oldPassword, newPassword });
+    alert('Password updated successfully'); // Consider using a more integrated notification system
+    isUpdatePasswordModalVisible.value = false;
+  } catch (error) {
+    console.error('Failed to update password:', error);
+    alert('Failed to update password'); // Consider using a more integrated notification system for errors
   }
 };
 
@@ -58,12 +57,15 @@ const updatePassword = async () => {
     </div>
 
     <div class="updateinfo">
-
-
-      <button class="updatepassword" @click="updatePassword">
+      <button class="updatepassword" @click="showUpdatePasswordModal">
         <i class="fas fa-user-edit"></i>
         Update password
       </button>
+      <UpdatePasswordModal
+        :isVisible="isUpdatePasswordModalVisible"
+        @close="isUpdatePasswordModalVisible = false"
+        @updatePassword="handleUpdatePassword"
+      />
     </div>
     <div class="level-info">
       <p><strong>Total Quizzes Done:</strong> {{totalQuizzesDone}}</p>

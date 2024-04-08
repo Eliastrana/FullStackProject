@@ -2,6 +2,7 @@ package edu.ntnu.idatt2105.SpringbootBackend.dto;
 
 import edu.ntnu.idatt2105.SpringbootBackend.model.QuestionType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,22 +36,15 @@ public class QuestionCreateDTO {
      * The primary content of the question, articulated through a textual description or query that
      * the respondent is expected to address or answer.
      */
+    @NotBlank(message = "Question text is required")
     @Schema(description = "The text content of the question.", example = "What is the capital of France?")
     private String text;
 
-    /**
-     * A designation of the question's format, determining how responses should be structured and how
-     * the question will be interacted with by users. This categorization facilitates diverse question
-     * types.
-     */
+    @NotBlank(message = "Question type is required")
     @Schema(description = "The type of the question, defining how it should be presented or answered.", example = "MULTIPLE_CHOICE")
     private QuestionType questionType;
 
-    /**
-     * An optional attribute providing a URL to external multimedia resources that are related to the
-     * question. This can include, but is not limited to, illustrative images, diagrams, or explanatory
-     * video clips.
-     */
+    @NotBlank(message = "Multimedia link is required")
     @Schema(description = "An optional link to multimedia content related to the question, such as images or videos.", example = "https://example.com/image.png")
     private String multimediaLink;
 

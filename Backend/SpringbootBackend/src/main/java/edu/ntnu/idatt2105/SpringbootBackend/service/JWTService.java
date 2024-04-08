@@ -15,6 +15,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+
 /**
  * Service class for managing JSON Web Token (JWT) operations.
  * It supports generating JWTs for user authentication, extracting claims like username and expiration date from a JWT,
@@ -29,8 +30,9 @@ import io.jsonwebtoken.security.Keys;
  */
 @Service
 public class JWTService {
-    private static final String SECRET_KEY = "ce5Yllz+KjNxVcVHUFgEUVqGpxdyEkQkMHb1AzlA69WAOjfvT03TzlyDHgcEoMViudQr6ApY1rw3Kg5Q2HokUg==";
     private final Logger logger = LoggerFactory.getLogger(JWTService.class);
+    private final String SECRET_KEY = "ce5Yllz+KjNxVcVHUFgEUVqGpxdyEkQkMHb1AzlA69WAOjfvT03TzlyDHgcEoMViudQr6ApY1rw3Kg5Q2HokUg==";
+
 
     /**
      * Extracts the username from the specified JWT token.

@@ -48,7 +48,7 @@ public class UserRoleController {
     @Operation(summary = "Get User Roles", description = "Retrieve roles for a specified user")
     @ApiResponse(responseCode = "200", description = "Roles found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "User not found or bad request")
-    @GetMapping("/")
+    @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getUserRoles(@RequestParam String username) {
         User user = userRepository.findByUsername(username).orElse(null);
@@ -71,7 +71,7 @@ public class UserRoleController {
     @Operation(summary = "Assign Role to User", description = "Assign a new role to a specified user")
     @ApiResponse(responseCode = "200", description = "Role assigned successfully")
     @ApiResponse(responseCode = "400", description = "Could not assign role to user or bad request")
-    @PostMapping("/")
+    @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> assignRoleToUser(@RequestParam String username, @RequestParam String role) {
         boolean isAssigned = userRoleService.assignRoleToUser(username, role);
@@ -95,7 +95,7 @@ public class UserRoleController {
     @Operation(summary = "Update Role for User", description = "Update the role for a specified user")
     @ApiResponse(responseCode = "200", description = "Role updated successfully")
     @ApiResponse(responseCode = "400", description = "Could not update role for user or bad request")
-    @PutMapping("/")
+    @PutMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> updateRoleForUser(@RequestParam String username, @RequestParam String role) {
         if (username == null || role == null || role.isEmpty() || username.isEmpty()) {
@@ -130,7 +130,7 @@ public class UserRoleController {
     @Operation(summary = "Remove Role from User", description = "Remove a role from a specified user")
     @ApiResponse(responseCode = "200", description = "Role removed successfully")
     @ApiResponse(responseCode = "400", description = "Could not remove role from user or bad request")
-    @DeleteMapping("/")
+    @DeleteMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> removeRoleFromUser(@RequestParam String username, @RequestParam String role) {
         if (username == null || role == null || role.isEmpty() || username.isEmpty()) {
@@ -152,7 +152,8 @@ public class UserRoleController {
             return ResponseEntity.badRequest().body("Could not assign role to user.");
         }
     }
-
+    @Operation(summary = "Check if user has role", description = "Check if a user has a specified role")
+        @ApiResponse(responseCode = "200", description = "Role found", content = @Content(mediaType = "application/json"))
     @GetMapping("/hasRole")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Boolean> userHasRole(@RequestParam String username, @RequestParam String role) {

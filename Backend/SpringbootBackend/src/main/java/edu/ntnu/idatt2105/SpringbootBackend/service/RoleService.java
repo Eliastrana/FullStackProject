@@ -3,6 +3,8 @@ package edu.ntnu.idatt2105.SpringbootBackend.service;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Role;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.RoleRepository;
 import jakarta.annotation.PostConstruct;
+
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +54,16 @@ public class RoleService {
     @Transactional
     public Role createRole(Role role) {
         // Add validation or business logic as necessary
+        if (role == null) {
+            throw new IllegalArgumentException("Role cannot be null");
+        }
+        // Check if the role already exists
+        List<Role> existingRole = roleRepository.findByRole(role.getRole());
+        for (Role r : existingRole) {
+            if (r.getRole().equals(role.getRole())) {
+                throw new IllegalArgumentException("Role already exists");
+            }
+        }
         return roleRepository.save(role);
     }
 
@@ -68,7 +80,7 @@ public class RoleService {
         defaultRoles.forEach(roleName -> {
             // Check if the role already exists to avoid creating duplicates
             String roleWithPrefix = "ROLE_" + roleName; // Ensure the role name follows your naming convention
-            roleRepository.findByRole(roleWithPrefix).orElseGet(() -> {
+            roleRepository.findByRole(roleWithPrefix).stream().findFirst().orElseGet(() -> {
                 // Role doesn't exist, so create and save it
                 Role role = new Role();
                 role.setRole(roleWithPrefix);

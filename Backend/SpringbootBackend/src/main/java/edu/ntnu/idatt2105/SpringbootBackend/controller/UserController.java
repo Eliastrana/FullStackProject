@@ -1,7 +1,6 @@
 package edu.ntnu.idatt2105.SpringbootBackend.controller;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.*;
-import edu.ntnu.idatt2105.SpringbootBackend.model.User;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
 import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationRequest;
 import edu.ntnu.idatt2105.SpringbootBackend.service.AuthenticationService;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
@@ -67,6 +67,7 @@ public class UserController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("Error registering user: " + e.getMessage());
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
