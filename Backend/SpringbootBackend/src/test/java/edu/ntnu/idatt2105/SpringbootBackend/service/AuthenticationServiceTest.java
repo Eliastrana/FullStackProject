@@ -99,7 +99,7 @@ public class AuthenticationServiceTest {
     @Test
     void authenticate_UserNotFound_ThrowsException() {
     // Arrange
-    AuthenticationRequest request = new AuthenticationRequest("nonExistingUser", "password");
+    AuthenticationRequest request = new AuthenticationRequest("nonExistingUser", "pAssword23432");
 
     when(userRepository.findByUsername("nonExistingUser")).thenReturn(Optional.empty());
 

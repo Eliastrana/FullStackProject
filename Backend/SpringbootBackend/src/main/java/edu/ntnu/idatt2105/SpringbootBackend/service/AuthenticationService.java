@@ -47,7 +47,7 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
-    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$";    
     private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
 
     /**

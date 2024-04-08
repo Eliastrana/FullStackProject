@@ -31,7 +31,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JWTService {
     private final Logger logger = LoggerFactory.getLogger(JWTService.class);
-    private final String SECRET_KEY = "asdfdfresdxcvfdsdf98d7s67f8763==";
+    private final String SECRET_KEY = "ce5Yllz+KjNxVcVHUFgEUVqGpxdyEkQkMHb1AzlA69WAOjfvT03TzlyDHgcEoMViudQr6ApY1rw3Kg5Q2HokUg==";
 
 
     /**
