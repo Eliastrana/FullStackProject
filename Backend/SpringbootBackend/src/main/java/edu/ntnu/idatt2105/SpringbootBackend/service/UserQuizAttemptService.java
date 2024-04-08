@@ -9,7 +9,6 @@ import edu.ntnu.idatt2105.SpringbootBackend.repository.QuizRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserQuizAttemptRepository;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idatt2105.SpringbootBackend.mapper.UserQuizAttemptMapper;

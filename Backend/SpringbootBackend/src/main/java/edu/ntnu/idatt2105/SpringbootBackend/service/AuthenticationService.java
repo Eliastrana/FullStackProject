@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.PasswordDoesNotMeetRequirements;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserAlreadyExistException;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.PasswordDoesNotMeetRequirements;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Role;

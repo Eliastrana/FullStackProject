@@ -4,7 +4,6 @@ import edu.ntnu.idatt2105.SpringbootBackend.model.Role;
 import edu.ntnu.idatt2105.SpringbootBackend.repository.RoleRepository;
 import jakarta.annotation.PostConstruct;
 
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
