@@ -173,6 +173,77 @@ Create a new role in the system
       "authority": "string"
     }
     ```
+##
+
+- ### PUT /api/user/update/password
+
+Updates a user's password
+
+- **Authorization**: User
+- **Parameters**: None
+- **Code**: 200 Password updated successfully
+- **Code**: 400 Bad request
+
+- ### POST /api/user/register
+
+Registers a user and returns a JWT token for authentication
+
+- **Authorization**: None required
+- **Parameters**: None
+- **Code**: 200 Successfully registered user
+- **Content Example**:
+    ```json
+    {
+  "token": "string"
+     }
+    ```
+
+- ### POST /api/user/login
+
+Logs in a user and returns a JWT token for authentication
+
+- **Authorization**: None required
+- **Parameters**: None
+- **Code**: 200 User logged in successfully
+- **Content Example**:
+    ```json
+    {
+  "token": "string"
+    }
+    ``` 
+- ### GET /api/user/details
+
+Fetches the details of the currently authenticated user
+
+- **Authorization**: User
+- **Parameters**: None
+- **Code**: 200 User details fetched successfully
+- **Content Example**:
+    ```json
+    {
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "username": "johnDoe",
+  "email": "example@mail.com"
+}
+    ```
+- ### GET /api/user/all
+
+Retrieves a list of all users in the system
+
+- **Authorization**: Admin
+- **Parameters**: None
+- **Code**: 200 Users fetched successfully
+
+
+- ### DELETE /api/user/{username}
+
+Deletes a user by its unique identifier
+
+- **Authorization**: Admin
+- **Parameters**: username
+- **Code**: 204 User deleted successfully
+- **Code**: 404 User not found
+
 ## User Role Management:
 - ### GET /api/user-roles/
 
@@ -241,9 +312,50 @@ Remove a role from a user
 - **Parameters**: Username, Role
 - **Code**: 200 Role removed successfully
 - **Code**: 400 Could not remove role from user or bad request
+## Rating Management:
+
+- ### POST /api/ratings
+
+Saves a new rating or updates an existing rating for a specific quiz
+
+- **Authorization**: User
+- **Parameters**: None
+- **Code**: 200 Rating saved or updated successfull
+- **Content Example**:
+    ```json
+  {
+  "userId": "123e4567-e89b-12d3-a456-426614174000",
+  "quizId": "123e4567-e89b-12d3-a456-426614174000",
+  "rating": 5
+}
+    ```
+- ### GET /api/ratings/user/{userId}
+
+Lists all quizzes rated by a user along with the scores
+
+- **Authorization**: Admin
+- **Parameters**: userId
+- **Code**: 200 Ratings fetched successfully
+- **Content Example**:
+    ```json
+  {
+  "userId": "123e4567-e89b-12d3-a456-426614174000",
+  "quizId": "123e4567-e89b-12d3-a456-426614174000",
+  "rating": 5
+  }
+    ```
+  
+- ### GET /api/ratings/average/{quizId}
+
+Retrieves the average rating for a specific quiz
+
+- **Authorization**: None required
+- **Parameters**: quizId
+- **Code**: 200 Average rating retrieved successfully
+
 
 ## UserQuizAttempt Management:
-- ## GET /api/userQuizAttempts/{id}
+- ### GET /api/userQuizAttempts/{id}
 
 Retrieves a specific user quiz attempt by its ID
 
@@ -260,7 +372,7 @@ Retrieves a specific user quiz attempt by its ID
     "status": "completed"
   }
     ```       
-- ## PUT /api/userQuizAttempts/{id}
+- ### PUT /api/userQuizAttempts/{id}
 
 Updates an existing user quiz attempt
 
@@ -278,7 +390,7 @@ Updates an existing user quiz attempt
    }
     ```
   
-- ## DELETE /api/userQuizAttempts/{id}
+- ### DELETE /api/userQuizAttempts/{id}
 
 Deletes a specific user quiz attempt by its ID
 
@@ -286,8 +398,7 @@ Deletes a specific user quiz attempt by its ID
 - **Parameters**: ID
 - **Code:** 204 User Quiz Attempt deleted successfully
 
-- ## POST /api/userQuizAttempts
-
+- ###
 Creates a new user quiz attempt
 - **Authorization**: Admin
 - **Parameters**: None
@@ -302,7 +413,7 @@ Creates a new user quiz attempt
      "status": "completed"
    }
     ```
-- ## GET /api/userQuizAttempts/user/{userId}
+- ### GET /api/userQuizAttempts/user/{userId}
 
 Retrieves all quiz attempts for a specific user
 - **Authorization**: Admin
