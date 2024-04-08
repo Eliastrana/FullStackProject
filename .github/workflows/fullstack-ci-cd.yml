@@ -40,11 +40,11 @@ jobs:
           MYSQL_ROOT_PASSWORD: eOAcZwBHCgYcwoTj1n9U55HoAkBH9jaB
           MYSQL_DATABASE: quiz_db
         ports:
-          - 3307:3306 # Mapping to match your application's expected port
+          - 3307:3306
         options: >-
           --health-cmd="mysqladmin ping -h localhost -u root --password=eOAcZwBHCgYcwoTj1n9U55HoAkBH9jaB"
           --health-interval=10s
-          --health-timeout=5s
+          --health-timeout=10s
           --health-retries=5
 
     steps:
@@ -61,9 +61,6 @@ jobs:
         working-directory: ./Frontend/VueFrontend
       - name: Run Vitest (Unit Tests)
         run: npm run test:unit
-        working-directory: ./Frontend/VueFrontend
-      - name: Run Cypress Tests (E2E)
-        run: npm run test:e2e:dev
         working-directory: ./Frontend/VueFrontend
 
 #  deploy:

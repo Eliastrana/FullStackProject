@@ -8,6 +8,8 @@ describe('Create Quiz Tool Test', () => {
     cy.get('input#password').type('Password123');
     cy.get('button#sign-in').click();
     cy.url().should('include', '/');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
 
 
     cy.visit('http://localhost:5173/quizcreator');
