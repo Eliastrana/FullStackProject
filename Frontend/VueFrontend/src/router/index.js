@@ -5,6 +5,10 @@ import NotFound from '../views/NotFound.vue';
 import { RoleService } from '@/services/RoleService.js'
 
 
+/**
+ *
+ * @type {Router}
+ */
 
 
 const router = createRouter({
@@ -90,23 +94,13 @@ const router = createRouter({
       component: () => import('../views/contactView/ContactView.vue') 
     }
 
-    // {
-    //   path: '/my-account',
-    //   name: 'MyAccount',
-    //   component: () => import('@/views/userPage/MyAccount.vue'), // Adjust the path to your MyAccount component
-    //   meta: { requiresAuth: true }, // Custom flag to indicate authentication is required
-    //   beforeEnter: (to, from, next) => {
-    //     if (!store.getters['user/isAuthenticated']) {
-    //       // Redirect to the login page if the user is not authenticated
-    //       next({ name: 'Login' }); // Adjust with your actual login route name or path
-    //     } else {
-    //       next(); // Proceed to the route if the user is authenticated
-    //     }
-    //   },
-    // },
-
   ]
 })
+
+
+/**
+ * router.beforeEach is a navigation guard that is called before a route is resolved.
+ */
 
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);

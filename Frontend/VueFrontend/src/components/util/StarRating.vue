@@ -10,7 +10,13 @@
 </template>
 
 <script setup>
+
 import { computed } from 'vue';
+
+/**
+ * Props for the component
+ * @type {Object}
+ */
 const props = defineProps({
   rating: {
     type: Number,
@@ -18,6 +24,10 @@ const props = defineProps({
   },
 });
 
+/**
+ * Computed property for the filled width of the star rating
+ * @type {import('vue').ComputedRef<string>}
+ */
 const filledWidth = computed(() => {
   const maxRating = 5;
   return `${(props.rating / maxRating) * 100}%`;

@@ -12,9 +12,7 @@ const quizAttempts = ref([]);
 
 const userInfo = ref(null);
 
-const totalQuizzesDone = ref(0); // New ref for storing total quizzes done
-
-
+const totalQuizzesDone = ref(0);
 
 
 /**
@@ -30,11 +28,10 @@ onMounted(async () => {
 
     let attempts = await AttemptService.getAttemptByUserId(userId);
 
-    // Fetch questions count for each attempt
     attempts = await Promise.all(attempts.map(async (attempt) => {
       const questionsCount = await questionService.getQuestionsByQuizId(attempt.quizId).then(response => response.length).catch(error => {
         console.error('Failed to load questions for quiz:', error);
-        return 0; // Default to 0 if failed to fetch
+        return 0;
       });
       return { ...attempt, questionsCount };
     }));
@@ -57,8 +54,6 @@ onMounted(async () => {
     <h2>Review your progress</h2>
     <div class="tiles">
       <div class="tile" v-for="(attempt, index) in quizAttempts" :key="index">
-
-<!--        <h2>{{userInfo.username}}</h2>-->
         <h3>{{ attempt.quizTitle}}</h3>
         <h4>Correct answers: {{attempt.score}}</h4>
         <div class="progress-bar-container">
@@ -84,16 +79,14 @@ h2 {
 }
 
 .achievements-container {
-  max-width: 800px; /* or your desired width */
+  max-width: 800px;
   margin-top: 2%;
   margin-right: auto;
   margin-left: auto;
-  display: block; /* Default, but explicitly stated for clarity */
+  display: block;
   padding: 20px;
-  /* other styles */
-
-  flex-direction: column; /* Align children vertically */
-  align-items: stretch; /* Stretch items to fill the horizontal space */
+  flex-direction: column;
+  align-items: stretch;
   min-width: 96%;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -101,10 +94,10 @@ h2 {
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust based on content */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  width: 100%; /* Fill the width of its parent */
-  margin: 0; /* Remove any default margins */
+  width: 100%;
+  margin: 0;
 }
 
 .tile {
@@ -135,11 +128,11 @@ h2 {
 
 @media (max-width: 480px) {
   .tiles {
-    grid-template-columns: 1fr; /* Ensure single column layout on smaller screens */
+    grid-template-columns: 1fr;
   }
 
   h1, h2 {
-    margin: 10px; /* Adjust margins for smaller screens */
+    margin: 10px;
   }
 }
 </style>

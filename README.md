@@ -35,16 +35,21 @@ To pull the project, clone the project using [git](https://git-scm.com/downloads
 
 In the root folder of the project:
 
-```bash
-docker-compose down
-```
+After cloning the repository, the first time you want to run the program, run:
+(PS: Make sure Docker Desktop is running)
 
 ```bash
-docker-compose pull
+docker-compose build
 ```
 
 ```bash
 docker-compose up -d
+```
+
+If you have already ran the program using Docker once, and have made changes to the code, you will need to run this before the two previous commands:
+
+```bash
+docker-compose down
 ```
 
 ## Documentation

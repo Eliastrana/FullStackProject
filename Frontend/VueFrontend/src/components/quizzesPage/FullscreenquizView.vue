@@ -9,23 +9,15 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
         <button @click.stop="startQuiz" class="start-quiz-btn">Start Quiz</button>
-        <!-- Header and Button Container -->
         <div class="header-container">
           <h1>{{ quiz.title }}</h1>
         </div>
-
         <div class="quiz-info">
-        <!-- Displaying Category -->
         <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
-        <!-- Displaying Difficulty -->
           <p :class="['difficulty-badge', difficultyClass(quiz.difficulty)]">{{ quiz.difficulty }}</p>
         </div>
-
-
-
         <p>{{ quiz.description }}</p>
         <h2>Questions</h2>
-        <!-- Questions Container -->
         <div v-if="questions.length" class="questions-container">
           <div class="question-card" v-for="question in questions" :key="question.id">
             <p>{{ question.text }}</p>
@@ -46,15 +38,29 @@ import { QuizService } from '@/services/QuizService.js';
 import { defineProps, defineEmits } from 'vue';
 import { CategoryService } from '@/services/CategoryService.js'
 
+/**
+ * Props for the FullscreenQuizView component
+ * @property {Object} quiz - The quiz object
+ */
+
 const props = defineProps({
   quiz: Object,
 });
 
+/**
+ * Emits custom events
+ * @type {Function}
+ */
+
 const emits = defineEmits(['close']);
 const questions = ref([]);
-const store = useStore(); // Use the store
-const router = useRouter(); // Use router for navigation
+const store = useStore();
+const router = useRouter();
 const categories = ref({});
+
+/**
+ * Watches for changes in the quiz prop and fetches questions for the quiz
+ */
 
 watch(() => props.quiz, async (newQuiz, oldQuiz) => {
   if (newQuiz && (!oldQuiz || newQuiz.id !== oldQuiz.id)) {
@@ -66,6 +72,10 @@ watch(() => props.quiz, async (newQuiz, oldQuiz) => {
   }
 }, { immediate: true });
 
+/**
+ * Fetches all categories when the component is mounted
+ */
+
 onMounted(async () => {
   const allCategories = await CategoryService.getAllCategories();
   categories.value = allCategories.reduce((acc, current) => {
@@ -74,9 +84,17 @@ onMounted(async () => {
   }, {});
 })
 
+
+/**
+ * Closes the quiz
+ */
 const closeQuiz = () => {
   emits('close');
 };
+
+/**
+ * Starts the quiz
+ */
 
 const startQuiz = async () => {
   try {
@@ -90,6 +108,11 @@ const startQuiz = async () => {
 };
 
 
+/**
+ * Returns the class name for the difficulty badge
+ * @param {string} difficulty - The difficulty level
+ * @returns {string} - The class name
+ */
 function difficultyClass(difficulty) {
   switch (difficulty.toLowerCase()) {
     case 'easy':
@@ -121,20 +144,17 @@ function difficultyClass(difficulty) {
 }
 
 .quiz-content {
-  position: relative; /* Needed for absolute positioning of the close button */
-  background-color: white; /* White background */
-  color: black; /* Adjust text color for better readability */
+  position: relative;
+  background-color: white;
+  color: black;
   text-align: left;
   max-width: 600px;
   padding: 20px;
-  border-radius: 10px; /* Optional: adds rounded corners */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow */
-
-  max-height: 80vh; /* Set the maximum height to the viewport height */
-  overflow-y: auto; /* Enable vertical scrolling */
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 80vh;
+  overflow-y: auto;
 }
-
-
 
 button {
   padding: 10px 20px;
@@ -146,35 +166,26 @@ button {
   cursor: pointer;
 }
 
-
-
 button:hover {
   background-color: #0056b3;
 }
 
-
 .image-container {
   position: relative;
   text-align: center;
-  margin-bottom: 20px; /* Adjust as needed */
+  margin-bottom: 20px;
 }
 
 .quiz-image {
-
     object-fit: cover;
     border-radius: 8px;
-
     max-width: 500px;
     min-width: 500px;
-    max-height: 200px; /* Set a max-height   to prevent images from stretching */
-
-
+    max-height: 200px;
 }
 
-
-
 .difficulty-easy {
-  background-color: #28a745; /* Green for easy */
+  background-color: #28a745;
   display: inline-block;
   color: #ffffff;
   padding: 5px 15px;
@@ -184,7 +195,7 @@ button:hover {
 }
 
 .difficulty-medium {
-  background-color: #f3dc5e; /* Yellow for medium */
+  background-color: #f3dc5e;
   display: inline-block;
   color: #ffffff;
   padding: 5px 15px;
@@ -194,7 +205,7 @@ button:hover {
 }
 
 .difficulty-hard {
-  background-color: #dc3545; /* Red for hard */
+  background-color: #dc3545;
   display: inline-block;
   color: #ffffff;
   padding: 5px 15px;
@@ -218,45 +229,41 @@ button:hover {
   background-color: #5d9ff3;
 }
 
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* Starting and ending state for enter/leave transitions */ {
+.fade-enter, .fade-leave-to {
   opacity: 0;
 }
 
 .questions-container {
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap as needed */
-  gap: 10px; /* Spacing between question cards */
-  margin-top: 20px; /* Spacing above the question list */
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
   font-family: 'DM Sans', sans-serif;
-
-  max-height: 100vh; /* Set the maximum height to the viewport height */
-  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
-
-
 .question-card {
-  flex: 1; /* Flex grow to fill available space */
-  min-width: 200px; /* Minimum width for each question card */
+  flex: 1;
+  min-width: 200px;
   padding: 10px;
-  background-color: #ffffff; /* Light grey background for visibility */
-  border-radius: 5px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Soft shadow for depth */
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   font-family: 'DM Sans', sans-serif;
 }
 
 .category-badge {
-  display: inline-block; /* Treat the <p> tag more like an inline element */
+  display: inline-block;
   background-color: #007bff;
-  color: #ffffff; /* Text color */
-  padding: 5px 15px; /* Vertical and horizontal padding */
-  border-radius: 20px; /* Rounded corners */
-  font-size: 0.8rem; /* Adjust font size as needed */
-  margin: 0; /* Remove default <p> margin if needed */
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 0;
 }
 
 .close-btn {
@@ -266,8 +273,8 @@ button:hover {
   right: 10px;
   border: none;
   cursor: pointer;
-  padding: 5px; /* Adjust as needed */
-  display: flex; /* Helps center the icon if it's not filling the button */
+  padding: 5px;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -278,8 +285,6 @@ button:hover {
 
 }
 
-
-
 .quiz-info {
   display: flex;
   flex-wrap: wrap;
@@ -287,10 +292,10 @@ button:hover {
   gap: 10px;
 }
 
-@media (max-width: 600px) { /* Example breakpoint */
+@media (max-width: 600px) {
   .header-container {
-    flex-direction: column; /* Stack items vertically */
-    align-items: flex-start; /* Align items to the start */
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .quiz-content {
@@ -299,15 +304,14 @@ button:hover {
     color: black;
     text-align: left;
     max-width: 600px;
-    width: 100%; /* Ensure it takes up to 100% of its parent width */
+    width: 100%;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-height: 80vh;
     overflow-y: auto;
-    overflow-x: hidden; /* Prevents horizontal scrolling */
-
-    margin: 20px; /* This helps ensure there's a bit of margin around the content */
+    overflow-x: hidden;
+    margin: 20px;
   }
 
   .quiz-fullscreen {
@@ -321,17 +325,12 @@ button:hover {
     justify-content: center;
     align-items: center;
     color: white;
-    padding: 10px; /* Ensure padding does not cause overflow */
-    box-sizing: border-box; /* Include padding in width calculation */
+    padding: 10px;
+    box-sizing: border-box;
     overflow: hidden;
 
   }
 
-
-
-
-
 }
-
 
 </style>

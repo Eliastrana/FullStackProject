@@ -5,6 +5,12 @@ const COMPLETE_API_URL = 'http://localhost:8080/api/completeQuiz';
 const QUIZ_API_URL = 'http://localhost:8080/api/quiz';
 const IMAGE_API_URL = 'http://localhost:8080/api/images';
 
+
+/**
+ *
+ * @param questions
+ * @returns {*}
+ */
   // Helper function to transform question answers for consistency
 function transformQuestionAnswers(questions) {
   return questions.map(question => {
@@ -17,6 +23,10 @@ function transformQuestionAnswers(questions) {
   });
 }
 
+/**
+ *
+ * @type {{updateQuiz(*, *): Promise<any|undefined>, getPublicQuizzes(): Promise<any|undefined>, getQuizById(*): Promise<any|undefined>, create(*): Promise<any|undefined>, getImageById(*): Promise<string|undefined>, getAllQuizzes(): Promise<any|undefined>, deleteQuiz(*): Promise<any|undefined>}}
+ */
 export const QuizService = {
   async create(quizDetails) {
     let modifiedQuizDetails = JSON.parse(JSON.stringify(quizDetails));

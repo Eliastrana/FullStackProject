@@ -23,11 +23,8 @@
         <img :src="quiz.imageData || '/images/default.png'" alt="Quiz Image" />
         <h2>{{ quiz.title }}</h2>
         <p>{{ quiz.description }}</p>
-
         <div class="quiz-info">
-          <!-- Displaying Category -->
           <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
-          <!-- Displaying Difficulty -->
           <p :class="['difficulty-badge', difficultyClass(quiz.difficulty)]">{{ quiz.difficulty }}</p>
         </div>
         <StarRating :rating="quiz?.ratings.average" />
@@ -49,6 +46,10 @@ import { TagService } from '@/services/TagService.js'
 import { QuestionService } from '@/services/QuestionService.js'
 import StarRating from '@/components/util/StarRating.vue'
 
+/**
+ * Emits custom events
+ * @type {Function}
+ */
 const store = useStore();
 const emit = defineEmits(['select-quiz']);
 const searchQuery = ref('');
@@ -59,6 +60,10 @@ const categories = ref({});
 const difficulties = ref([]);
 const allTags = ref([]);
 const quizToTagsMap = ref({});
+
+/**
+ * Fetches all quizzes, quiz images, quiz ratings, tags, categories, and difficulties
+ */
 
 onMounted(async () => {
   await store.dispatch('quizzes/fetchAllQuizzes');
@@ -83,7 +88,15 @@ onMounted(async () => {
   }
 });
 
+/**
+ * Computed properties
+ */
+
 const quizzes = computed(() => store.state.quizzes.quizzes);
+
+/**
+ * Filters quizzes based on search query, difficulty, and category
+ */
 
 const filteredQuizzes = computed(() => {
   const searchLower = searchQuery.value.toLowerCase();
@@ -100,14 +113,29 @@ const filteredQuizzes = computed(() => {
   return limitedQuizzes;
 });
 
+
+/**
+ * Function to view more quizzes
+ */
 function viewMore() {
   visibleQuizzesCount.value += 12;
 }
+
+/**
+ * Handles the quiz click event
+ * @param {Object} quiz - The quiz object
+ */
 
 function handleQuizClick(quiz) {
   emit('select-quiz', quiz);
 }
 
+
+/**
+ * Returns the class name for the difficulty badge
+ * @param {string} difficulty - The difficulty level
+ * @returns {string} - The class name
+ */
 function difficultyClass(difficulty) {
   switch (difficulty.toLowerCase()) {
     case 'easy':

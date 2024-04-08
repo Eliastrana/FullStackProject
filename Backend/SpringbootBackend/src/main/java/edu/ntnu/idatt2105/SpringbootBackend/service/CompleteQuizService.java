@@ -115,8 +115,7 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
             quiz.setCategory(category);
             quiz.setDifficulty(completeQuizDTO.getDifficulty());
             quiz.setPublic(completeQuizDTO.getIsPublic());
-            logger.info(String.valueOf(quiz.isPublic()));
-            logger.info(String.valueOf(completeQuizDTO.getIsPublic()));
+
     
     Image image = processImage(completeQuizDTO.getImageName(), completeQuizDTO.getImageType(), completeQuizDTO.getImageData());
     if (image != null) {
@@ -144,7 +143,7 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
         answerRepository.save(answer);
         });
     });
-    logger.info(String.valueOf(savedQuiz.isPublic()));
+    
     return savedQuiz.getId();
 }
 
@@ -265,6 +264,13 @@ public UUID createCompleteQuiz(CompleteQuizDTO completeQuizDTO) {
         return imageRepository.save(image);
     }
 
+/**
+     * Deletes an existing quiz and its related entities, such as questions and answers,
+     * identified by its UUID.
+     *
+     * @param quizId The UUID of the quiz to delete.
+     * @throws QuizNotFoundException If the quiz to delete is not found.
+     */
 
     /**
      * Deletes an existing quiz and its related entities, such as questions and answers,

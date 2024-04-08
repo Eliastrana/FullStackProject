@@ -1,3 +1,7 @@
+/**
+ *
+ * @type {{setUserInfo(*): void, setToken(*): void, getToken(): string, clearToken(): void, getUserInfo(): any|null, clearUserInfo(): void}}
+ */
 export const SessionToken = {
   setToken(token) {
     sessionStorage.setItem('sessionToken', token);
