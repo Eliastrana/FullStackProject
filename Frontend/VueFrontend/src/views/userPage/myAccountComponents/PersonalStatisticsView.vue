@@ -1,40 +1,68 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { AttemptService } from '@/services/AttemptService.js';
+import store from '@/store/index.js'
+import { QuestionService as questionService } from '@/services/QuestionService.js';
 
 /**
- * Achievements data
+ * Quiz attempts data
  * @type {import('vue').Ref<Array>}
  */
-const achievements = ref([]);
+const quizAttempts = ref([]);
+
+const userInfo = ref(null);
+
+const totalQuizzesDone = ref(0);
+
 
 /**
- * Fetches achievements data from the API when the component is mounted
+ * Fetches quiz attempts data from the API when the component is mounted
  */
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/statistics/achievements/achievements.json');
-    achievements.value = response.data;
+    const userId = store.getters['user/userId'];
+    if (!userId) {
+      console.error('UserId is undefined. Make sure the user is logged in.');
+      return;
+    }
+
+    let attempts = await AttemptService.getAttemptByUserId(userId);
+
+    attempts = await Promise.all(attempts.map(async (attempt) => {
+      const questionsCount = await questionService.getQuestionsByQuizId(attempt.quizId).then(response => response.length).catch(error => {
+        console.error('Failed to load questions for quiz:', error);
+        return 0;
+      });
+      return { ...attempt, questionsCount };
+    }));
+
+    quizAttempts.value = attempts;
+    totalQuizzesDone.value = attempts.length;
+
+    store.dispatch('quizAttempt/updateTotalQuizzesDone', totalQuizzesDone.value);
   } catch (error) {
-    console.error('Failed to load achievements:', error);
+    console.error('Failed to load quiz attempts:', error);
   }
 });
 </script>
 
+
 <template>
   <div class="achievements-container">
-    <h1>Your statistics</h1>
-    <h2>Keep working hard!</h2>
+  <div class="attempts-container">
+    <h1>Your Quiz Attempts</h1>
+    <h2>Review your progress</h2>
     <div class="tiles">
-      <div class="tile" v-for="(achievement, index) in achievements" :key="index"
-           :class="{'gold-background': achievement.progress === 100}">
-        <h3>{{ achievement.title }}</h3>
-        <p>{{ achievement.description }}</p>
+      <div class="tile" v-for="(attempt, index) in quizAttempts" :key="index">
+        <h3>{{ attempt.quizTitle}}</h3>
+        <h4>Correct answers: {{attempt.score}}</h4>
         <div class="progress-bar-container">
-          <div class="progress-bar" :style="{ width: achievement.progress + '%' }"></div>
+          <div class="progress-bar" :style="{ width: (attempt.score / attempt.questionsCount) * 100 + '%' }"></div>
         </div>
       </div>
     </div>
+  </div>
+
   </div>
 </template>
 
@@ -51,17 +79,15 @@ h2 {
 }
 
 .achievements-container {
-  background-color: #ececec;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
   max-width: 800px;
-  padding: 20px;
-  margin-top: 5%;
-  margin-left: auto;
+  margin-top: 2%;
   margin-right: auto;
+  margin-left: auto;
+  display: block;
+  padding: 20px;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 96%;
   border-radius: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
@@ -71,7 +97,7 @@ h2 {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   width: 100%;
-  padding: 0 20px;
+  margin: 0;
 }
 
 .tile {
@@ -100,24 +126,15 @@ h2 {
   border-radius: 20px;
 }
 
-.gold-background {
-  background-color: gold !important;
-  border: 4px solid goldenrod;
-}
-
-.gold-background:hover {
-  background-color: goldenrod !important;
-}
-
 @media (max-width: 480px) {
   .tiles {
     grid-template-columns: 1fr;
   }
 
   h1, h2 {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 10px;
   }
 }
-
 </style>
+
+

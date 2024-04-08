@@ -15,6 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,20 @@ import java.util.List;
 import java.util.UUID;
 
 
+/**
+ * The {@code QuizController} class handles HTTP requests related to quiz management.
+ * It supports creating, retrieving, updating, and deleting quizzes. This class
+ * interacts with {@link QuizService} for quiz operations and {@link UserService}
+ * for retrieving user details.
+ *
+ * @author Vegard Johnsen, Sander R. Skofsrud
+ * @version 0.1
+ * @since 0.1
+ * @see QuizService
+ * @see UserService
+ * @see QuizDTO
+ * @see QuizCreateDTO
+ */
 @Tag(name = "Quiz Management")
 @CrossOrigin(origins = "*")
 @RestController
@@ -33,9 +50,17 @@ public class QuizController {
     private final QuizService quizService;
     private final Logger logger = LoggerFactory.getLogger(QuizController.class);
 
-    @Operation(summary = "Create a new quiz", description = "Creates a new quiz with the provided details")
-    @ApiResponse(responseCode = "200", description = "Successfully created the quiz")
-    @ApiResponse(responseCode = "400", description = "Error creating the quiz")
+    /**
+     * Creates a new quiz with details provided in {@link QuizCreateDTO}. The quiz
+     * is associated with the currently authenticated user. Upon successful creation,
+     * returns the created quiz details as {@link QuizDTO}.
+     *
+     * @param quizCreateDTO The quiz creation details.
+     * @return A {@link ResponseEntity} containing the created {@link QuizDTO}.
+     */
+    @Operation(summary = "Create a new quiz", description = "Creates a new quiz with the provided details", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully created the quiz", content = @Content(schema = @Schema(implementation = QuizDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Error creating the quiz")})
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<QuizDTO> createQuiz(@RequestBody QuizCreateDTO quizCreateDTO) {
@@ -56,9 +81,16 @@ public class QuizController {
     }
 
 
-    @Operation(summary = "Fetch all quizzes", description = "Retrieves all available quizzes")
-    @ApiResponse(responseCode = "200", description = "Successfully fetched quizzes")
-    @GetMapping
+/**
+     * Retrieves all available quizzes. This method queries all quizzes without any filters
+     * and returns a list of {@link QuizDTO} representing each quiz.
+     *
+     * @return A {@link ResponseEntity} containing a list of all {@link QuizDTO}.
+     */
+    @Operation(summary = "Fetch all quizzes", description = "Retrieves all available quizzes", responses = {
+    @ApiResponse(responseCode = "200", description = "Successfully fetched quizzes", content = @Content(mediaType = "application/json",
+    array = @ArraySchema(schema = @Schema(implementation = QuizDTO.class))))})
+@GetMapping
     public ResponseEntity<List<QuizDTO>> getAllQuizzes() {
         try {
             List<QuizDTO> quizzes = quizService.getAllQuizzes();
@@ -69,9 +101,16 @@ public class QuizController {
         }
     }
 
-    @Operation(summary = "Fetch a specific quiz", description = "Retrieves a quiz by its unique identifier")
-    @ApiResponse(responseCode = "200", description = "Successfully fetched the quiz")
-    @ApiResponse(responseCode = "404", description = "Quiz not found")
+    /**
+     * Retrieves a specific quiz by its unique identifier ({@code id}). If the quiz is found,
+     * its details are returned as {@link QuizDTO}; otherwise, a not found status is returned.
+     *
+     * @param id The unique identifier of the quiz to retrieve.
+     * @return A {@link ResponseEntity} with the {@link QuizDTO} if found, or a not found status.
+     */
+    @Operation(summary = "Fetch a specific quiz", description = "Retrieves a quiz by its unique identifier", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully fetched the quiz", content = @Content(schema = @Schema(implementation = QuizDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Quiz not found")})
     @GetMapping("/{id}")
     public ResponseEntity<QuizDTO> getQuizById(@PathVariable UUID id) {
         logger.info("Fetching quiz with ID: " + id);
@@ -92,10 +131,20 @@ public class QuizController {
         }
     }
 
-    @Operation(summary = "Update an existing quiz", description = "Updates quiz details by its unique identifier")
-    @ApiResponse(responseCode = "200", description = "Successfully updated the quiz")
-    @ApiResponse(responseCode = "404", description = "Quiz not found")
-    @ApiResponse(responseCode = "400", description = "Error updating the quiz")
+    /**
+     * Updates an existing quiz identified by its unique identifier ({@code id}). The updated
+     * quiz details are provided in a {@link QuizDTO}. If the quiz is found, it is updated with
+     * the new details and the updated {@link QuizDTO} is returned; otherwise, a not found status
+     * is returned.
+     *
+     * @param id The unique identifier of the quiz to update.
+     * @param quizUpdateDTO The updated quiz details.
+     * @return A {@link ResponseEntity} with the updated {@link QuizDTO} if found, or a not found status.
+     */
+    @Operation(summary = "Update an existing quiz", description = "Updates quiz details by its unique identifier", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully updated the quiz", content = @Content(schema = @Schema(implementation = QuizDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Quiz not found"),
+        @ApiResponse(responseCode = "400", description = "Error updating the quiz")})
     @PutMapping("/{id}")
     public ResponseEntity<QuizDTO> updateQuiz(@PathVariable UUID id, @RequestBody QuizDTO quizUpdateDTO) {
         logger.info("Updating quiz with ID: " + id);
@@ -111,9 +160,17 @@ public class QuizController {
         }
     }
 
-    @Operation(summary = "Delete a quiz", description = "Deletes a quiz by its unique identifier")
-    @ApiResponse(responseCode = "204", description = "Successfully deleted the quiz")
-    @ApiResponse(responseCode = "404", description = "Quiz not found")
+    /**
+     * Deletes a quiz by its unique identifier ({@code id}). If the quiz is found, it is deleted
+     * and a no content status is returned; otherwise, a not found status is returned.
+     *
+     * @param id The unique identifier of the quiz to delete.
+     * @return A {@link ResponseEntity} with a no content status if the quiz is successfully deleted,
+     * or a not found status if the quiz is not found.
+     */
+    @Operation(summary = "Delete a quiz", description = "Deletes a quiz by its unique identifier", responses = {
+        @ApiResponse(responseCode = "204", description = "Successfully deleted the quiz"),
+        @ApiResponse(responseCode = "404", description = "Quiz not found")})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuiz(@PathVariable UUID id) {
         logger.info("Deleting quiz with ID: " + id);
@@ -125,6 +182,20 @@ public class QuizController {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             logger.error("Error deleting quiz with ID: " + id + ": " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @Operation(summary = "Fetch all public quizzes", description = "Retrieves all available public quizzes", responses = {
+        @ApiResponse(responseCode = "200", description = "Successfully fetched public quizzes", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = QuizDTO.class))))
+    })
+    @GetMapping("/public")
+    public ResponseEntity<List<QuizDTO>> getAllPublicQuizzes() {
+        try {
+            List<QuizDTO> quizzes = quizService.getPublicQuizzes();
+            return ResponseEntity.ok(quizzes);
+        } catch (Exception e) {
+            logger.error("Error fetching public quizzes: " + e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }

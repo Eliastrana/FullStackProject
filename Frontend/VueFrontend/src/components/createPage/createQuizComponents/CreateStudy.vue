@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
-import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue'
+import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue';
+import store from '@/store/index.js'
 
 /**
  * Props for the CreateStudy component
@@ -11,7 +12,8 @@ import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.
 const props = defineProps({
   uuid: String,
   text: String,
-  answers: Array
+  answers: Array,
+  tags: Array
 });
 
 /**
@@ -31,18 +33,15 @@ const question = ref(props.text);
  * @type {import('vue').Ref<Array>}
  */
 const answers = ref(props.answers);
+const tags = ref(props.tags || []);
 
-/**
- * The cover image for the front of the card
- * @type {import('vue').Ref<string>}
- */
-const coverImageFront = ref(null);
+function handleTagUpdate(newTags) {
+  store.dispatch('quizzes/updateQuestionTags', {
+    uuid: props.uuid,
+    newTags
+  });
+}
 
-/**
- * The cover image for the back of the card
- * @type {import('vue').Ref<string>}
- */
-const coverImageBack = ref(null);
 
 /**
  * Watches for changes in the question and answers and emits the updated data
@@ -52,53 +51,10 @@ watch([question, answers], () => {
     uuid: props.uuid,
     text: question.value,
     questionType: 'STUDY',
-    answers: answers.value.map(answer => ({ text: answer.text, correct: answer.correct }))
+    answers: answers.value.map(answer => ({ text: answer.text, correct: answer.correct })),
+    tags: tags.value,
   });
 }, { deep: true });
-
-/**
- * Handles the file upload for the front of the card
- * @param {Event} event - The file upload event
- */
-function handleFileUploadFront(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      coverImageFront.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-/**
- * Handles the file upload for the back of the card
- * @param {Event} event - The file upload event
- */
-function handleFileUploadBack(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      coverImageBack.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-/**
- * Removes the image for the front of the card
- */
-function removeImageFront() {
-  coverImageFront.value = null;
-}
-
-/**
- * Removes the image for the back of the card
- */
-function removeImageBack() {
-  coverImageBack.value = null;
-}
 
 /**
  * Emits the 'removeQuestion' event with the question's uuid
@@ -118,26 +74,10 @@ function removeQuestion() {
           d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41l5.59 5.59L5 17.59 6.41 19l5.59-5.59L17.59 19 19 17.59l-5.59-5.59L19 6.41z" />
       </svg>
     </div>
-    <div v-if="coverImageFront" class="image-preview">
-      <img :src="coverImageFront" alt="Front Image Preview" />
-      <div class="remove-image" @click="removeImageFront">X</div>
-    </div>
-    <div v-if="!coverImageFront">
-      <input type="file" id="uploadFront" hidden @change="handleFileUploadFront" accept="image/*" />
-      <label for="uploadFront" class="uploadimagebutton">Upload Front Image</label>
-    </div>
     <input class="question-title" v-model="question" placeholder="Study card question" />
-    <div v-if="coverImageBack" class="image-preview">
-      <img :src="coverImageBack" alt="Back Image Preview" />
-      <div class="remove-image" @click="removeImageBack">X</div>
-    </div>
-    <div v-if="!coverImageBack">
-      <input type="file" id="uploadBack" hidden @change="handleFileUploadBack" accept="image/*" />
-      <label for="uploadBack" class="uploadimagebutton">Upload Back Image</label>
-    </div>
     <textarea class="answer-text" v-model="answers[0].text" placeholder="Study card answer"></textarea>
 
-    <CreateTags/>
+    <CreateTags :initialTags="tags" @update-tags="handleTagUpdate" />
 
   </div>
 </template>
@@ -246,9 +186,8 @@ function removeQuestion() {
   border-radius: 0 0 0 10px;
 }
 
-/* Adjustments for better visibility */
 .remove-image:hover {
-  background-color: rgba(0,0,0,0.8); /* Slightly darker on hover */
+  background-color: rgba(0,0,0,0.8);
 }
 
 

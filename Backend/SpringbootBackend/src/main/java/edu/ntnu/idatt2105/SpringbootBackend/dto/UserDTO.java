@@ -23,9 +23,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
+    /**
+     * The username of the user, which serves as a unique identifier for the user within the system.
+     */
     @Schema(required = true, example = "johnDoe", description = "Username of the user")
     private String username;
-
+    /**
+     * The password of the user, which is used for authentication and account access.
+     */
     @Schema(required = true, example = "Password123", description = "Password of the user")
     private String password;
 

@@ -13,6 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+/**
+ * The {@code AnswerService} class handles the business logic for answer operations. It provides
+ * methods to create, retrieve, update, and delete answers within the system. This service interacts
+ * with the {@link AnswerRepository} and {@link QuestionRepository} to perform CRUD operations
+ * on answers and to ensure the integrity of the relationship between answers and questions.
+ *
+ * @author : Vegard Johnsen
+ * @version 0.1
+ * @since 0.1
+ * @see Answer
+ * @see Question
+ * @see AnswerRepository
+ * @see QuestionRepository
+ */
+
 @Service
 public class AnswerService {
 
@@ -25,6 +40,15 @@ public class AnswerService {
         this.questionRepository = questionRepository;
     }
 
+    /**
+     * Creates a new answer and associates it with a question identified by {@code questionId}.
+     * This method ensures the question exists before proceeding to create an answer.
+     *
+     * @param questionId The UUID of the question to which the answer will be associated.
+     * @param answerDTO  The data transfer object containing the answer details.
+     * @return An {@link AnswerDTO} representing the newly created answer.
+     * @throws QuestionNotFoundException If the question associated with {@code questionId} does not exist.
+     */
     @Transactional
     public AnswerDTO createAnswer(UUID questionId, AnswerDTO answerDTO) throws QuestionNotFoundException {
         Question question = questionRepository.findById(questionId)
@@ -40,6 +64,13 @@ public class AnswerService {
         return new AnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
     }
 
+    /**
+     * Retrieves an answer by its UUID.
+     *
+     * @param answerId The UUID of the answer to retrieve.
+     * @return An {@link AnswerDTO} representing the requested answer.
+     * @throws AnswerNotFoundException If no answer with the given {@code answerId} exists.
+     */
     public AnswerDTO getAnswerById(UUID answerId) throws AnswerNotFoundException {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerNotFoundException("Answer not found with id: " + answerId));
@@ -47,6 +78,14 @@ public class AnswerService {
         return new AnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
     }
 
+    /**
+     * Updates an existing answer identified by {@code answerId} with new details provided in {@code answerDTO}.
+     *
+     * @param answerId  The UUID of the answer to update.
+     * @param answerDTO The data transfer object containing the updated answer details.
+     * @return An {@link AnswerDTO} representing the updated answer.
+     * @throws AnswerNotFoundException If no answer with the given {@code answerId} exists.
+     */
     @Transactional
     public AnswerDTO updateAnswer(UUID answerId, AnswerDTO answerDTO) throws AnswerNotFoundException {
         Answer answer = answerRepository.findById(answerId)
@@ -60,6 +99,12 @@ public class AnswerService {
         return new AnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
     }
 
+    /**
+     * Deletes an answer identified by {@code answerId}.
+     *
+     * @param answerId The UUID of the answer to delete.
+     * @throws AnswerNotFoundException If no answer with the given {@code answerId} exists.
+     */
     @Transactional
     public void deleteAnswer(UUID answerId) throws AnswerNotFoundException {
         if (!answerRepository.existsById(answerId)) {

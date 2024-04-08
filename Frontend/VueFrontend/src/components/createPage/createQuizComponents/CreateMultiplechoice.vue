@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, defineProps, defineEmits, watch } from 'vue'
 import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.vue'
+import store from '@/store/index.js'
 
 /**
  * Props for the CreateMultiplechoice component
@@ -8,10 +9,12 @@ import CreateTags from '@/components/createPage/createQuizComponents/CreateTags.
  * @property {String} text - The text of the question
  * @property {Array} answers - The array of answers
  */
+
 const props = defineProps({
   uuid: String,
   text: String,
-  answers: Array
+  answers: Array,
+  tags: Array
 })
 
 /**
@@ -32,11 +35,8 @@ const title = ref(props.text)
  */
 const answers = ref(props.answers)
 
-/**
- * The cover image for the question
- * @type {import('vue').Ref<string>}
- */
-const coverImage = ref(null)
+const tags = ref(props.tags || []);
+
 
 /**
  * Adds a new answer to the answers array
@@ -54,14 +54,23 @@ const canAddMoreAnswers = computed(() => answers.value.length < 4)
 /**
  * Watches for changes in the title and answers and emits the updated data
  */
-watch([title, answers], () => {
+watch(() => ({ title: title.value, answers: answers.value, tags: tags.value }), (newVal) => {
   emits('submitData', {
     uuid: props.uuid,
-    text: title.value,
+    text: newVal.title,
     questionType: 'MULTIPLE_CHOICE',
-    answers: answers.value
-  })
-}, { deep: true })
+    answers: newVal.answers,
+    tags: newVal.tags
+  });
+}, { deep: true, immediate: true });
+
+function handleTagUpdate(newTags) {
+  store.dispatch('quizzes/updateQuestionTags', {
+    uuid: props.uuid,
+    newTags
+  });
+}
+
 
 /**
  * Removes an answer from the answers array at the specified index
@@ -77,32 +86,6 @@ function removeAnswer(index) {
 function removeQuestion() {
   emits('removeQuestion', props.uuid)
 }
-
-/**
- * Handles the file upload for the question
- * @param {Event} event - The file upload event
- */
-function handleFileUpload(event) {
-  const file = event.target.files[0]
-
-  if (file) {
-    const reader = new FileReader()
-
-    reader.onload = (e) => {
-      coverImage.value = e.target.result
-    }
-
-    reader.readAsDataURL(file)
-  }
-}
-
-/**
- * Removes the cover image for the question
- */
-function removeImage() {
-  coverImage.value = null
-}
-
 </script>
 
 <template>
@@ -113,14 +96,6 @@ function removeImage() {
         <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         <path d="M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
-    </div>
-    <div v-if="coverImage" class="image-preview">
-      <img :src="coverImage" alt="Cover Image Preview" />
-      <div class="remove-image" @click="removeImage">&times;</div>
-    </div>
-    <div v-if="!coverImage">
-      <input type="file" id="upload" hidden @change="handleFileUpload" accept="image/*" />
-      <label class="uploadimagebutton" for="upload">Upload Cover Image</label>
     </div>
     <input class="question-input" v-model="title" placeholder="Your question" />
     <div class="answer-group" v-for="(answer, index) in answers" :key="index">
@@ -138,7 +113,7 @@ function removeImage() {
         <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
       </svg>
     </button>
-    <CreateTags />
+    <CreateTags :initialTags="tags" @update-tags="handleTagUpdate" />
   </div>
 </template>
 

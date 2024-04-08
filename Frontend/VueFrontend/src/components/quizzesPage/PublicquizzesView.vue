@@ -13,20 +13,42 @@ import { onMounted, ref } from 'vue'
 import QuizContainer from '@/components/quizzesPage/QuizContainer.vue';
 import { QuizService } from '@/services/QuizService.js'
 
+/**
+ * Emits custom events
+ * @type {Function}
+ */
+
 const emit = defineEmits(['quiz-selected']);
+
+/**
+ * Array of quizzes
+ * @type {import('vue').Ref<Array>}
+ */
 const quizzes = ref([]);
 
+/**
+ * Handles the quiz selected event
+ * @param {Object} quiz - The quiz object
+ */
 const handleQuizSelect = (quiz) => {
   emit('quiz-selected', quiz);
 };
 
+/**
+ * Updates the quizzes array
+ * @param {Array} newQuizzes - The new quizzes array
+ */
 const updateQuizzes = (newQuizzes) => {
   quizzes.value = newQuizzes;
 };
 
+/**
+ * Fetches public quizzes when the component is mounted
+ */
+
 onMounted(async () => {
   try {
-    quizzes.value = await QuizService.getAllQuizzes();
+    quizzes.value = await QuizService.getPublicQuizzes();
   } catch (error) {
     console.error('Error while fetching quizzes', error);
   }
@@ -34,7 +56,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Existing styles... */
 
 .no-quizzes {
   display: flex;

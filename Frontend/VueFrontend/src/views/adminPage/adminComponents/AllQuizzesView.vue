@@ -1,30 +1,101 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { QuizService } from '@/services/QuizService.js'; // Import QuizService
+import { UserService } from '@/services/UserService.js';
+import user from '@/store/modules/user.js';
+import ConfirmationModal from '@/components/util/ConfirmationModal.vue';
+import { CategoryService } from '@/services/CategoryService.js'
+import { DifficultyService } from '@/services/DifficultyService.js'
 
 const quizzes = ref([]);
+const showConfirmationModal = ref(false);
+const pendingDeleteQuizId = ref(null);
 
-// Dummy function for editing quizzes
-const deleteQuiz = (id) => {
-  alert(`Delete quiz with ID: ${id}`);
-  // Implementation for editing a quiz goes here
+// Fetch quizzes data from the API when the component is mounted
+const loadImageData = async (imageId) => {
+  try {
+    const imageData = await QuizService.getImageById(imageId);
+    return imageData; // This could be a URL or base64-encoded data
+  } catch (error) {
+    console.error('Failed to load image:', error);
+    return ''; // Return a fallback or empty string if the image fails to load
+  }
 };
 
-// Dummy function for downloading quizzes
-const disableUser = (id) => {
-  alert(`Disableed user with ID: ${id}`);
-  // Implementation for downloading a quiz goes here
-};
+const categories = ref({});
+const difficulties = ref([]);
 
+// Example of how you might use it within your component
 onMounted(async () => {
   try {
-    const response = await axios.get('/mockJSON/flagged.json');
-    quizzes.value = response.data;
+    const quizzesFetched = await QuizService.getAllQuizzes();
+
+    const allCategories = await CategoryService.getAllCategories();
+    categories.value = allCategories.reduce((acc, current) => {
+      acc[current.id] = current.categoryName;
+      return acc;
+    }, {});
+
+    difficulties.value = await DifficultyService.getAllDifficulties();
+    for (const quiz of quizzesFetched) {
+      if (quiz.imageId) {
+        quiz.imageData = await loadImageData(quiz.imageId);
+      }
+    }
+    quizzes.value = quizzesFetched;
   } catch (error) {
     console.error('Failed to load quizzes:', error);
   }
 });
+
+
+// Function to ask for quiz deletion
+const askDeleteQuiz = (quizId) => {
+  pendingDeleteQuizId.value = quizId;
+  showConfirmationModal.value = true;
+};
+
+// Function to delete a quiz after confirmation
+const confirmDelete = async () => {
+  try {
+    await QuizService.deleteQuiz(pendingDeleteQuizId.value);
+    quizzes.value = quizzes.value.filter(quiz => quiz.id !== pendingDeleteQuizId.value);
+    showConfirmationModal.value = false;
+  } catch (error) {
+    console.error('Failed to delete quiz:', error);
+    // Optionally handle the error, e.g., show an error message to the user
+  }
+};
+
+// Function to cancel deletion
+const cancelDelete = () => {
+  showConfirmationModal.value = false;
+};
+
+
+
+const downloadQuiz = async (quizId) => {
+  try {
+    const quiz = await QuizService.getQuizById(quizId);
+    const quizData = JSON.stringify(quiz);
+    const blob = new Blob([quizData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${quiz.title}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Failed to download quiz:', error);
+    // Optionally handle the error, e.g., show an error message to the user
+  }
+};
+
+
+
 </script>
+
+
 
 <template>
 
@@ -32,33 +103,42 @@ onMounted(async () => {
 
   <div class="quizzes-container">
     <div class="headings">
-      <h1>All Private Quizzes</h1>
+      <h1>All Quizzes</h1>
       <h2>Monitor all users' quizzes</h2>
     </div>
     <div class="quizzes">
       <div class="quiz" v-for="(quiz, index) in quizzes" :key="quiz.id">
         <div class="quiz-info">
-          <img :src="quiz.image" :alt="quiz.title" class="quiz-image"/>
+          <img :src="quiz.imageData || '/images/default.png'" alt="Quiz Image" class="quiz-image" />
+
           <div class="quiz-text">
             <h3>{{quiz.title }}</h3>
-            <h3>Creator: {{ quiz.creator }}</h3>
+            <p>Creator ID: {{ quiz.creatorId }}</p>
             <p>{{ quiz.description }}</p>
-            <p class="category-badge">#{{ quiz.category }}</p>
-            <p>Questions: <strong>{{ quiz.questions.length }}</strong></p>
+            <p class="category-badge">#{{ categories[quiz.categoryId] }}</p>
           </div>
 
-
           <div class="action-icons">
-            <div @click="deleteQuiz(quiz.id)" class="icon delete-icon">
-              <span class="material-symbols-outlined">delete</span>
+
+            <div @click="askDeleteQuiz(quiz.id)" class="delete-icon">
+              <span class="material-icons">delete</span>
             </div>
-            <div @click="disableUser(quiz.id)" class="icon download-icon">
+
+            <div @click="downloadQuiz(quiz.id)" class="icon download-icon">
               <span class="material-symbols-outlined">download</span>
             </div>
+
           </div>
         </div>
       </div>
     </div>
+
+    <ConfirmationModal
+      :isVisible="showConfirmationModal"
+      message="Are you sure you want to delete this quiz?"
+      @confirm="confirmDelete"
+      @cancel="cancelDelete"
+    />
   </div>
 </template>
 
@@ -78,30 +158,30 @@ onMounted(async () => {
 
 .delete-icon {
   cursor: pointer;
-  width: 20px; /* Adjust icon size as needed */
-  height: 20px; /* Adjust icon size as needed */
+  width: 20px;
+  height: 20px;
   position: absolute;
   top: 20px;
   right: 20px;
-  fill: #4a5568; /* Icon color */
+  fill: #4a5568;
 }
 
 .delete-icon:hover {
-  fill: rgba(0, 0, 0, 0.8); /* Icon color on hover */
+  fill: rgba(0, 0, 0, 0.8);
 }
 
 .download-icon {
   cursor: pointer;
-  width: 20px; /* Adjust icon size as needed */
-  height: 20px; /* Adjust icon size as needed */
+  width: 20px;
+  height: 20px;
   position: absolute;
   top: 20px;
   right: 50px;
-  fill: #4a5568; /* Icon color */
+  fill: #4a5568;
 }
 
 .download-icon:hover {
-  fill: rgba(0, 0, 0, 0.8); /* Icon color on hover */
+  fill: rgba(0, 0, 0, 0.8);
 }
 
 .quizzes {
@@ -119,10 +199,11 @@ onMounted(async () => {
 }
 
 .quiz-image {
-  width: 100px; /* Adjust the image size as needed */
-  height: fit-content;
-  border-radius: 8px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
+
 
 .quiz-text {
   flex: 1;
@@ -130,13 +211,13 @@ onMounted(async () => {
 
 
 .category-badge {
-  display: inline-block; /* Treat the <p> tag more like an inline element */
-  background-color: rgb(23, 22, 22); /* Example background color */
-  color: #ffffff; /* Text color */
-  padding: 5px 15px; /* Vertical and horizontal padding */
-  border-radius: 20px; /* Rounded corners */
-  font-size: 0.8rem; /* Adjust font size as needed */
-  margin: 0; /* Remove default <p> margin if needed */
+  display: inline-block;
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 0;
 }
 
 .quiz {
@@ -145,7 +226,7 @@ onMounted(async () => {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   transition: transform 0.3s;
-  position: relative; /* This is necessary to position the edit icon correctly */
+  position: relative;
 
 }
 
@@ -164,8 +245,8 @@ h2 {
 }
 
 .headings {
-  align-self: stretch; /* Makes the headings container take the full width */
-  text-align: left; /* Aligns the text to the left */
+  align-self: stretch;
+  text-align: left;
 }
 
 

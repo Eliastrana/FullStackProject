@@ -4,7 +4,7 @@
       class="tag-input"
       v-model="newTagInput"
       @keyup.enter="handleTagInputEnter"
-      placeholder="Type a tag and press Enter... (Pythagoras Theorem)"
+      placeholder="Type a tag and press Enter... (e.g., Pythagoras Theorem)"
       :disabled="!canAddMoreTags"
     />
     <div class="tags-display">
@@ -17,53 +17,41 @@
 </template>
 
 <script setup>
-// Importing necessary modules from Vue
-import { ref, computed } from 'vue';
+import { ref, computed, watch, defineProps, defineEmits } from 'vue';
 
-/**
- * Array of tags
- * @type {import('vue').Ref<Array<string>>}
- */
-const tags = ref([]);
+const props = defineProps({
+  initialTags: Array
+});
 
-/**
- * Input value for the new tag
- * @type {import('vue').Ref<string>}
- */
+const emit = defineEmits(['update-tags']);
+
+const tags = ref(props.initialTags || []);
 const newTagInput = ref('');
+const maxTags = 10;
 
-/**
- * Maximum number of tags allowed
- * @type {number}
- */
-const maxTags = 10; // Adjust as needed
-
-/**
- * Computed property to check if more tags can be added
- * @type {import('vue').ComputedRef<boolean>}
- */
 const canAddMoreTags = computed(() => tags.value.length < maxTags);
 
-/**
- * Handles the event when the Enter key is pressed in the tag input field
- * If the input is not empty and the tag does not already exist, it is added to the tags array
- * The input field is then cleared
- */
 function handleTagInputEnter() {
   const trimmedTag = newTagInput.value.trim();
   if (trimmedTag && !tags.value.includes(trimmedTag)) {
     tags.value.push(trimmedTag);
-    newTagInput.value = ''; // Clear input field
+    newTagInput.value = '';
+    emitUpdateTags();
   }
 }
 
-/**
- * Removes a tag from the tags array at the specified index
- * @param {number} index - The index of the tag to remove
- */
 function removeTag(index) {
   tags.value.splice(index, 1);
+  emitUpdateTags();
 }
+
+function emitUpdateTags() {
+  emit('update-tags', tags.value);
+}
+
+watch(tags, (newTags) => {
+  emit('update-tags', newTags);
+}, { deep: true });
 </script>
 
 

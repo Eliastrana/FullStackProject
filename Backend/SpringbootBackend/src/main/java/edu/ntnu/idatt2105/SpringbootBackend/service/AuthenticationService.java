@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2105.SpringbootBackend.service;
 
 import edu.ntnu.idatt2105.SpringbootBackend.dto.UserCreationDTO;
+import edu.ntnu.idatt2105.SpringbootBackend.exception.PasswordDoesNotMeetRequirements;
 import edu.ntnu.idatt2105.SpringbootBackend.exception.UserAlreadyExistException;
 import edu.ntnu.idatt2105.SpringbootBackend.model.Role;
 import edu.ntnu.idatt2105.SpringbootBackend.model.User;
@@ -13,6 +14,7 @@ import edu.ntnu.idatt2105.SpringbootBackend.security.AuthenticationResponse;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.HashSet;
+import java.util.regex.Pattern;
 
 /**
  * Provides services for user authentication, including registration and login.
@@ -42,6 +48,8 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$";    
+    private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
 
     /**
      * Registers a new user with the given user details.
@@ -59,22 +67,46 @@ public class AuthenticationService {
         if (userRepository.findByUsername(userCreationDTO.getUsername()).isPresent()) {
             throw new UserAlreadyExistException("Username already exists");
         }
+
+        if (!pattern.matcher(userCreationDTO.getPassword()).matches()) {
+            throw new PasswordDoesNotMeetRequirements(userCreationDTO.getPassword());
+        }
+
         User user = User
                 .builder()
                 .username(userCreationDTO.getUsername())
                 .password(passwordEncoder.encode(userCreationDTO.getPassword()))
                 .email(userCreationDTO.getEmail())
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .enabled(true)
                 .build();
 
-        Role defaultRole = roleRepository.findByRole("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Error: Default role is not found."));
+        logger.info("Registering user with username: " + user.getUsername());
 
-        // Istansiate and set up UserRole
+        List<Role> defaultRole = roleRepository.findByRole("ROLE_USER");
+        Role role = defaultRole.get(0);
+
+
+        logger.info("Default role is: " + role.getRole());
+
         UserRole userRole = new UserRole();
         userRole.setUser(user);
-        userRole.setRole(defaultRole);
+        logger.info("User role is: " + userRole.getUser().getUsername());
+        userRole.setRole(role);
+        logger.info("Role is: " + userRole.getRole().getRole());
 
+        if (user.getUserRoles() == null) {
+            logger.info("User roles are null");
+            user.setUserRoles(new HashSet<>());
+        }
+        logger.info("User roles are: " + user.getUserRoles());
         user.getUserRoles().add(userRole);
+        logger.info("User roles are: " + user.getUserRoles());
+
+
+        //user.getUserRoles().add(userRole);
 
         User savedUser = userRepository.save(user);
         logger.info("User " + savedUser.getUsername() + " has been registered");
