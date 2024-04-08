@@ -3,14 +3,14 @@ describe('Create Quiz Tool Test', () => {
     // Intercept the POST request
     cy.intercept('POST', 'http://localhost:8080/api/completeQuiz').as('createQuizRequest');
 
-    cy.visit('http://localhost:5173/Login');
+    cy.visit('http://localhost:4173/Login');
     cy.get('input#username').type('user');
     cy.get('input#password').type('Password123');
     cy.get('button#sign-in').click();
     cy.url().should('include', '/');
 
 
-    cy.visit('http://localhost:5173/quizcreator');
+    cy.visit('http://localhost:4173/quizcreator');
     cy.url().should('include', '/quizcreator');
 
     // Input the quiz details
