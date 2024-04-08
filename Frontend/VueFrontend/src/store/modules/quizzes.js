@@ -154,16 +154,22 @@ export default {
         console.error('Error adding image to quiz:', error);
       }
     },
+
     async fetchAllQuizRatings({ commit, state }) {
       for (const quiz of state.quizzes) {
         try {
-          const averageRating = await RatingService.getAverageRating(quiz.id);
+          let averageRating = await RatingService.getAverageRating(quiz.id);
+          if (averageRating === null) {
+            averageRating = 0;
+          }
           commit('SET_QUIZ_RATING', { quizId: quiz.id, averageRating });
         } catch (error) {
           console.error('Error fetching average rating for quiz', quiz.id, error);
         }
       }
     },
+
+
     addQuestionsByType({ dispatch }, { type, numberOfQuestions = 5 }) {
       for (let i = 0; i < numberOfQuestions; i++) {
         let questionTemplate;

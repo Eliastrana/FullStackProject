@@ -191,7 +191,8 @@ const startQuiz = async (quiz) => {
     <div class="quizzes">
       <div class="quiz" v-for="(quiz) in displayedQuizzes" :key="quiz.id">
         <div class="quiz-info">
-          <img v-if="quiz.imageData" :src="quiz.imageData" alt="Quiz Image" class="quiz-image"/>
+          <img :src="quiz.imageData || '/images/default.png'" alt="Quiz Image" class="quiz-image" />
+
           <div class="quiz-text">
             <h3>{{ quiz.title }}</h3>
             <p>{{ quiz.description }}</p>
