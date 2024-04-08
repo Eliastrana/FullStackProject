@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * It provides methods to convert entities to DTOs for data transfer, and vice versa, to assist
  * with data manipulation and presentation logic.
  *
- * @author vegard johnsen
+ * @author Vegard Johnsen
  * @version 1.0
  * @since 1.0
  * @see Question

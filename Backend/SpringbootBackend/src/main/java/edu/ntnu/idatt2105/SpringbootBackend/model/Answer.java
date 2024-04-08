@@ -21,7 +21,7 @@ import java.util.UUID;
  * <p>The {@link JsonBackReference} annotation is used to prevent recursion issues during
  * JSON serialization by omitting the serialization of the question back reference.</p>
  *
- * @author vegard johnsen
+ * @author Vegard Johnsen
  * @version 0.1
  * @since
  * @see Question for the entity to which this answer belongs.
@@ -59,5 +59,4 @@ public class Answer {
     @JoinColumn(name = "question_id", nullable = false)
     @JsonBackReference
     private Question question;
-
 }
