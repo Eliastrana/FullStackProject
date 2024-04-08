@@ -16,7 +16,7 @@ import java.util.UUID;
  * to provide a full overview of a question's properties in a single object, facilitating easier data
  * transfer and processing between the client and server.
  *
- * @author vegard johnsen
+ * @author Vegard Johnsen, Sander R. Skofsrud
  * @version 0.1
  * @since 0.1
  * @see AnswerCreateDTO

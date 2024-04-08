@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * This component plays a crucial role in abstracting the domain model and its persistence aspects
  * from the data transfer objects used in client-server communication.
  *
- * @author vegard johnsen
+ * @author Vegard Johnsen
  * @version 1.0
  * @since 1.0
  * @see Answer

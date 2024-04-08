@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  * is part of the security layer, facilitating the transfer of crucial authentication information
  * between the server and clients.
  *
- * @author vegard johnsen
+ * @author Vegard Johnsen
  * @version 0.1
  * @since 0.1
  */

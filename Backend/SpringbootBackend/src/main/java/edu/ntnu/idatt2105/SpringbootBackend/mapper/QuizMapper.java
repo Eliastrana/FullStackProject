@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  * It provides methods to convert entities to DTOs and vice versa, facilitating the manipulation
  * and presentation of quiz data.
  *
- * @author vegard johnsen, sander rom skofsrud
+ * @author Vegard Johnsen, Sander R. Skofsrud
  * @version 1.0
  * @since 1.0
  * @see Quiz

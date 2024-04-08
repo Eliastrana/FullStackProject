@@ -39,7 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
  * retrieval, updating, and deletion. This service facilitates the management of quizzes and their
  * related entities such as questions and answers, ensuring a cohesive quiz management experience.
  *
- * @author Vegard Johnsen, Sander rom skofsrud
+ * @author Vegard Johnsen, Sander Rom Skofsrud
  * @version 0.1
  * @since 0.1
  * @see Quiz

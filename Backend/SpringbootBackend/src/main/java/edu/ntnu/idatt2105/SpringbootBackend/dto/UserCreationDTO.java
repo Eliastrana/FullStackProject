@@ -25,14 +25,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class UserCreationDTO {
+    /**
+     * The username of the new user, which serves as a unique identifier for the user within the system.
+     */
     @NotBlank(message = "Username is required")
     @Schema(required = true, example = "johnDoe", description = "Username of the new user")
     private String username;
 
+    /**
+     * The password of the new user, which is used for authentication and account access.
+     */
     @NotBlank(message = "Password is required")
     @Schema(required = true, example = "Password123", description = "Password of the new user")
     private String password;
 
+    /**
+     * The email of the new user, which is used for communication and account verification.
+     */
     @Email(message = "Email should be valid")
     @Schema(required = true, example = "john.doe@example.com", description = "Email of the new user")
     private String email;

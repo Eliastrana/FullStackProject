@@ -32,7 +32,7 @@ import java.util.UUID;
  * interacts with {@link QuizService} for quiz operations and {@link UserService}
  * for retrieving user details.
  *
- * @author Vegard Johnsen
+ * @author Vegard Johnsen, Sander R. Skofsrud
  * @version 0.1
  * @since 0.1
  * @see QuizService

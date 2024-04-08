@@ -40,9 +40,16 @@ public class QuestionCreateDTO {
     @Schema(description = "The text content of the question.", example = "What is the capital of France?")
     private String text;
 
+    /**
+     * The type of the question, defining the interaction model and response format expected from the user.
+     */
     @NotBlank(message = "Question type is required")
     @Schema(description = "The type of the question, defining how it should be presented or answered.", example = "MULTIPLE_CHOICE")
     private QuestionType questionType;
+
+    /**
+     * An optional link to multimedia content related to the question, such as images or videos.
+     */
 
     @NotBlank(message = "Multimedia link is required")
     @Schema(description = "An optional link to multimedia content related to the question, such as images or videos.", example = "https://example.com/image.png")

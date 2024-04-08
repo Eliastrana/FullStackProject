@@ -34,6 +34,15 @@ public class UserMapper {
         return new UserDTO(user.getUsername(), user.getEmail());
     }
 
+    /**
+     * Converts a {@link User} entity to a {@link UserDetailsDTO} object.
+     * This method maps the id, username, and email from the User entity to the UserDetailsDTO,
+     * which can be used for data transfer,
+     * especially in scenarios where user details need to be sent to the client.
+     *
+     * @param user The User entity to convert.
+     * @return A new UserDetailsDTO object containing the id, username, and email from the provided User entity.
+     */
 
     public UserDetailsDTO toUserDetails(User user) {
         if (user == null) {

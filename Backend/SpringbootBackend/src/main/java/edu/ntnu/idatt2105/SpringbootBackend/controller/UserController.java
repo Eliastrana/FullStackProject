@@ -28,6 +28,8 @@ import lombok.RequiredArgsConstructor;
  *
  * @author Vegard Johnsen, Sander R. Skofsrud
  * @see AuthenticationService
+ * @see UserService
+ * @see AuthenticationRequest
  * @since 0.1
  * @version 0.1
  */

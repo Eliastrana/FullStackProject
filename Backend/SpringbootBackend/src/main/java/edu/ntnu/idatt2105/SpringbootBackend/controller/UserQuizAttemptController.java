@@ -21,7 +21,7 @@ import java.util.UUID;
  * This controller ensures that only authenticated users can perform these operations, leveraging Spring Security
  * for authorization checks.
  *
- * @author Vegard Johnsen
+ * @author Vegard Johnsen, Sander R. Skofsrud
  * @version 0.1
  * @since 0.1
  * @see UserQuizAttemptController
